@@ -1,7 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Report\MonthlyDashboardController;
+
+// Ini adalah baris ajaib yang baru saja dibuat oleh Laravel untuk mengatur Login/Register/Logout
+Auth::routes();
 
 // Rute awal (otomatis dilempar ke laporan manajemen)
 Route::get('/', function () { 
@@ -23,6 +27,3 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/download-template', [MonthlyDashboardController::class, 'downloadTemplate']);
     
 });
-
-// Catatan: Rute login bawaan Laravel biasanya ada di bawah ini.
-// Biarkan saja jika ada kode tambahan seperti `require __DIR__.'/auth.php';` atau `Auth::routes();`
