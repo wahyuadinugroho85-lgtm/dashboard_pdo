@@ -27,3 +27,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/download-template', [MonthlyDashboardController::class, 'downloadTemplate']);
     
 });
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
