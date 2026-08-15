@@ -42,20 +42,39 @@
             </div>
         </div>
         
-        <div class="flex gap-3">
-            <a href="/input-data" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Input Data
-            </a>
-            <form method="GET" action="/laporan-manajemen" class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                <select name="bulan" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-2 pr-1">
-                    @for($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
-                </select>
-                <span class="text-slate-300">|</span>
-                <select name="tahun" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-1 pr-2">
-                    @for($i = 2023; $i <= date('Y') + 1; $i++) <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
-                </select>
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md transition-colors shadow-sm">Terapkan</button>
-            </form>
+        <div class="flex gap-4 items-center">
+            <!-- Filter & Input Data -->
+            <div class="flex gap-3 border-r border-slate-200 pr-4">
+                <a href="/input-data" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Input Data
+                </a>
+                <form method="GET" action="/laporan-manajemen" class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+                    <select name="bulan" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-2 pr-1">
+                        @for($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
+                    </select>
+                    <span class="text-slate-300">|</span>
+                    <select name="tahun" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-1 pr-2">
+                        @for($i = 2023; $i <= date('Y') + 1; $i++) <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
+                    </select>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md transition-colors shadow-sm">Terapkan</button>
+                </form>
+            </div>
+
+            <!-- User Controls -->
+            <div class="flex items-center gap-3">
+                <div class="text-sm text-slate-500">
+                    Masuk sebagai: <strong class="text-slate-800">{{ Auth::user()->name ?? 'Admin' }}</strong>
+                </div>
+                <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-sm font-semibold px-3 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2" title="Kelola User">
+                    ⚙️ Kelola User
+                </a>
+                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                    @csrf
+                    <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-3 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                        🚪 Logout
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
 
