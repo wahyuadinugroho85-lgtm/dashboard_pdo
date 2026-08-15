@@ -31,46 +31,36 @@
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
 
-    <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <!-- POIN 2: NAVBAR DIRAPIKAN SESUAI GAMBAR 2 -->
+    <nav class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
         <div class="flex items-center gap-4">
-            <div class="bg-indigo-600 p-2.5 rounded-lg shadow-sm border border-indigo-700">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-            </div>
-            <div>
-                <h1 class="text-lg font-bold text-slate-900 leading-tight">Dashboard Operasional</h1>
-                <p class="text-xs text-slate-500 font-medium tracking-wide">SISTEM LAPORAN PERKEBUNAN KELAPA SAWIT</p>
-            </div>
+            <a href="/input-data" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Input Data
+            </a>
+            
+            <form method="GET" action="/laporan-manajemen" class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200 shadow-sm">
+                <select name="bulan" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-2 pr-1">
+                    @for($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
+                </select>
+                <span class="text-slate-300">|</span>
+                <select name="tahun" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-1 pr-2">
+                    @for($i = 2023; $i <= date('Y') + 1; $i++) <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
+                </select>
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold px-5 py-1.5 rounded-md transition-colors shadow-sm">Terapkan</button>
+            </form>
         </div>
         
-        <div class="flex gap-4 items-center">
-            <!-- Filter & Input Data -->
-            <div class="flex gap-3 border-r border-slate-200 pr-4">
-                <a href="/input-data" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg> Input Data
-                </a>
-                <form method="GET" action="/laporan-manajemen" class="flex items-center gap-2 bg-slate-50 p-1.5 rounded-lg border border-slate-200">
-                    <select name="bulan" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-2 pr-1">
-                        @for($i = 1; $i <= 12; $i++) <option value="{{ $i }}" {{ $bulan == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
-                    </select>
-                    <span class="text-slate-300">|</span>
-                    <select name="tahun" class="bg-transparent text-sm font-semibold text-slate-700 outline-none cursor-pointer pl-1 pr-2">
-                        @for($i = 2023; $i <= date('Y') + 1; $i++) <option value="{{ $i }}" {{ $tahun == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
-                    </select>
-                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-1.5 rounded-md transition-colors shadow-sm">Terapkan</button>
-                </form>
+        <div class="flex items-center gap-4">
+            <div class="text-sm text-slate-500 border-r border-slate-200 pr-4 py-1">
+                Masuk sebagai: <strong class="text-slate-800">{{ Auth::user()->name ?? 'Admin Laporan' }}</strong>
             </div>
-
-            <!-- User Controls -->
-            <div class="flex items-center gap-3">
-                <div class="text-sm text-slate-500">
-                    Masuk sebagai: <strong class="text-slate-800">{{ Auth::user()->name ?? 'Admin' }}</strong>
-                </div>
-                <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-sm font-semibold px-3 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2" title="Kelola User">
+            <div class="flex gap-2">
+                <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                     ⚙️ Kelola User
                 </a>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                     @csrf
-                    <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold px-3 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                    <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                         🚪 Logout
                     </button>
                 </form>
@@ -124,7 +114,6 @@
             $bestCostPT = '-'; $bestCostPct = 99999999; $bestCostVal = 0;
             
             foreach($estates as $estate) {
-                // Agronomi & TK
                 foreach($jenisPerawatan as $rawat) { $gTotalRawat += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; }
                 foreach($jenisPupuk as $pupuk) { $gTotalPupuk += $dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0; }
                 foreach($kategoriPekerja as $kat) {
@@ -133,7 +122,6 @@
                     }
                 }
 
-                // Insights Data
                 $ptRealSdKg = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
                 $ptBgt1ThnKg = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                 $pctProd = $ptBgt1ThnKg > 0 ? ($ptRealSdKg / $ptBgt1ThnKg) * 100 : 0;
@@ -155,13 +143,9 @@
             /* 2. KALKULASI DATA EKSTRAKSI & MILL                        */
             /* ========================================================= */
             $millBi = []; $millSd = [];
-            $gTbsBi = 0; $gTbsSd = 0;
-            $gCpoBi = 0; $gCpoSd = 0;
-            $gKerBi = 0; $gKerSd = 0;
-            $gPkoBi = 0; $gPkoSd = 0;
+            $gTbsBi = 0; $gTbsSd = 0; $gCpoBi = 0; $gCpoSd = 0; $gKerBi = 0; $gKerSd = 0; $gPkoBi = 0; $gPkoSd = 0;
 
             foreach($estates as $estate) {
-                // BI (Bulan Ini)
                 $kgTbsBi = $dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0;
                 $tonTbsBi = $kgTbsBi / 1000;
                 $tonCpoBi = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_cpo ?? 0;
@@ -177,7 +161,6 @@
                 $tonHaPalmOilBi = $hsHaBi > 0 ? $tonPalmOilBi / $hsHaBi : 0;
                 $millBi[$estate->kode] = compact('kgTbsBi', 'oerBi', 'kerBi', 'pkoBi', 'tonCpoBi', 'tonKerBi', 'tonPalmProdukBi', 'tonPkoBi', 'tonPalmOilBi', 'tonHaCpoBi', 'tonHaPalmOilBi');
                 
-                // SDBI (s.d Bulan Ini)
                 $kgTbsSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
                 $tonTbsSd = $kgTbsSd / 1000;
                 $tonCpoSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->ton_cpo ?? 0;
@@ -192,90 +175,48 @@
                 $tonHaPalmOilSd = $hsHaBi > 0 ? $tonPalmOilSd / $hsHaBi : 0;
                 $millSd[$estate->kode] = compact('kgTbsSd', 'oerSd', 'kerSd', 'pkoSd', 'tonCpoSd', 'tonKerSd', 'tonPalmProdukSd', 'tonPkoSd', 'tonPalmOilSd', 'tonHaCpoSd', 'tonHaPalmOilSd');
                 
-                // Global Acc
-                $gTbsBi += $kgTbsBi; $gTbsSd += $kgTbsSd;
-                $gCpoBi += $tonCpoBi; $gCpoSd += $tonCpoSd;
-                $gKerBi += $tonKerBi; $gKerSd += $tonKerSd;
-                $gPkoBi += $tonPkoBi; $gPkoSd += $tonPkoSd;
+                $gTbsBi += $kgTbsBi; $gTbsSd += $kgTbsSd; $gCpoBi += $tonCpoBi; $gCpoSd += $tonCpoSd; $gKerBi += $tonKerBi; $gKerSd += $tonKerSd; $gPkoBi += $tonPkoBi; $gPkoSd += $tonPkoSd;
             }
             
-            $gTonTbsBi = $gTbsBi / 1000;
-            $gOerBi = $gTonTbsBi > 0 ? ($gCpoBi / $gTonTbsBi) * 100 : 0;
-            $gPctKerBi = $gTonTbsBi > 0 ? ($gKerBi / $gTonTbsBi) * 100 : 0;
-            $gPctPkoBi = $gKerBi > 0 ? ($gPkoBi / $gKerBi) * 100 : 0;
-            $gPalmProdukBi = $gCpoBi + $gKerBi;
-            $gPalmOilBi = $gCpoBi + $gPkoBi;
-            $gHsHaTotal = $dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0;
-            $gTonHaCpoBi = $gHsHaTotal > 0 ? $gCpoBi / $gHsHaTotal : 0;
-            $gTonHaPalmOilBi = $gHsHaTotal > 0 ? $gPalmOilBi / $gHsHaTotal : 0;
-
-            $gTonTbsSd = $gTbsSd / 1000;
-            $gOerSd = $gTonTbsSd > 0 ? ($gCpoSd / $gTonTbsSd) * 100 : 0;
-            $gPctKerSd = $gTonTbsSd > 0 ? ($gKerSd / $gTonTbsSd) * 100 : 0;
-            $gPctPkoSd = $gKerSd > 0 ? ($gPkoSd / $gKerSd) * 100 : 0;
-            $gPalmProdukSd = $gCpoSd + $gKerSd;
-            $gPalmOilSd = $gCpoSd + $gPkoSd;
-            $gTonHaCpoSd = $gHsHaTotal > 0 ? $gCpoSd / $gHsHaTotal : 0;
-            $gTonHaPalmOilSd = $gHsHaTotal > 0 ? $gPalmOilSd / $gHsHaTotal : 0;
-
+            $gTonTbsBi = $gTbsBi / 1000; $gOerBi = $gTonTbsBi > 0 ? ($gCpoBi / $gTonTbsBi) * 100 : 0; $gPctKerBi = $gTonTbsBi > 0 ? ($gKerBi / $gTonTbsBi) * 100 : 0; $gPctPkoBi = $gKerBi > 0 ? ($gPkoBi / $gKerBi) * 100 : 0; $gPalmProdukBi = $gCpoBi + $gKerBi; $gPalmOilBi = $gCpoBi + $gPkoBi; $gHsHaTotal = $dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0; $gTonHaCpoBi = $gHsHaTotal > 0 ? $gCpoBi / $gHsHaTotal : 0; $gTonHaPalmOilBi = $gHsHaTotal > 0 ? $gPalmOilBi / $gHsHaTotal : 0;
+            $gTonTbsSd = $gTbsSd / 1000; $gOerSd = $gTonTbsSd > 0 ? ($gCpoSd / $gTonTbsSd) * 100 : 0; $gPctKerSd = $gTonTbsSd > 0 ? ($gKerSd / $gTonTbsSd) * 100 : 0; $gPctPkoSd = $gKerSd > 0 ? ($gPkoSd / $gKerSd) * 100 : 0; $gPalmProdukSd = $gCpoSd + $gKerSd; $gPalmOilSd = $gCpoSd + $gPkoSd; $gTonHaCpoSd = $gHsHaTotal > 0 ? $gCpoSd / $gHsHaTotal : 0; $gTonHaPalmOilSd = $gHsHaTotal > 0 ? $gPalmOilSd / $gHsHaTotal : 0;
 
             /* ========================================================= */
-            /* 3. KALKULASI DATA BIAYA & DEVIASI COST (RUMUS BARU)       */
+            /* 3. KALKULASI DATA BIAYA & DEVIASI COST                    */
             /* ========================================================= */
-            $biayaStats = [];
-            $gBiayaRealSd = 0; $gBiayaBgtSd = 0;
+            $biayaStats = []; $gBiayaRealSd = 0; $gBiayaBgtSd = 0;
             
             foreach($estates as $estate) {
-                // Total Biaya Operasional Real s.d Bulan Ini
                 $tBiayaSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
-                
-                // Tonase Palm Produk & Palm Oil s.d Bulan Ini (Konversi Ton ke Kg dengan dikali 1000)
                 $tPalmProdukKg = ($millSd[$estate->kode]['tonPalmProdukSd'] ?? 0) * 1000;
                 $tPalmOilKg = ($millSd[$estate->kode]['tonPalmOilSd'] ?? 0) * 1000;
-
-                // Inputan Budget Cost dari database (Rp/Kg)
                 $bgtRecord = $dataMatrix[$estate->kode]['biaya']['budget_year'] ?? null;
                 $costPalmProdukBgt = $bgtRecord->bgt_cost_palm_produk ?? 0;
                 $costPalmOilBgt = $bgtRecord->bgt_cost_palm_oil ?? 0;
-
-                // Rumus Cost Palm Produk & Cost Palm Oil
                 $costPalmProdukReal = $tPalmProdukKg > 0 ? $tBiayaSd / $tPalmProdukKg : 0;
                 $costPalmOilReal = $tPalmOilKg > 0 ? $tBiayaSd / $tPalmOilKg : 0;
-
-                // Deviasi Rp/Kg = Budget - Real
                 $devProdRpKg = $costPalmProdukBgt - $costPalmProdukReal;
                 $devOilRpKg = $costPalmOilBgt - $costPalmOilReal;
-
-                // +/- Rp Total = Deviasi * Tonase Aktual (Kg)
                 $devProdRp = $devProdRpKg * $tPalmProdukKg;
                 $devOilRp = $devOilRpKg * $tPalmOilKg;
-
                 $biayaStats[$estate->kode] = compact('costPalmProdukReal', 'costPalmOilReal', 'costPalmProdukBgt', 'costPalmOilBgt', 'devProdRpKg', 'devProdRp', 'devOilRpKg', 'devOilRp');
-
                 $gBiayaRealSd += $tBiayaSd;
             }
 
-            // Hitung Grand Total (BP-2)
-            $gPalmProdukKgTotal = $gPalmProdukSd * 1000;
-            $gPalmOilKgTotal = $gPalmOilSd * 1000;
-
+            $gPalmProdukKgTotal = $gPalmProdukSd * 1000; $gPalmOilKgTotal = $gPalmOilSd * 1000;
             $gCostPalmProdukReal = $gPalmProdukKgTotal > 0 ? $gBiayaRealSd / $gPalmProdukKgTotal : 0;
             $gCostPalmOilReal = $gPalmOilKgTotal > 0 ? $gBiayaRealSd / $gPalmOilKgTotal : 0;
-            
             $bgtRecordBP2 = $dataMatrix['BP-2']['biaya']['budget_year'] ?? null;
             $gCostPalmProdukBgt = $bgtRecordBP2->bgt_cost_palm_produk ?? 0;
             $gCostPalmOilBgt = $bgtRecordBP2->bgt_cost_palm_oil ?? 0;
-
             $gDevProdRpKg = $gCostPalmProdukBgt - $gCostPalmProdukReal;
             $gDevProdRp = $gDevProdRpKg * $gPalmProdukKgTotal;
-
             $gDevOilRpKg = $gCostPalmOilBgt - $gCostPalmOilReal;
             $gDevOilRp = $gDevOilRpKg * $gPalmOilKgTotal;
         @endphp
 
-        <!-- ================= TAB 0: DASHBOARD ANALYTICS (CUSTOMIZABLE) ================= -->
+        <!-- ================= TAB 0: DASHBOARD ANALYTICS ================= -->
         <div id="tab-analytics" class="tab-content block w-full space-y-6">
-            
             <div id="analytics-container" class="transition-all duration-300 rounded-xl">
                 
                 <div class="bg-gradient-to-r from-indigo-700 via-blue-600 to-sky-500 rounded-2xl shadow-lg p-6 mb-6 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -295,65 +236,120 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white border-l-4 border-indigo-500 shadow-sm p-4 rounded-xl flex items-center gap-4">
-                        <div class="bg-indigo-100 text-indigo-600 p-3 rounded-full">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Pencapaian Produksi Terbaik</p>
-                            <p class="text-sm text-slate-700 mt-1">Divisi <strong class="text-lg text-indigo-700">{{ $bestProdPT }}</strong> memimpin dengan <strong class="text-lg text-indigo-700">{{ number_format($bestProdPct, 1) }}%</strong> dari Target Tahunan (Terkumpul {{ number_format($bestProdKg / 1000, 0) }} Ton).</p>
-                        </div>
-                    </div>
-                    <div class="bg-white border-l-4 border-emerald-500 shadow-sm p-4 rounded-xl flex items-center gap-4">
-                        <div class="bg-emerald-100 text-emerald-600 p-3 rounded-full">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Efisiensi Terbaik (% Cost/Kg vs Bgt)</p>
-                            <p class="text-sm text-slate-700 mt-1">Divisi <strong class="text-lg text-emerald-700">{{ $bestCostPT }}</strong> mencatat pengeluaran terhemat (<strong class="text-lg text-emerald-700">{{ number_format($bestCostPct, 1) }}%</strong> thd Bgt) di angka Rp {{ number_format($bestCostVal, 2) }}/Kg TBS.</p>
-                        </div>
-                    </div>
-                </div>
-
                 <div id="dynamic-dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     
-                    <div id="w-prod" data-wname="Total Produksi (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-500 hover:shadow-md transition-all cursor-help">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Produksi (Ton)</p>
-                            <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gRealKg / 1000, 0) }}</h3>
-                            <p class="text-xs font-medium mt-1 text-slate-500">
-                                <span class="{{ $gPctRkb >= 100 ? 'text-emerald-600' : 'text-amber-600' }}">{{ number_format($gPctRkb, 1) }}% dr RKB</span> | 
-                                <span class="{{ $gPctBgt >= 100 ? 'text-emerald-600' : 'text-amber-600' }}">{{ number_format($gPctBgt, 1) }}% dr Bgt</span>
-                            </p>
+                    <!-- POIN 1: SUMMARY PRODUKSI INTERAKTIF -->
+                    <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center">
+                            <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                <span class="bg-indigo-500 w-2 h-4 rounded-sm inline-block"></span> 
+                                Data Pencapaian Produksi - {{ $labelBulan }}
+                            </h3>
                         </div>
-                        <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                            <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
-                                <div class="font-bold text-indigo-300 mb-2 border-b border-slate-600 pb-1">Detail Produksi (Ton) & Pencapaian</div>
-                                <table class="w-full text-right">
-                                    <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Bgt</th><th class="pb-1 pl-2">RKB</th><th class="pb-1 pl-2">Real</th><th class="pb-1 pl-2">% Bgt</th><th class="pb-1 pl-2">% RKB</th></tr>
-                                    @foreach($estates as $estate)
-                                        @php
-                                            $rK = $dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0;
-                                            $bK = $dataMatrix[$estate->kode]['produksi']['current']['budget']->tonase ?? 0;
-                                            $rkK = $dataMatrix[$estate->kode]['produksi']['current']['rkb']->tonase ?? 0;
-                                            $pB = $bK > 0 ? ($rK/$bK)*100 : 0;
-                                            $pR = $rkK > 0 ? ($rK/$rkK)*100 : 0;
-                                        @endphp
-                                        <tr class="border-b border-slate-700 last:border-0">
-                                            <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                            <td class="pl-3">{{ number_format($bK/1000, 0) }}</td>
-                                            <td class="pl-3">{{ number_format($rkK/1000, 0) }}</td>
-                                            <td class="pl-3 font-bold text-white">{{ number_format($rK/1000, 0) }}</td>
-                                            <td class="pl-3 {{ $pB >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pB, 1) }}%</td>
-                                            <td class="pl-3 {{ $pR >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pR, 1) }}%</td>
-                                        </tr>
-                                    @endforeach
-                                </table>
-                            </div>
+                        <div class="overflow-x-auto p-4">
+                            <table class="w-full text-sm text-right border-collapse">
+                                <thead>
+                                    <tr class="border-b border-slate-200">
+                                        <th class="text-left py-2 px-3 text-slate-400 font-bold bg-white sticky left-0 z-10 w-24">Bulan</th>
+                                        <th class="text-left py-2 px-3 text-slate-400 font-bold bg-white sticky left-[96px] z-10 w-24">Jenis</th>
+                                        <th class="text-left py-2 px-3 text-slate-400 font-bold bg-white sticky left-[192px] z-10 border-r border-slate-200 w-40">Indikator</th>
+                                        @foreach($estates as $estate)
+                                            <th class="py-2 px-4 font-bold text-slate-700 bg-slate-50">{{ $estate->kode }}</th>
+                                        @endforeach
+                                        <th class="py-2 px-4 font-bold text-indigo-800 bg-indigo-50">BP-2 (TOTAL)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ROW RKB -->
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td rowspan="4" class="text-left py-2 px-3 font-bold text-slate-700 bg-white sticky left-0 z-10">{{ $labelBulan }}</td>
+                                        <td rowspan="4" class="text-left py-2 px-3 font-bold text-indigo-600 bg-white sticky left-[96px] z-10">RKB</td>
+                                        <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Produksi (Ton)</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4">{{ number_format(($dataMatrix[$estate->kode]['produksi']['current']['rkb']->tonase ?? 0) / 1000, 0) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format(($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) / 1000, 0) }}</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Janjang</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['rkb']->janjang ?? 0, 0) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($dataMatrix['BP-2']['produksi']['current']['rkb']->janjang ?? 0, 0) }}</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Bjr</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4 text-slate-500">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['bjr_rkb'] ?? 0, 2) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($dataMatrix['BP-2']['produksi']['current']['bjr_rkb'] ?? 0, 2) }}</td>
+                                    </tr>
+                                    <tr class="border-b-2 border-slate-200 hover:bg-slate-50 transition-colors">
+                                        <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Jjg/Pkk</td>
+                                        @foreach($estates as $estate)
+                                            @php $rkbJjgPkk = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0) > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['rkb']->janjang ?? 0) / ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0) : 0; @endphp
+                                            <td class="py-2 px-4 text-slate-500">{{ number_format($rkbJjgPkk, 2) }}</td>
+                                        @endforeach
+                                        @php $grkbJjgPkk = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0) > 0 ? ($dataMatrix['BP-2']['produksi']['current']['rkb']->janjang ?? 0) / ($dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0) : 0; @endphp
+                                        <td class="py-2 px-4 font-bold text-indigo-500 bg-indigo-50/50">{{ number_format($grkbJjgPkk, 2) }}</td>
+                                    </tr>
+
+                                    <!-- ROW REAL -->
+                                    <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors">
+                                        <td rowspan="4" class="text-left py-2 px-3 bg-white sticky left-0 z-10"></td>
+                                        <td rowspan="4" class="text-left py-2 px-3 font-bold text-emerald-600 bg-white sticky left-[96px] z-10 border-l-4 border-emerald-500">Real</td>
+                                        <td class="text-left py-2 px-3 font-bold text-slate-800 border-r border-slate-200 bg-white sticky left-[192px] z-10">Produksi (Ton)</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4 font-bold text-slate-900">{{ number_format(($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000, 0) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format(($dataMatrix['BP-2']['produksi']['current']['real']->tonase ?? 0) / 1000, 0) }}</td>
+                                    </tr>
+                                    <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors">
+                                        <td class="text-left py-2 px-3 font-bold text-slate-800 border-r border-slate-200 bg-white sticky left-[192px] z-10">Janjang</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4 font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->janjang ?? 0, 0) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($dataMatrix['BP-2']['produksi']['current']['real']->janjang ?? 0, 0) }}</td>
+                                    </tr>
+                                    <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors">
+                                        <td class="text-left py-2 px-3 text-slate-700 border-r border-slate-200 bg-white sticky left-[192px] z-10">Bjr</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4 font-medium text-slate-700">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['bjr_real'] ?? 0, 2) }}</td> @endforeach
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($dataMatrix['BP-2']['produksi']['current']['bjr_real'] ?? 0, 2) }}</td>
+                                    </tr>
+                                    <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors border-b-2 border-slate-200">
+                                        <td class="text-left py-2 px-3 text-slate-700 border-r border-slate-200 bg-white sticky left-[192px] z-10">Jjg/Pkk</td>
+                                        @foreach($estates as $estate)
+                                            @php $realJjgPkk = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0) > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['real']->janjang ?? 0) / ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0) : 0; @endphp
+                                            <td class="py-2 px-4 font-medium text-slate-700">{{ number_format($realJjgPkk, 2) }}</td>
+                                        @endforeach
+                                        @php $grealJjgPkk = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0) > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->janjang ?? 0) / ($dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0) : 0; @endphp
+                                        <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($grealJjgPkk, 2) }}</td>
+                                    </tr>
+
+                                    <!-- ROW DEV -->
+                                    <tr class="bg-rose-50/20 hover:bg-rose-50/50 transition-colors">
+                                        <td rowspan="3" class="text-left py-2 px-3 bg-white sticky left-0 z-10"></td>
+                                        <td rowspan="3" class="text-left py-2 px-3 font-bold text-rose-600 bg-white sticky left-[96px] z-10 border-l-4 border-rose-500">Dev</td>
+                                        <td class="text-left py-2 px-3 text-slate-700 border-r border-slate-200 bg-white sticky left-[192px] z-10">Produksi (Ton)</td>
+                                        @foreach($estates as $estate)
+                                            @php
+                                                $dev = (($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) - ($dataMatrix[$estate->kode]['produksi']['current']['rkb']->tonase ?? 0)) / 1000;
+                                            @endphp
+                                            <td class="py-2 px-4 font-bold {{ $dev < 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ $dev < 0 ? '('.number_format(abs($dev), 0).')' : number_format($dev, 0) }}</td>
+                                        @endforeach
+                                        @php $gdev = (($dataMatrix['BP-2']['produksi']['current']['real']->tonase ?? 0) - ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0)) / 1000; @endphp
+                                        <td class="py-2 px-4 font-bold {{ $gdev < 0 ? 'text-rose-600' : 'text-emerald-600' }} bg-indigo-50/30">{{ $gdev < 0 ? '('.number_format(abs($gdev), 0).')' : number_format($gdev, 0) }}</td>
+                                    </tr>
+                                    <tr class="bg-amber-50/30 hover:bg-amber-50/60 transition-colors">
+                                        <td class="text-left py-2 px-3 font-bold text-amber-800 border-r border-slate-200 bg-white sticky left-[192px] z-10">% Pencapaian</td>
+                                        @foreach($estates as $estate)
+                                            @php
+                                                $r = $dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0;
+                                                $b = $dataMatrix[$estate->kode]['produksi']['current']['rkb']->tonase ?? 0;
+                                                $pct = $b > 0 ? ($r / $b) * 100 : 0; 
+                                            @endphp
+                                            <td class="py-2 px-4 font-bold text-amber-700">{{ number_format($pct, 2) }}</td>
+                                        @endforeach
+                                        @php $gpct = ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->tonase ?? 0) / ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) * 100 : 0; @endphp
+                                        <td class="py-2 px-4 font-bold text-amber-800 bg-amber-100/50">{{ number_format($gpct, 2) }}</td>
+                                    </tr>
+                                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
+                                        <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Jjg/Pkk</td>
+                                        @foreach($estates as $estate) <td class="py-2 px-4 text-slate-400">(0.00)</td> @endforeach
+                                        <td class="py-2 px-4 text-slate-400 bg-indigo-50/30">(0.00)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
@@ -517,6 +513,7 @@
                         </div>
                     </div>
 
+                    <!-- POIN 3: TOTAL RAWAT DITAMBAH COST/HA, %, DAN BLOK -->
                     <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all cursor-help">
                         <div>
                             <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
@@ -527,18 +524,36 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                         </div>
                         <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                            <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
-                                <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1">Detail Rawat per Item (Ha)</div>
+                            <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 400px;">
+                                <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1 flex justify-between">
+                                    <span>Detail Rawat per PT</span>
+                                    <span class="text-slate-400 font-normal">Termasuk Cost/Ha & Pencapaian</span>
+                                </div>
                                 <table class="w-full text-right">
-                                    <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Pir</th><th class="pb-1 pl-2">CPT</th><th class="pb-1 pl-2">GawM</th><th class="pb-1 pl-2">GawC</th><th class="pb-1 pl-2">Prun</th></tr>
+                                    <tr class="text-slate-400 border-b border-slate-600">
+                                        <th class="text-left pb-1">PT</th>
+                                        <th class="pb-1 pl-2 text-center">Blok</th>
+                                        <th class="pb-1 pl-2">Luas (Ha)</th>
+                                        <th class="pb-1 pl-2">% RKB</th>
+                                        <th class="pb-1 pl-2">Cost/Ha (Rp)</th>
+                                    </tr>
                                     @foreach($estates as $estate)
+                                        @php
+                                            $luasTtl = 0; 
+                                            foreach($jenisPerawatan as $rawat) { 
+                                                $luasTtl += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; 
+                                            }
+                                            // DUMMY Data untuk Cost/Ha, Blok, % RKB (menunggu update Controller)
+                                            $dummyBlok = 0; 
+                                            $dummyPct = 0; 
+                                            $dummyCostHa = 0; 
+                                        @endphp
                                         <tr class="border-b border-slate-700 last:border-0">
                                             <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                            <td class="pl-2">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real']['Rwt Piringan Manual']->luas_ha ?? 0, 1) }}</td>
-                                            <td class="pl-2">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real']['PPT Chemist']->luas_ha ?? 0, 1) }}</td>
-                                            <td class="pl-2">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real']['Rwt Gawangan Manual']->luas_ha ?? 0, 1) }}</td>
-                                            <td class="pl-2">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real']['Rwt Gawangan Chemist']->luas_ha ?? 0, 1) }}</td>
-                                            <td class="pl-2 font-bold text-white">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real']['Pruning']->luas_ha ?? 0, 1) }}</td>
+                                            <td class="pl-2 text-center">{{ $dummyBlok }}</td>
+                                            <td class="pl-2 font-bold text-white">{{ number_format($luasTtl, 2) }}</td>
+                                            <td class="pl-2 text-emerald-400">{{ number_format($dummyPct, 1) }}%</td>
+                                            <td class="pl-2 text-amber-300">{{ number_format($dummyCostHa, 0) }}</td>
                                         </tr>
                                     @endforeach
                                 </table>
@@ -1227,16 +1242,29 @@
                 </table>
             </div>
 
-            <!-- TABLE 3: BIAYA OPERASIONAL (M), COST PALM & DEVIASI -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+            <!-- POIN 7: TABLE BIAYA PDO & TOTAL -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
                 <table class="modern-matrix text-sm">
                     <thead>
                         <tr>
-                            <th colspan="2" class="text-left font-bold text-emerald-800 bg-emerald-50 border-b-2 border-emerald-200 uppercase tracking-wider pl-4">BIAYA PDO & TOTAL (M)</th>
-                            @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
-                            <th class="text-center font-bold text-indigo-800 bg-indigo-50 uppercase tracking-wider shadow-sm">BP-2</th>
+                            <th colspan="2" class="text-left font-bold text-emerald-800 bg-emerald-50 border-b-2 border-emerald-200 uppercase tracking-wider pl-4">BIAYA PDO & TOTAL (Rp 000)</th>
+                            @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-yellow-300 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
+                            <th class="text-center font-bold text-slate-800 bg-yellow-400 uppercase tracking-wider shadow-sm">BP-2</th>
                         </tr>
                     </thead>
+                    <tbody class="text-slate-600 font-bold">
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td rowspan="2" class="text-left py-2 px-3 border-r border-slate-200 bg-white sticky left-0 z-10 w-24">PDO</td>
+                            <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 w-16 italic">Bi</td>
+                            @foreach($estates as $estate) <td class="text-right py-2 px-4">0</td> @endforeach
+                            <td class="text-right py-2 px-4 bg-slate-50">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 transition-colors row-border-strong border-b-2 border-slate-300">
+                            <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 italic">Sbi</td>
+                            @foreach($estates as $estate) <td class="text-right py-2 px-4">0</td> @endforeach
+                            <td class="text-right py-2 px-4 bg-slate-50">0</td>
+                        </tr>
+                    </tbody>
                     <tbody class="text-slate-600">
                         @php $komponenBiaya = ['Panen' => 'cost_panen', 'Rawat' => 'cost_rawat', 'Kantor' => 'cost_kantor', 'Teknik' => 'cost_teknik', 'PKS' => 'cost_pks']; @endphp
                         @foreach($komponenBiaya as $label => $field)
@@ -1342,7 +1370,7 @@
                             @php $gd = $gDevOilRpKg; @endphp
                             <td class="text-right bg-emerald-700">{{ $gd < 0 ? '('.number_format(abs($gd), 0).')' : number_format($gd, 0) }}</td>
                         </tr>
-                        <tr class="text-white font-bold">
+                        <tr class="text-white font-bold border-b-4 border-emerald-900">
                             <td class="pl-12 text-right pr-4 border-r border-white/20 bg-emerald-800">+/-</td>
                             <td class="text-center border-r border-white/20 bg-emerald-800">Rp</td>
                             @foreach($estates as $estate)
@@ -1360,7 +1388,7 @@
 
         <!-- ================= TAB 2: RAWAT & PUPUK ================= -->
         <div id="tab-agronomi" class="tab-content hidden min-w-[900px]">
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
                 <table class="modern-matrix text-sm">
                     <thead>
                         <tr>
@@ -1379,32 +1407,110 @@
                             <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">0.00</td>
                         </tr>
                         @endforeach
-                        
-                        <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Aplikasi Pupuk (Ton)</td></tr>
-                        @foreach($jenisPupuk as $pupuk)
-                        <tr class="bg-slate-50/30">
-                            <td class="font-bold text-slate-800 pl-4">{{ $pupuk }} (Real)</td>
-                            <td class="text-center font-medium text-slate-500 w-16">Ton</td>
-                            @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0, 0) }}</td> @endforeach
-                            <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">0</td>
-                        </tr>
-                        <tr class="row-border-strong">
-                            <td class="font-medium text-emerald-700 text-right pr-4">% thd Budget</td>
-                            <td class="text-center font-medium text-emerald-600">%</td>
-                            @foreach($estates as $estate)
-                                @php
-                                    $r = $dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0;
-                                    $b = $dataMatrix[$estate->kode]['pupuk']['budget'][$pupuk]->jumlah_kg ?? 0;
-                                    $p = $b > 0 ? ($r/$b)*100 : 0;
-                                @endphp
-                                <td class="text-right font-medium text-emerald-700 bg-emerald-50/30">{{ number_format($p, 2) }}</td>
-                            @endforeach
-                            <td class="text-right font-bold bg-emerald-100/50 text-emerald-800">0.00</td>
-                        </tr>
-                        @endforeach
                     </tbody>
                 </table>
             </div>
+
+            <!-- POIN 4 & 5: TABLE ROTASI PRUNING -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <table class="modern-matrix text-sm">
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">Rotasi Pruning</th>
+                            <th class="text-center font-bold text-emerald-900 bg-emerald-400 uppercase"><= 6 Bln</th>
+                            <th class="text-center font-bold text-emerald-900 bg-emerald-300 uppercase">6.01-9 Bln</th>
+                            <th class="text-center font-bold text-yellow-900 bg-yellow-300 uppercase">9.01-12 Bln</th>
+                            <th class="text-center font-bold text-white bg-red-600 uppercase">> 12 Bln</th>
+                            <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase">G.Ttl</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-800 font-bold">
+                        @foreach($estates as $estate)
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-24">{{ $estate->kode }}</td>
+                            <td class="text-left border-r border-slate-200 w-24">Blok</td>
+                            <td class="text-center">0</td><td class="text-center">0</td><td class="text-center">0</td><td class="text-center">0</td>
+                            <td class="text-center bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 row-border-strong border-b-2 border-slate-300">
+                            <td class="text-left border-r border-slate-200 w-24">Luas</td>
+                            <td class="text-center">0.00</td><td class="text-center">0.00</td><td class="text-center">0.00</td><td class="text-center">0.00</td>
+                            <td class="text-center bg-slate-100">0.00</td>
+                        </tr>
+                        @endforeach
+                        
+                        <!-- BARIS BP-2 -->
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed bg-slate-50/50">
+                            <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-24">BP-2</td>
+                            <td class="text-left border-r border-slate-200 w-24">Blok</td>
+                            <td class="text-center">0</td><td class="text-center">0</td><td class="text-center">0</td><td class="text-center">0</td>
+                            <td class="text-center bg-slate-200">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 row-border-strong border-b-2 border-slate-300 bg-slate-50/50">
+                            <td class="text-left border-r border-slate-200 w-24">Luas</td>
+                            <td class="text-center">0.00</td><td class="text-center">0.00</td><td class="text-center">0.00</td><td class="text-center">0.00</td>
+                            <td class="text-center bg-slate-200">0.00</td>
+                        </tr>
+                        
+                        <!-- SUMMARY KANAN BAWAH -->
+                        <tr>
+                            <td colspan="4" class="border-0 bg-white"></td>
+                            <td colspan="3" class="bg-yellow-300 text-yellow-900 border-0 text-right pr-4 py-2">
+                                <div class="flex justify-between items-center w-full">
+                                    <span>> 9Bln</span>
+                                    <span class="text-lg">0 Blok</span>
+                                </div>
+                                <div class="text-lg">0.00 Ha</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- POIN 6: TABLE RKB PUPUK -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                <table class="modern-matrix text-sm">
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">RKB Pupuk Per<br>{{ $namaBulanIni }} {{ $tahun }}</th>
+                            <th class="text-center font-medium text-slate-500 bg-slate-50">Sat</th>
+                            @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase">{{ $estate->kode }}</th> @endforeach
+                            <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase">BP-2</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-800 font-bold">
+                        @foreach($jenisPupuk as $pupuk)
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td colspan="2" class="text-left border-r border-slate-200">{{ $pupuk }}</td>
+                            <td class="text-center border-r border-slate-200">Ton</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        @endforeach
+                        
+                        <tr class="bg-yellow-300 text-yellow-900 border-y-2 border-yellow-500">
+                            <td colspan="2" class="text-left border-r border-yellow-400">Total Pupuk</td>
+                            <td class="text-center border-r border-yellow-400">Ton</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-yellow-400">0</td>
+                        </tr>
+
+                        <tr class="bg-emerald-300 text-emerald-900 border-b border-emerald-400 border-dashed">
+                            <td colspan="2" class="text-left border-r border-emerald-400">HKE</td>
+                            <td class="text-center border-r border-emerald-400">Hari</td>
+                            @foreach($estates as $estate) <td class="text-center">20</td> @endforeach
+                            <td class="text-center bg-emerald-400">20</td>
+                        </tr>
+                        <tr class="bg-emerald-300 text-emerald-900 row-border-strong border-b-4 border-emerald-500">
+                            <td colspan="2" class="text-left border-r border-emerald-400"></td>
+                            <td class="text-center border-r border-emerald-400">Ton/Hari</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-emerald-400">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
         </div>
 
         <!-- ================= TAB 4: KUALITAS BUAH ================= -->
@@ -1438,11 +1544,148 @@
 
         <!-- ================= TAB 5: PERFORMANCE TK ================= -->
         <div id="tab-performance" class="tab-content hidden min-w-[900px] space-y-6">
+            
+            <!-- POIN 7: TABLE HKNE KARYAWAN & KELAS PEMANEN -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+                <table class="modern-matrix text-sm">
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="text-left font-bold text-slate-800 bg-slate-50 border-r border-slate-200 uppercase">Perihal</th>
+                            <th class="text-center font-bold text-slate-500 bg-slate-50 border-r border-slate-200">Sat</th>
+                            @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
+                            <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase shadow-sm">BP-2</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-800 font-bold">
+                        
+                        <!-- BAGIAN HKNE KARYAWAN -->
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td rowspan="6" class="text-center align-middle border-r border-slate-200 w-32 bg-white">HKNE Kary PANEN<br><span class="text-xs text-slate-500 font-normal">HKE: 24</span></td>
+                            <td class="text-left border-r border-slate-200 w-24">Sakit</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 w-24">Cuti</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 w-24">Mangkir</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 w-24">Ijin</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="bg-emerald-100/50 border-y border-emerald-300">
+                            <td class="text-left border-r border-emerald-200 w-24">Total</td>
+                            <td class="text-center border-r border-emerald-200 text-slate-500 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right text-emerald-800">0</td> @endforeach
+                            <td class="text-right bg-emerald-200 text-emerald-900">0</td>
+                        </tr>
+                        <tr class="bg-slate-50/50 border-b-2 border-slate-300">
+                            <td class="text-left border-r border-slate-200 w-24">%</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium"></td>
+                            @foreach($estates as $estate) <td class="text-right text-slate-600 font-medium">0.00</td> @endforeach
+                            <td class="text-right bg-slate-100 text-slate-700 font-medium">0.00</td>
+                        </tr>
+                        <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
+                            <td colspan="2" class="text-left border-r border-yellow-400">Rata2 Hkne/hari</td>
+                            <td class="text-center border-r border-yellow-400 font-medium">Hk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-yellow-400">0</td>
+                        </tr>
+
+                        <!-- BAGIAN JAM KERJA -->
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td rowspan="6" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Jam Kerja</td>
+                            <td class="text-left border-r border-slate-200 w-24">Tersedia</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Tk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
+                            <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-24">Pagi</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Tk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">%</td>
+                            @foreach($estates as $estate) <td class="text-right text-slate-600 font-medium">0.00</td> @endforeach
+                            <td class="text-right bg-slate-100 text-slate-700 font-medium">0.00</td>
+                        </tr>
+                        
+                        <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
+                            <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-24">Siang</td>
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Tk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-center border-r border-slate-200 text-slate-500 font-medium">%</td>
+                            @foreach($estates as $estate) <td class="text-right text-slate-600 font-medium">0.00</td> @endforeach
+                            <td class="text-right bg-slate-100 text-slate-700 font-medium">0.00</td>
+                        </tr>
+                        
+                        <tr class="bg-yellow-300 text-yellow-900 border-b border-yellow-500">
+                            <td rowspan="2" class="text-center align-middle border-r border-yellow-400 w-24">Sore</td>
+                            <td class="text-center border-r border-yellow-400 font-medium text-yellow-800">Tk</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-yellow-400">0</td>
+                        </tr>
+                        <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
+                            <td class="text-center align-middle border-r border-slate-200 w-32 bg-white border-b-0"></td>
+                            <td class="text-center border-r border-yellow-400 font-medium text-yellow-800">%</td>
+                            @foreach($estates as $estate) <td class="text-right">0.00</td> @endforeach
+                            <td class="text-right bg-yellow-400">0.00</td>
+                        </tr>
+
+                        <!-- BAGIAN KELAS PEMANEN -->
+                        @php $kelasPemanen = ['A', 'B', 'C', 'D']; @endphp
+                        @foreach($kelasPemanen as $idx => $kls)
+                        <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
+                            @if($idx === 0)
+                                <td rowspan="16" class="text-left align-top border-r border-slate-200 w-32 bg-white pt-4">Kelas Pemanen Berdasarkan Pendapatan<br>({{ $namaBulanIni }})</td>
+                            @endif
+                            <td rowspan="4" class="text-center align-middle border-r border-slate-200 w-24 font-extrabold text-lg text-indigo-700">{{ $kls }}</td>
+                            <td class="text-left border-r border-slate-200 text-slate-800">Jml TK</td>
+                            @foreach($estates as $estate) <td class="text-right">0</td> @endforeach
+                            <td class="text-right bg-slate-100">0</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
+                            <td class="text-left border-r border-slate-200 text-slate-600">%</td>
+                            @foreach($estates as $estate) <td class="text-right text-slate-600 font-medium">0.00%</td> @endforeach
+                            <td class="text-right bg-slate-100 text-slate-700 font-medium">0.00%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
+                            <td class="text-left border-r border-slate-200 text-emerald-700">/ Hari</td>
+                            @foreach($estates as $estate) <td class="text-right text-emerald-700">0</td> @endforeach
+                            <td class="text-right bg-emerald-50 text-emerald-800">0</td>
+                        </tr>
+                        <tr class="bg-emerald-50/50 hover:bg-emerald-100/50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 text-emerald-800">Avr/Bln</td>
+                            @foreach($estates as $estate) <td class="text-right text-emerald-800">0</td> @endforeach
+                            <td class="text-right bg-emerald-100 text-emerald-900">0</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- TABLE EXISTING: PERFORMANCE TK (OLD) -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <table class="modern-matrix text-sm">
                     <thead>
                         <tr>
-                            <th colspan="2" class="text-left text-slate-400 font-medium">Performance Tenaga Kerja</th>
+                            <th colspan="2" class="text-left text-slate-400 font-medium">Performance Tenaga Kerja Kategori Bawaan</th>
                             @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
                             <th class="text-center font-bold text-indigo-800 bg-indigo-50 uppercase tracking-wider shadow-sm">BP-2</th>
                         </tr>
@@ -1514,7 +1757,7 @@
         });
 
         const defaultLayout = [
-            { id: 'w-prod', visible: true }, { id: 'w-biaya', visible: true }, 
+            { id: 'w-summary-prod', visible: true }, { id: 'w-biaya', visible: true }, 
             { id: 'w-cost', visible: true }, { id: 'w-cost-produk', visible: true },
             { id: 'w-cost-oil', visible: true }, { id: 'w-bjr', visible: true },
             { id: 'w-rawat', visible: true }, { id: 'w-pupuk', visible: true }, 

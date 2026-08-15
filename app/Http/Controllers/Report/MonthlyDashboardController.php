@@ -19,9 +19,12 @@ use Maatwebsite\Excel\Facades\Excel;
 class MonthlyDashboardController extends Controller
 {
     private $jenisPerawatan = ['Rwt Piringan Manual', 'PPT Chemist', 'Rwt Gawangan Manual', 'Rwt Gawangan Chemist', 'Pruning'];
+    private $kategoriPruning = ['Pruning <= 6 Bln', 'Pruning 6.01-9 Bln', 'Pruning 9.01-12 Bln', 'Pruning > 12 Bln'];
     private $jenisPupuk = ['Dolomite', 'Kieserite', 'Kaptan', 'TSP / RP', 'Urea', 'MOP', 'Mikro-Mg'];
     private $kriteriaMutu = ['Unripe', 'Ripe', 'Over Ripe', 'Empty Bunch', 'Abnormal'];
-    private $kategoriPekerja = ['Umur', 'Status Keluarga', 'Masa Kerja', 'Mutasi'];
+    
+    // PEMBARUAN: Tambah Kategori Pekerja baru untuk HKNE, Jam Kerja, dan Kelas Pemanen
+    private $kategoriPekerja = ['Umur', 'Status Keluarga', 'Masa Kerja', 'Mutasi', 'HKNE', 'Jam Kerja', 'Kelas Pemanen'];
 
     public function index(Request $request)
     {
@@ -33,7 +36,6 @@ class MonthlyDashboardController extends Controller
         $lastMonth = $periodeDate->copy()->subMonth()->format('Y-m-d');
         $lastYearMonth = $periodeDate->copy()->subYear()->format('Y-m-d');
 
-        // Logika Bulan Depan untuk Kolom RKB
         $nextMonthDate = $periodeDate->copy()->addMonth();
         $nextPeriode = $nextMonthDate->format('Y-m-d');
 
@@ -45,7 +47,6 @@ class MonthlyDashboardController extends Controller
         foreach ($estates as $estate) {
             $kode = $estate->kode;
 
-            // 1. DATA PRODUKSI
             $prodRkb = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->first();
             $prodReal = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->first();
             $prodBgt = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'BUDGET')->first();
@@ -54,11 +55,13 @@ class MonthlyDashboardController extends Controller
             $realLastMonth = Production::where('estate_id', $estate->id)->where('periode', $lastMonth)->where('tipe', 'REAL')->first();
             $realLastYearMonth = Production::where('estate_id', $estate->id)->where('periode', $lastYearMonth)->where('tipe', 'REAL')->first();
 
-            // Ambil RKB Bulan Depan
             $prodRkbNext = Production::where('estate_id', $estate->id)->where('periode', $nextPeriode)->where('tipe', 'RKB')->first();
 
             $dataMatrix[$kode]['produksi']['current'] = [
-                'rkb' => $prodRkb, 'real' => $prodReal, 'budget' => $prodBgt, 'sensus' => $prodSns,
+                'rkb' => $prodRkb, 
+                'real' => $prodReal, 
+                'budget' => $prodBgt, 
+                'sensus' => $prodSns,
                 'bjr_rkb' => ($prodRkb && $prodRkb->janjang > 0) ? ($prodRkb->tonase / $prodRkb->janjang) : 0,
                 'bjr_real' => ($prodReal && $prodReal->janjang > 0) ? ($prodReal->tonase / $prodReal->janjang) : 0,
                 'bjr_last_month' => ($realLastMonth && $realLastMonth->janjang > 0) ? ($realLastMonth->tonase / $realLastMonth->janjang) : 0,
@@ -67,11 +70,12 @@ class MonthlyDashboardController extends Controller
             
             $dataMatrix[$kode]['produksi']['next'] = ['rkb' => $prodRkbNext];
 
-            // 2. DATA HISTORIS CAPAIAN
             $dataMatrix[$kode]['histori']['bgt_1_thn'] = Production::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')
                 ->selectRaw('SUM(tonase) as tonase, SUM(janjang) as janjang, SUM(ton_cpo) as ton_cpo, SUM(ton_ker) as ton_ker, SUM(ton_pko) as ton_pko')->first();
+            
             $dataMatrix[$kode]['histori']['bgt_sd_bln'] = Production::where('estate_id', $estate->id)->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)->where('tipe', 'BUDGET')
                 ->selectRaw('SUM(tonase) as tonase, SUM(janjang) as janjang, SUM(ton_cpo) as ton_cpo, SUM(ton_ker) as ton_ker, SUM(ton_pko) as ton_pko')->first();
+            
             $dataMatrix[$kode]['histori']['sns_sd_bln'] = Production::where('estate_id', $estate->id)->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)->where('tipe', 'SENSUS')
                 ->selectRaw('SUM(tonase) as tonase, SUM(janjang) as janjang, SUM(ton_cpo) as ton_cpo, SUM(ton_ker) as ton_ker, SUM(ton_pko) as ton_pko')->first();
 
@@ -80,14 +84,17 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(tonase) as tonase, SUM(janjang) as janjang, SUM(ton_cpo) as ton_cpo, SUM(ton_ker) as ton_ker, SUM(ton_pko) as ton_pko')->first();
             }
 
-            // 3. RAWAT & PUPUK
             $dataMatrix[$kode]['upkeep']['rkb'] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('jenis_pekerjaan');
             $dataMatrix[$kode]['upkeep']['real'] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pekerjaan');
             
+            // Pengambilan Data Rotasi Pruning
+            foreach($this->kategoriPruning as $kp) {
+                $dataMatrix[$kode]['rotasi_pruning'][$kp] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->where('jenis_pekerjaan', $kp)->first();
+            }
+
             $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'BUDGET')->get()->keyBy('jenis_pupuk');
             $dataMatrix[$kode]['pupuk']['real'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pupuk');
             
-            // 4. BIAYA
             $dataMatrix[$kode]['biaya'] = [
                 'real' => OperationalCost::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->first(),
                 'budget_year' => OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->orderBy('bgt_cost_palm_produk', 'desc')->first(),
@@ -100,7 +107,6 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
             ];
             
-            // 5. KUALITAS & PEKERJA
             $dataMatrix[$kode]['kualitas']['rkb'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('kriteria');
             $dataMatrix[$kode]['kualitas']['real'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('kriteria');
             
@@ -110,18 +116,18 @@ class MonthlyDashboardController extends Controller
         $dataMatrix['BP-2'] = $this->calculateGrandTotal($dataMatrix, $estates, $historicalYears);
 
         $jenisPerawatan = $this->jenisPerawatan;
+        $kategoriPruning = $this->kategoriPruning;
         $jenisPupuk = $this->jenisPupuk;
         $kriteriaMutu = $this->kriteriaMutu;
         $kategoriPekerja = $this->kategoriPekerja;
 
         return view('reports.monthly_dashboard', compact(
-            'bulan', 'tahun', 'estates', 'dataMatrix', 'historicalYears', 'jenisPerawatan', 'jenisPupuk', 'kriteriaMutu', 'kategoriPekerja'
+            'bulan', 'tahun', 'estates', 'dataMatrix', 'historicalYears', 'jenisPerawatan', 'kategoriPruning', 'jenisPupuk', 'kriteriaMutu', 'kategoriPekerja'
         ));
     }
 
     private function calculateGrandTotal($matrix, $estates, $historicalYears)
     {
-        // Struktur kerangka dasar objek Grand Total
         $total = [
             'produksi' => [
                 'current' => [], 
@@ -137,28 +143,30 @@ class MonthlyDashboardController extends Controller
             'biaya_sd_bln' => [
                 'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0],
                 'budget' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0]
-            ]
+            ],
+            'rotasi_pruning' => []
         ];
+
+        foreach($this->kategoriPruning as $kp) { 
+            $total['rotasi_pruning'][$kp] = (object)['jml_blok' => 0, 'luas_ha' => 0]; 
+        }
 
         $kategoriProd = ['rkb', 'real', 'budget', 'sensus'];
         foreach($kategoriProd as $k) { 
             $total['produksi']['current'][$k] = (object)[
-                'tonase' => 0, 
-                'janjang' => 0, 
-                'hs_ha' => 0, 
-                'hs_pokok' => 0,
-                'kunjungan' => 0, 
-                'ha_hk' => 0, 
-                'kg_hk' => 0,
-                'ton_cpo' => 0,
-                'ton_ker' => 0,
-                'ton_pko' => 0
+                'tonase' => 0, 'janjang' => 0, 'hs_ha' => 0, 'hs_pokok' => 0,
+                'kunjungan' => 0, 'ha_hk' => 0, 'kg_hk' => 0,
+                'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0
             ]; 
         }
         
         $historiKeys = ['bgt_1_thn', 'bgt_sd_bln', 'sns_sd_bln'];
-        foreach($historicalYears as $yr) { $historiKeys[] = 'real_sd_'.$yr; }
-        foreach($historiKeys as $hk) { $total['histori'][$hk] = (object)['tonase' => 0, 'janjang' => 0, 'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0]; }
+        foreach($historicalYears as $yr) { 
+            $historiKeys[] = 'real_sd_'.$yr; 
+        }
+        foreach($historiKeys as $hk) { 
+            $total['histori'][$hk] = (object)['tonase' => 0, 'janjang' => 0, 'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0]; 
+        }
 
         $sumBgtProdRate = 0; 
         $sumBgtOilRate = 0; 
@@ -167,7 +175,6 @@ class MonthlyDashboardController extends Controller
         foreach ($estates as $estate) {
             $kode = $estate->kode;
             
-            // Ambil dan hitung rata-rata budget untuk Grand Total BP-2
             $bgtRecord = $matrix[$kode]['biaya']['budget_year'] ?? null;
             $costPalmProdukBgt = $bgtRecord->bgt_cost_palm_produk ?? 0;
             $costPalmOilBgt = $bgtRecord->bgt_cost_palm_oil ?? 0;
@@ -228,9 +235,15 @@ class MonthlyDashboardController extends Controller
                     $total['biaya_sd_bln'][$bt]->cost_pks += $matrix[$kode]['biaya_sd_bln'][$bt]->cost_pks ?? 0;
                 }
             }
+
+            foreach($this->kategoriPruning as $kp) {
+                if(isset($matrix[$kode]['rotasi_pruning'][$kp])) {
+                    $total['rotasi_pruning'][$kp]->jml_blok += $matrix[$kode]['rotasi_pruning'][$kp]->jml_blok ?? 0;
+                    $total['rotasi_pruning'][$kp]->luas_ha += $matrix[$kode]['rotasi_pruning'][$kp]->luas_ha ?? 0;
+                }
+            }
         }
 
-        // Simpan rata-rata budget ke BP-2
         $total['biaya']['budget_year']->bgt_cost_palm_produk = $countBgt > 0 ? $sumBgtProdRate / $countBgt : 0;
         $total['biaya']['budget_year']->bgt_cost_palm_oil = $countBgt > 0 ? $sumBgtOilRate / $countBgt : 0;
 
@@ -241,18 +254,21 @@ class MonthlyDashboardController extends Controller
     {
         $estates = Estate::where('kode', '!=', 'BP-2')->get();
         $jenisPerawatan = $this->jenisPerawatan;
+        $kategoriPruning = $this->kategoriPruning;
         $jenisPupuk = $this->jenisPupuk;
         $kriteriaMutu = $this->kriteriaMutu;
         
-        // Setup Sub Kategori untuk Form Input
         $subKategoriPekerja = [
             'Umur' => ['< 25', '25 - 40', '40 - 50', '> 50'],
             'Status Keluarga' => ['KK', 'Lj'],
             'Masa Kerja' => ['<= 1bln', '2-3Bln', '> 3Bln'],
-            'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', 'Keluar (Sbi)']
+            'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', 'Keluar (Sbi)'],
+            'HKNE' => ['Sakit', 'Cuti', 'Mangkir', 'Ijin'],
+            'Jam Kerja' => ['Tersedia', 'Pagi', 'Siang', 'Sore'],
+            'Kelas Pemanen' => ['A', 'B', 'C', 'D']
         ];
         
-        return view('reports.input_data', compact('estates', 'jenisPerawatan', 'jenisPupuk', 'kriteriaMutu', 'subKategoriPekerja'));
+        return view('reports.input_data', compact('estates', 'jenisPerawatan', 'kategoriPruning', 'jenisPupuk', 'kriteriaMutu', 'subKategoriPekerja'));
     }
 
     public function store(Request $request)
@@ -268,7 +284,9 @@ class MonthlyDashboardController extends Controller
                     $dataProd[$field] = $request->produksi[$field];
                 }
             }
-            if (!empty($dataProd)) { Production::updateOrCreate($matchAttr, $dataProd); }
+            if (!empty($dataProd)) { 
+                Production::updateOrCreate($matchAttr, $dataProd); 
+            }
         }
 
         if ($request->has('biaya')) {
@@ -279,14 +297,18 @@ class MonthlyDashboardController extends Controller
                     $dataBiaya[$field] = $request->biaya[$field];
                 }
             }
-            if (!empty($dataBiaya)) { OperationalCost::updateOrCreate($matchAttr, $dataBiaya); }
+            if (!empty($dataBiaya)) { 
+                OperationalCost::updateOrCreate($matchAttr, $dataBiaya); 
+            }
         }
 
         if ($request->has('rawat')) {
             foreach ($request->rawat as $jenis => $val) {
                 $dataRawat = [];
                 foreach (['luas_ha', 'biaya_upah', 'jml_blok'] as $field) {
-                    if (isset($val[$field]) && $val[$field] !== '') { $dataRawat[$field] = $val[$field]; }
+                    if (isset($val[$field]) && $val[$field] !== '') { 
+                        $dataRawat[$field] = $val[$field]; 
+                    }
                 }
                 if (!empty($dataRawat)) {
                     Upkeep::updateOrCreate(array_merge($matchAttr, ['jenis_pekerjaan' => $jenis]), $dataRawat);
@@ -298,7 +320,9 @@ class MonthlyDashboardController extends Controller
             foreach ($request->pupuk as $jenis => $val) {
                 $dataPupuk = [];
                 foreach (['jumlah_kg', 'biaya'] as $field) {
-                    if (isset($val[$field]) && $val[$field] !== '') { $dataPupuk[$field] = $val[$field]; }
+                    if (isset($val[$field]) && $val[$field] !== '') { 
+                        $dataPupuk[$field] = $val[$field]; 
+                    }
                 }
                 if (!empty($dataPupuk)) {
                     Fertilizer::updateOrCreate(array_merge($matchAttr, ['jenis_pupuk' => $jenis]), $dataPupuk);
@@ -319,7 +343,9 @@ class MonthlyDashboardController extends Controller
                 foreach ($subs as $subKategori => $val) {
                     $dataPekerja = [];
                     foreach (['jumlah_tk', 'persentase'] as $field) {
-                        if (isset($val[$field]) && $val[$field] !== '') { $dataPekerja[$field] = $val[$field]; }
+                        if (isset($val[$field]) && $val[$field] !== '') { 
+                            $dataPekerja[$field] = $val[$field]; 
+                        }
                     }
                     if (!empty($dataPekerja)) {
                         WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => $kategori, 'sub_kategori' => $subKategori]), $dataPekerja);
@@ -338,7 +364,7 @@ class MonthlyDashboardController extends Controller
             Excel::import(new LaporanImport, $request->file('file_excel'));
             return redirect('/input-data')->with('success', 'Data Excel berhasil diimport dan masuk ke dalam database!');
         } catch (\Exception $e) {
-            return redirect('/input-data')->with('error', 'Gagal import: Pastikan format file sesuai template. Detail Error: ' . $e->getMessage());
+            return redirect('/input-data')->with('error', 'Gagal import. Detail: ' . $e->getMessage());
         }
     }
 
