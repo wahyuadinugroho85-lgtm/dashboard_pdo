@@ -2,208 +2,246 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Input Data Operasional</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Input Laporan Operasional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; background-color: #f8fafc; } input[type="number"]::-webkit-inner-spin-button, input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; } input[type="number"] { -moz-appearance: textfield; }</style>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        .tab-active { background-color: #4f46e5; color: white; border-color: #4f46e5; }
+        .tab-inactive { background-color: white; color: #64748b; border-color: #e2e8f0; }
+        .form-input { width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.375rem; font-size: 0.875rem; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); }
+        .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: #475569; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.025em; }
+    </style>
 </head>
-<body class="text-slate-800 antialiased py-8 px-4">
+<body class="text-slate-800 antialiased">
 
-    <div class="max-w-5xl mx-auto space-y-6">
-        
-        <div class="flex justify-between items-center mb-2">
-            <div>
-                <h2 class="text-2xl font-bold text-slate-800">Manajemen Data Laporan</h2>
-                <p class="text-sm font-medium text-slate-500 mt-1">Pilih metode input manual atau upload via Excel.</p>
-            </div>
-            <a href="/laporan-manajemen" class="bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                &larr; Lihat Dashboard
+    <!-- Navbar -->
+    <nav class="bg-indigo-600 px-6 py-4 flex justify-between items-center shadow-md text-white sticky top-0 z-50">
+        <div class="flex items-center gap-4">
+            <a href="/laporan-manajemen" class="hover:bg-indigo-700 p-2 rounded-lg transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             </a>
+            <h1 class="text-xl font-bold tracking-wide">Portal Entry Data Operasional</h1>
         </div>
+        <div class="text-sm font-medium bg-indigo-800 px-4 py-1.5 rounded-full">
+            👤 {{ Auth::user()->name ?? 'Staf Data Entry' }}
+        </div>
+    </nav>
 
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        
         @if(session('success'))
-            <div class="p-4 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-200 font-bold flex items-center gap-2 shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
-                {{ session('success') }}
-            </div>
-        @endif
-        @if(session('error'))
-            <div class="p-4 bg-rose-50 text-rose-700 rounded-lg border border-rose-200 font-bold flex items-center gap-2 shadow-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                {{ session('error') }}
+            <div class="bg-emerald-100 border border-emerald-400 text-emerald-700 px-4 py-3 rounded-lg relative mb-6 shadow-sm" role="alert">
+                <strong class="font-bold">Berhasil!</strong>
+                <span class="block sm:inline">{{ session('success') }}</span>
             </div>
         @endif
 
-        <div class="bg-white rounded-xl shadow-sm border border-emerald-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-emerald-100 bg-emerald-50/50 flex justify-between items-center">
-                <h3 class="text-base font-bold text-emerald-800 flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    Import Data Cepat via Excel
-                </h3>
+        @if(session('error'))
+            <div class="bg-rose-100 border border-rose-400 text-rose-700 px-4 py-3 rounded-lg relative mb-6 shadow-sm" role="alert">
+                <strong class="font-bold">Gagal!</strong>
+                <span class="block sm:inline">{{ session('error') }}</span>
             </div>
-            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
+        @endif
+
+        <div class="flex flex-col lg:flex-row gap-6">
+            
+            <!-- PANEL KIRI: IMPORT EXCEL -->
+            <div class="w-full lg:w-1/3">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+                    <h2 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-3 mb-4 flex items-center gap-2">
+                        <span>📥</span> Import Data Cepat (Excel)
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">Gunakan fitur ini jika Anda sudah mengisi data menggunakan template Excel yang disediakan. Pastikan format kolom tidak diubah.</p>
                     <form action="/import-data" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Pilih File Excel (.xlsx / .csv)</label>
-                            <input type="file" name="file_excel" accept=".xlsx,.xls,.csv" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 border border-slate-300 rounded-md cursor-pointer" required>
+                        <input type="file" name="file_excel" required class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer border border-slate-200 rounded-lg p-1">
+                        <div class="flex gap-2">
+                            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-sm text-sm">Unggah Excel</button>
+                            <a href="/download-template" class="w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg transition-colors border border-slate-300 text-sm">Unduh Template</a>
                         </div>
-                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-md shadow transition-colors">
-                            Mulai Upload & Proses Data
-                        </button>
                     </form>
                 </div>
-                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-sm">
-                    <strong class="text-slate-800 block mb-2">PENTING: Aturan Format Header Excel</strong>
-                    <p class="text-slate-600 mb-2">Unduh file template di bawah ini. Pastikan Anda <strong>tidak mengubah nama kolom (baris ke-1)</strong> agar sistem dapat membacanya dengan benar.</p>
-                    <code class="block bg-slate-800 text-emerald-400 p-3 rounded text-xs overflow-x-auto leading-relaxed whitespace-nowrap">
-                        kode_pt | tipe_data | bulan | tahun | tonase | janjang | hk_panen | luas_cavel | hs_ha | hs_pokok | kunjungan | ha_hk | kg_hk | ton_cpo | ton_ker | ton_pko | cost_panen | cost_rawat | cost_kantor | cost_teknik | cost_pks | bgt_cost_palm_produk | bgt_cost_palm_oil | rwt_piringan_ha | ppt_chemist_ha | rwt_gawangan_man_ha | rwt_gawangan_chem_ha | pruning_ha | pupuk_dolomite_kg | pupuk_kieserite_kg | pupuk_kaptan_kg | pupuk_tsp_kg | pupuk_urea_kg | pupuk_mop_kg | pupuk_mikro_kg | mutu_unripe | mutu_ripe | mutu_over_ripe | mutu_empty_bunch | mutu_abnormal | tk_umur_kurang_25 | tk_umur_25_40 | tk_umur_40_50 | tk_umur_lebih_50 | tk_status_kk | tk_status_lj | tk_masa_kurang_1bln | tk_masa_2_3bln | tk_masa_lebih_3bln | tk_mutasi_masuk_bi | tk_mutasi_masuk_sbi | tk_mutasi_keluar_bi | tk_mutasi_keluar_sbi
-                    </code>
-                    
-                    <div class="mt-5 border-t border-slate-200 pt-4">
-                        <a href="/download-template" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white text-sm font-semibold px-4 py-2 rounded-md transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                            Download File Template (.xlsx)
-                        </a>
-                    </div>
+
+                <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-5 text-indigo-800 text-sm shadow-sm">
+                    <h3 class="font-bold mb-2 flex items-center gap-2"><span>💡</span> Panduan Input Manual</h3>
+                    <ul class="list-disc pl-5 space-y-1 opacity-90">
+                        <li>Pilih Divisi/PT, Periode, dan Jenis Data (RKB/REAL) terlebih dahulu di Panel Kanan.</li>
+                        <li>Isi form sesuai dengan kelompok tabulasinya.</li>
+                        <li>Kosongkan kolom (jangan diisi 0) jika data memang tidak tersedia atau belum ada, agar sistem tidak menghitungnya sebagai *pembagi* rata-rata.</li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <div class="flex items-center gap-4 py-2">
-            <div class="h-px bg-slate-300 flex-1"></div>
-            <span class="text-slate-400 font-bold text-sm uppercase tracking-widest">ATAU INPUT MANUAL</span>
-            <div class="h-px bg-slate-300 flex-1"></div>
-        </div>
-
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
-                <h3 class="text-base font-bold text-slate-800">Form Input Data Laporan Terpadu</h3>
-            </div>
-            
-            <div class="p-6">
-                <div class="mb-4 text-xs font-medium text-amber-700 bg-amber-50 p-3 rounded border border-amber-200">
-                    <strong>Tips Edit Data:</strong> Jika ada kesalahan input, cukup pilih kembali Identitas Data (PT, Tipe, Bulan, Tahun) yang sama, lalu masukkan angka yang benar. Sistem otomatis menimpa data.
-                </div>
-
-                <form action="/input-data" method="POST" class="space-y-8" id="form-input">
+            <!-- PANEL KANAN: FORM MANUAL INTERAKTIF -->
+            <div class="w-full lg:w-2/3">
+                <form action="/input-data" method="POST" id="mainForm" class="bg-white rounded-xl shadow-md border border-slate-200 overflow-hidden">
                     @csrf
                     
-                    <div class="bg-indigo-50/50 p-5 rounded-lg border border-indigo-100">
-                        <h3 class="text-sm font-bold text-indigo-900 mb-4 uppercase tracking-wider">Identitas Data</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <!-- HEADER FORM: Kunci Utama (Wajib) -->
+                    <div class="bg-slate-50 border-b border-slate-200 p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-2">Pilih Divisi / PT</label>
-                                <select name="estate_id" class="w-full border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
-                                    @foreach($estates as $estate) <option value="{{ $estate->id }}">{{ $estate->kode }}</option> @endforeach
+                                <label class="form-label">Divisi / PT *</label>
+                                <select name="estate_id" required class="form-input bg-white font-bold text-indigo-700">
+                                    <option value="">-- Pilih PT --</option>
+                                    @foreach($estates as $estate) <option value="{{ $estate->id }}">{{ $estate->kode }} - {{ $estate->nama }}</option> @endforeach
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-2">Tipe Data</label>
-                                <select name="tipe" class="w-full border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
-                                    <option value="REAL">Realisasi (REAL)</option>
-                                    <option value="RKB">Target Bulanan (RKB)</option>
-                                    <option value="BUDGET">Budget Tahunan</option>
-                                    <option value="SENSUS">E-Sensus</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-2">Bulan</label>
-                                <select name="bulan" class="w-full border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
+                                <label class="form-label">Bulan *</label>
+                                <select name="bulan" required class="form-input bg-white">
                                     @for($i=1; $i<=12; $i++) <option value="{{ $i }}" {{ date('n') == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-2">Tahun</label>
-                                <input type="number" name="tahun" value="{{ date('Y') }}" class="w-full border border-slate-300 rounded p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
+                                <label class="form-label">Tahun *</label>
+                                <select name="tahun" required class="form-input bg-white">
+                                    @for($i=2023; $i<=date('Y')+1; $i++) <option value="{{ $i }}" {{ date('Y') == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
+                                </select>
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-slate-200 rounded-lg overflow-hidden">
-                        <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">1. Data Produksi & Mill</h3></div>
-                        <div class="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 bg-white">
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Tonase TBS (Kg)</label><input type="number" step="0.01" name="produksi[tonase]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Janjang</label><input type="number" name="produksi[janjang]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">HK Panen</label><input type="number" step="0.01" name="produksi[hk_panen]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Luas Cavel (Ha)</label><input type="number" step="0.01" name="produksi[luas_cavel]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Kunjungan</label><input type="number" step="0.01" name="produksi[kunjungan]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">HS (Ha)</label><input type="number" step="0.01" name="produksi[hs_ha]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">HS (Pokok)</label><input type="number" name="produksi[hs_pokok]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Ha / Hk</label><input type="number" step="0.01" name="produksi[ha_hk]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Kg / Hk</label><input type="number" step="0.01" name="produksi[kg_hk]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1 text-yellow-600">Ton CPO</label><input type="number" step="0.01" name="produksi[ton_cpo]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1 text-yellow-600">Ton KER</label><input type="number" step="0.01" name="produksi[ton_ker]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1 text-yellow-600">Ton PKO</label><input type="number" step="0.01" name="produksi[ton_pko]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                        </div>
-                    </div>
-
-                    <div class="border border-slate-200 rounded-lg overflow-hidden">
-                        <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">2. Biaya Operasional (Rp)</h3></div>
-                        <div class="p-4 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 bg-white">
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Panen</label><input type="number" name="biaya[cost_panen]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Rawat</label><input type="number" name="biaya[cost_rawat]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Kantor</label><input type="number" name="biaya[cost_kantor]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">Teknik</label><input type="number" name="biaya[cost_teknik]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">PKS</label><input type="number" name="biaya[cost_pks]" placeholder="0" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            
-                            <!-- INPUT BUDGET KHUSUS UNTUK TIPE DATA BUDGET -->
-                            <div class="bg-indigo-50 p-2 rounded border border-indigo-100"><label class="block text-xs font-bold text-indigo-700 mb-1">Bgt Cost Palm Prod</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_produk]" placeholder="Rp/Kg" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            <div class="bg-indigo-50 p-2 rounded border border-indigo-100"><label class="block text-xs font-bold text-indigo-700 mb-1">Bgt Cost Palm Oil</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_oil]" placeholder="Rp/Kg" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="border border-slate-200 rounded-lg overflow-hidden bg-white">
-                            <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">3. Perawatan Kebun (Ha)</h3></div>
-                            <div class="p-4 space-y-3">
-                                @foreach($jenisPerawatan as $rawat)
-                                <div class="flex items-center justify-between gap-3">
-                                    <label class="text-xs font-semibold text-slate-700 w-1/2 truncate">{{ $rawat }}</label>
-                                    <input type="number" step="0.01" name="rawat[{{ $rawat }}][luas_ha]" placeholder="Luas (Ha)" class="w-1/2 border border-slate-300 rounded p-1.5 text-sm">
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="border border-slate-200 rounded-lg overflow-hidden bg-white">
-                            <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">4. Aplikasi Pupuk (Ton)</h3></div>
-                            <div class="p-4 space-y-3">
-                                @foreach($jenisPupuk as $pupuk)
-                                <div class="flex items-center justify-between gap-3">
-                                    <label class="text-xs font-semibold text-slate-700 w-1/2 truncate">{{ $pupuk }}</label>
-                                    <input type="number" step="0.01" name="pupuk[{{ $pupuk }}][jumlah_kg]" placeholder="Jumlah (Ton)" class="w-1/2 border border-slate-300 rounded p-1.5 text-sm">
-                                </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="border border-slate-200 rounded-lg overflow-hidden">
-                        <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">5. Kualitas / Mutu Ancak (%)</h3></div>
-                        <div class="p-4 grid grid-cols-2 md:grid-cols-5 gap-4 bg-white">
-                            @foreach($kriteriaMutu as $mutu)
-                            <div><label class="block text-xs font-semibold text-slate-600 mb-1">{{ $mutu }}</label><input type="number" step="0.01" name="mutu[{{ $mutu }}][persentase]" placeholder="0%" class="w-full border border-slate-300 rounded p-2 text-sm"></div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    <div class="border border-slate-200 rounded-lg overflow-hidden">
-                        <div class="bg-slate-100 px-4 py-3 border-b border-slate-200"><h3 class="text-sm font-bold text-slate-800">6. Kinerja Tenaga Kerja</h3></div>
-                        <div class="p-5 bg-white space-y-6">
-                            @foreach($subKategoriPekerja as $kategori => $subs)
                             <div>
-                                <h4 class="text-xs font-bold text-indigo-700 uppercase mb-3 border-b border-slate-100 pb-2">{{ $kategori }}</h4>
-                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <label class="form-label">Jenis Data *</label>
+                                <select name="tipe" required class="form-input bg-emerald-50 font-bold text-emerald-700 border-emerald-300">
+                                    <option value="REAL">REAL (Aktual)</option>
+                                    <option value="RKB">RKB (Rencana)</option>
+                                    <option value="BUDGET">BUDGET TAHUNAN</option>
+                                    <option value="SENSUS">E-SENSUS</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TABULASI MENU -->
+                    <div class="flex flex-wrap border-b border-slate-200 bg-slate-50/50 p-2 gap-2">
+                        <button type="button" onclick="openTab('prod')" id="btn-prod" class="tab-btn tab-active px-4 py-2 text-sm font-bold rounded-md border">Produksi & Biaya</button>
+                        <button type="button" onclick="openTab('rawat')" id="btn-rawat" class="tab-btn tab-inactive px-4 py-2 text-sm font-bold rounded-md border">Rawat & Pruning</button>
+                        <button type="button" onclick="openTab('pupuk')" id="btn-pupuk" class="tab-btn tab-inactive px-4 py-2 text-sm font-bold rounded-md border">Pupuk & Mutu</button>
+                        <button type="button" onclick="openTab('sdm')" id="btn-sdm" class="tab-btn tab-inactive px-4 py-2 text-sm font-bold rounded-md border">SDM & Kinerja</button>
+                    </div>
+
+                    <!-- ISI TAB 1: PRODUKSI & BIAYA -->
+                    <div id="tab-prod" class="tab-content block p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Kolom Produksi -->
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-indigo-700 border-b pb-2">Data Produksi Inti</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="form-label">Tonase TBS (Kg)</label><input type="number" step="0.01" name="produksi[tonase]" class="form-input"></div>
+                                    <div><label class="form-label">Janjang Panen</label><input type="number" step="1" name="produksi[janjang]" class="form-input"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="form-label">Hektar Statement (Ha)</label><input type="number" step="0.01" name="produksi[hs_ha]" class="form-input"></div>
+                                    <div><label class="form-label">HS Pokok</label><input type="number" step="1" name="produksi[hs_pokok]" class="form-input"></div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="form-label">HK Panen</label><input type="number" step="0.01" name="produksi[hk_panen]" class="form-input"></div>
+                                    <div><label class="form-label">Kunjungan</label><input type="number" step="0.01" name="produksi[kunjungan]" class="form-input"></div>
+                                    <div><label class="form-label">Ha/Hk</label><input type="number" step="0.01" name="produksi[ha_hk]" class="form-input"></div>
+                                </div>
+                                
+                                <h3 class="font-bold text-indigo-700 border-b pb-2 pt-4">Data Ekstraksi Mill (Ton)</h3>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div><label class="form-label">Produksi CPO</label><input type="number" step="0.01" name="produksi[ton_cpo]" class="form-input"></div>
+                                    <div><label class="form-label">Produksi KER</label><input type="number" step="0.01" name="produksi[ton_ker]" class="form-input"></div>
+                                    <div><label class="form-label">Produksi PKO</label><input type="number" step="0.01" name="produksi[ton_pko]" class="form-input"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Kolom Biaya -->
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-amber-700 border-b pb-2">Biaya Operasional (Rp)</h3>
+                                <div><label class="form-label">Biaya Panen</label><input type="number" step="1" name="biaya[cost_panen]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Rawat</label><input type="number" step="1" name="biaya[cost_rawat]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
+                                <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
+                                
+                                <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
+                                    <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div><label class="form-label">Bgt Cost Palm Produk (Rp/Kg)</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_produk]" class="form-input"></div>
+                                        <div><label class="form-label">Bgt Cost Palm Oil (Rp/Kg)</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_oil]" class="form-input"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ISI TAB 2: RAWAT & PRUNING -->
+                    <div id="tab-rawat" class="tab-content hidden p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-teal-700 border-b pb-2">Perawatan Kebun Standar</h3>
+                                @foreach($jenisPerawatan as $rawat)
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between gap-4">
+                                    <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $rawat }}</div>
+                                    <div class="w-1/4"><label class="form-label">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $rawat }}][luas_ha]" class="form-input"></div>
+                                    <div class="w-1/4"><label class="form-label">Jml Blok</label><input type="number" step="1" name="rawat[{{ $rawat }}][jml_blok]" class="form-input"></div>
+                                </div>
+                                @endforeach
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-teal-700 border-b pb-2 flex items-center gap-2">
+                                    <span>✂️</span> Modul Rotasi Pruning (Baru)
+                                </h3>
+                                @foreach($kategoriPruning as $kp)
+                                <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex items-center justify-between gap-4">
+                                    <div class="w-1/2 font-semibold text-sm text-teal-800">{{ $kp }}</div>
+                                    <div class="w-1/4"><label class="form-label text-teal-700">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $kp }}][luas_ha]" class="form-input border-teal-300"></div>
+                                    <div class="w-1/4"><label class="form-label text-teal-700">Jml Blok</label><input type="number" step="1" name="rawat[{{ $kp }}][jml_blok]" class="form-input border-teal-300"></div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ISI TAB 3: PUPUK & MUTU -->
+                    <div id="tab-pupuk" class="tab-content hidden p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-yellow-700 border-b pb-2">Aplikasi Pupuk (Kg)</h3>
+                                @foreach($jenisPupuk as $pupuk)
+                                <div class="flex items-center justify-between gap-4 bg-slate-50 p-2 border-b border-slate-100 rounded">
+                                    <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $pupuk }}</div>
+                                    <div class="w-1/2"><input type="number" step="0.01" name="pupuk[{{ $pupuk }}][jumlah_kg]" class="form-input" placeholder="Total Kg..."></div>
+                                </div>
+                                @endforeach
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-sky-700 border-b pb-2">Kriteria Mutu Buah (%)</h3>
+                                @foreach($kriteriaMutu as $mutu)
+                                <div class="flex items-center justify-between gap-4 bg-slate-50 p-2 border-b border-slate-100 rounded">
+                                    <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $mutu }}</div>
+                                    <div class="w-1/2 relative">
+                                        <input type="number" step="0.01" name="mutu[{{ $mutu }}][persentase]" class="form-input pr-8" placeholder="0.00">
+                                        <span class="absolute right-3 top-2 text-slate-400 font-bold">%</span>
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ISI TAB 4: TENAGA KERJA -->
+                    <div id="tab-sdm" class="tab-content hidden p-6">
+                        <p class="text-xs text-slate-500 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                            Isi jumlah orang (TK/Hk) pada kolom yang tersedia. Kelompok HKNE, Jam Kerja, dan Kelas Pemanen secara otomatis masuk dalam rekapitulasi Performance TK.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            @foreach($subKategoriPekerja as $kategori => $subs)
+                            <div class="bg-white border border-slate-200 rounded-lg shadow-sm overflow-hidden">
+                                <h4 class="font-bold text-white text-xs bg-slate-700 px-3 py-2 uppercase">{{ $kategori }}</h4>
+                                <div class="p-3 space-y-2">
                                     @foreach($subs as $sub)
-                                    <div class="bg-slate-50 p-3 rounded-md border border-slate-200 shadow-sm">
-                                        <label class="block text-xs font-semibold text-slate-700 mb-2">{{ $sub }}</label>
-                                        <div class="flex gap-2">
-                                            <input type="number" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" placeholder="Jml TK" class="w-1/2 border border-slate-300 rounded p-1.5 text-sm outline-none focus:ring-1 focus:ring-indigo-500">
-                                            <input type="number" step="0.01" name="pekerja[{{ $kategori }}][{{ $sub }}][persentase]" placeholder="Pct (%)" class="w-1/2 border border-slate-300 rounded p-1.5 text-sm outline-none focus:ring-1 focus:ring-indigo-500">
-                                        </div>
+                                    <div class="flex items-center justify-between gap-2">
+                                        <label class="text-sm text-slate-600 font-medium w-3/5 truncate" title="{{ $sub }}">{{ $sub }}</label>
+                                        <input type="number" step="1" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" class="form-input w-2/5 text-center" placeholder="Jml...">
                                     </div>
                                     @endforeach
                                 </div>
@@ -212,32 +250,42 @@
                         </div>
                     </div>
 
-                    <div class="pt-6 mt-6 flex justify-end gap-3 border-t border-slate-200">
-                        <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-md shadow-md transition-colors w-full md:w-auto">Simpan Data Manual</button>
+                    <!-- TOMBOL SUBMIT FINAL -->
+                    <div class="bg-slate-100 border-t border-slate-200 p-6 flex justify-end gap-3">
+                        <button type="reset" class="px-6 py-2.5 bg-white border border-slate-300 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm">Kosongkan Form</button>
+                        <button type="submit" class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-md transition-all transform hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                            Simpan Seluruh Data
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- SCRIPT TABULASI -->
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    if (e.target.tagName === 'BUTTON' && e.target.type === 'submit') return true;
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
-                        e.preventDefault();
-                        const form = e.target.closest('form');
-                        if (!form) return;
-                        const focusableElements = Array.from(form.querySelectorAll('input:not([type="hidden"]):not([disabled]), select:not([disabled]), button[type="submit"]'));
-                        const currentIndex = focusableElements.indexOf(e.target);
-                        if (currentIndex > -1 && currentIndex < focusableElements.length - 1) {
-                            focusableElements[currentIndex + 1].focus();
-                        }
-                    }
-                }
+        function openTab(tabId) {
+            // Sembunyikan semua konten tab
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
             });
-        });
+            // Ubah gaya semua tombol tab menjadi inactive
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('tab-active');
+                el.classList.add('tab-inactive');
+            });
+            
+            // Tampilkan tab yang dipilih
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            document.getElementById('tab-' + tabId).classList.add('block');
+            
+            // Beri warna aktif pada tombol yang ditekan
+            document.getElementById('btn-' + tabId).classList.remove('tab-inactive');
+            document.getElementById('btn-' + tabId).classList.add('tab-active');
+        }
     </script>
 </body>
 </html>
