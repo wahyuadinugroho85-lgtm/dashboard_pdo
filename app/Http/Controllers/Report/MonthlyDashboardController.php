@@ -105,10 +105,11 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
             ];
             
-            // Mengirim data PDO Bi dan Sbi yang tersimpan agar bisa ditampilkan di blade
+            // PERBAIKAN PENTING: Penanganan Null-Safe untuk mencegah Error 500
+            $biayaReal = $dataMatrix[$kode]['biaya']['real'] ?? null;
             $dataMatrix[$kode]['biaya_pdo'] = [
-                'bi' => $dataMatrix[$kode]['biaya']['real']->pdo_bi ?? 0,
-                'sbi' => $dataMatrix[$kode]['biaya']['real']->pdo_sbi ?? 0,
+                'bi' => $biayaReal ? ($biayaReal->pdo_bi ?? 0) : 0,
+                'sbi' => $biayaReal ? ($biayaReal->pdo_sbi ?? 0) : 0,
             ];
             
             $dataMatrix[$kode]['kualitas']['rkb'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('kriteria');
