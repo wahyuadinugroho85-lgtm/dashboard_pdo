@@ -106,8 +106,7 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
             ];
             
-            // PERBAIKAN RUMUS SBI:
-            // Menjumlahkan pdo_bi dari bulan 1 sampai bulan yang dipilih (Sbi otomatis)
+            // Rumus SBI (Sampai Bulan Ini) Otomatis
             $pdoSbiOtomatis = OperationalCost::where('estate_id', $estate->id)
                 ->whereYear('periode', $tahun)
                 ->whereMonth('periode', '<=', $bulan)
@@ -117,7 +116,7 @@ class MonthlyDashboardController extends Controller
             $biayaReal = $dataMatrix[$kode]['biaya']['real'] ?? null;
             $dataMatrix[$kode]['biaya_pdo'] = [
                 'bi' => $biayaReal ? ($biayaReal->pdo_bi ?? 0) : 0,
-                'sbi' => $pdoSbiOtomatis, // Menggunakan hasil perhitungan otomatis
+                'sbi' => $pdoSbiOtomatis,
             ];
             
             $dataMatrix[$kode]['kualitas']['rkb'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('kriteria');
@@ -145,12 +144,12 @@ class MonthlyDashboardController extends Controller
             'produksi' => [
                 'current' => [], 
                 'next' => [
-                    'rkb' => (object)['tonase'=>0, 'janjang'=>0]
+                    'rkb' => (object)['tonase'=>0, 'janjang'=>0, 'hke'=>0]
                 ]
             ], 
             'histori' => [], 
             'biaya' => [
-                'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0, 'pdo_bi' => 0, 'pdo_sbi' => 0],
+                'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0],
                 'budget_year' => (object)['bgt_cost_palm_produk' => 0, 'bgt_cost_palm_oil' => 0] 
             ],
             'biaya_sd_bln' => [
@@ -174,7 +173,7 @@ class MonthlyDashboardController extends Controller
                 'tonase' => 0, 'janjang' => 0, 'hs_ha' => 0, 'hs_pokok' => 0,
                 'kunjungan' => 0, 'ha_hk' => 0, 'kg_hk' => 0,
                 'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0,
-                'ha_cavel_real' => 0
+                'ha_cavel_real' => 0, 'hke' => 0
             ]; 
         }
         
@@ -189,6 +188,8 @@ class MonthlyDashboardController extends Controller
         $sumBgtProdRate = 0; 
         $sumBgtOilRate = 0; 
         $countBgt = 0;
+        $maxHkeIni = 0;
+        $maxHkeDepan = 0;
 
         foreach ($estates as $estate) {
             $kode = $estate->kode;
@@ -211,6 +212,10 @@ class MonthlyDashboardController extends Controller
                     $total['produksi']['current'][$k]->hs_ha += $item->hs_ha ?? 0;
                     $total['produksi']['current'][$k]->hs_pokok += $item->hs_pokok ?? 0;
                     $total['produksi']['current'][$k]->ha_cavel_real += $item->ha_cavel_real ?? 0;
+                    
+                    if($k === 'real') {
+                        $maxHkeIni = max($maxHkeIni, $item->hke ?? 0);
+                    }
                 }
             }
             
@@ -225,6 +230,7 @@ class MonthlyDashboardController extends Controller
                 $nextData = $matrix[$kode]['produksi']['next']['rkb'];
                 $total['produksi']['next']['rkb']->tonase += $nextData->tonase ?? 0;
                 $total['produksi']['next']['rkb']->janjang += $nextData->janjang ?? 0;
+                $maxHkeDepan = max($maxHkeDepan, $nextData->hke ?? 0);
             }
 
             foreach($historiKeys as $hk) {
@@ -255,7 +261,6 @@ class MonthlyDashboardController extends Controller
                 }
             }
 
-            // Sbi Total BP-2 juga akan menyesuaikan otomatis karena Sbi masing-masing Estate sudah dihitung dengan akurat
             $total['biaya_pdo']['bi'] += $matrix[$kode]['biaya_pdo']['bi'] ?? 0;
             $total['biaya_pdo']['sbi'] += $matrix[$kode]['biaya_pdo']['sbi'] ?? 0;
 
@@ -269,6 +274,10 @@ class MonthlyDashboardController extends Controller
 
         $total['biaya']['budget_year']->bgt_cost_palm_produk = $countBgt > 0 ? $sumBgtProdRate / $countBgt : 0;
         $total['biaya']['budget_year']->bgt_cost_palm_oil = $countBgt > 0 ? $sumBgtOilRate / $countBgt : 0;
+        
+        // Simpan nilai HKE ke BP-2
+        $total['produksi']['current']['real']->hke = $maxHkeIni;
+        $total['produksi']['next']['rkb']->hke = $maxHkeDepan;
 
         return $total;
     }
@@ -301,7 +310,7 @@ class MonthlyDashboardController extends Controller
         
         if ($request->has('produksi')) {
             $dataProd = [];
-            $fields = ['tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko', 'ha_cavel_real'];
+            $fields = ['tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko', 'ha_cavel_real', 'hke'];
             foreach ($fields as $field) {
                 if (isset($request->produksi[$field]) && $request->produksi[$field] !== '') {
                     $dataProd[$field] = $request->produksi[$field];
@@ -314,7 +323,8 @@ class MonthlyDashboardController extends Controller
 
         if ($request->has('biaya')) {
             $dataBiaya = [];
-            $fields = ['cost_panen', 'cost_rawat', 'cost_kantor', 'cost_teknik', 'cost_pks', 'bgt_cost_palm_produk', 'bgt_cost_palm_oil', 'pdo_bi', 'pdo_sbi'];
+            // pdo_sbi DIHAPUS DARI ARRAY FIELDS
+            $fields = ['cost_panen', 'cost_rawat', 'cost_kantor', 'cost_teknik', 'cost_pks', 'bgt_cost_palm_produk', 'bgt_cost_palm_oil', 'pdo_bi'];
             foreach ($fields as $field) {
                 if (isset($request->biaya[$field]) && $request->biaya[$field] !== '') {
                     $dataBiaya[$field] = $request->biaya[$field];
