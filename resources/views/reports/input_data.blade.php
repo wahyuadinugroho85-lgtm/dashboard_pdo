@@ -132,9 +132,11 @@
                                     <div><label class="form-label">Tonase TBS (Kg)</label><input type="number" step="0.01" name="produksi[tonase]" class="form-input"></div>
                                     <div><label class="form-label">Janjang Panen</label><input type="number" step="1" name="produksi[janjang]" class="form-input"></div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-3">
+                                <div class="grid grid-cols-3 gap-3">
                                     <div><label class="form-label">Hektar Statement (Ha)</label><input type="number" step="0.01" name="produksi[hs_ha]" class="form-input"></div>
                                     <div><label class="form-label">HS Pokok</label><input type="number" step="1" name="produksi[hs_pokok]" class="form-input"></div>
+                                    <!-- TAMBAHAN: Input Ha Cavel Real -->
+                                    <div><label class="form-label">Ha Cavel (Real)</label><input type="number" step="0.01" name="produksi[ha_cavel_real]" class="form-input" placeholder="0.00"></div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-3">
                                     <div><label class="form-label">HK Panen</label><input type="number" step="0.01" name="produksi[hk_panen]" class="form-input"></div>
@@ -158,6 +160,12 @@
                                 <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
+                                
+                                <!-- TAMBAHAN: Input PDO Bi & Sbi -->
+                                <div class="grid grid-cols-2 gap-3 mt-2">
+                                    <div><label class="form-label">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input" placeholder="Rp..."></div>
+                                    <div><label class="form-label">Biaya PDO (Sbi)</label><input type="number" step="1" name="biaya[pdo_sbi]" class="form-input" placeholder="Rp..."></div>
+                                </div>
                                 
                                 <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
                                     <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
