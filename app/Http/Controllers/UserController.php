@@ -19,15 +19,19 @@ class UserController extends Controller
     // Menyimpan user baru
     public function store(Request $request)
     {
+        // Validasi: memastikan 'name' wajib diisi, max 255 karakter, dan belum dipakai user lain
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
 
+        // Karena tabel DB Laravel secara default mewajibkan ada 'email',
+        // Kita buatkan email fiktif di belakang layar secara otomatis agar tidak error.
+        $dummyEmail = strtolower(str_replace(' ', '', $request->name)) . rand(1000, 9999) . '@sistem.local';
+
         User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            'email' => $dummyEmail,
             'password' => Hash::make($request->password),
         ]);
 
@@ -40,15 +44,13 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+            'name' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8', // Password opsional saat edit
         ]);
 
         $user->name = $request->name;
-        $user->email = $request->email;
         
-        // Hanya update password jika kolom diisi
+        // Hanya update password jika kolom password diisi
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
@@ -63,7 +65,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         
-        // Cegah pengguna menghapus akunnya sendiri
+        // Cegah pengguna menghapus akunnya sendiri (keamanan ekstra)
         if (auth()->id() == $user->id) {
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri saat sedang login.');
         }
