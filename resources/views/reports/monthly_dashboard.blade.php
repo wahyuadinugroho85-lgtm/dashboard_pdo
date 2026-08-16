@@ -53,9 +53,9 @@
                 Masuk sebagai: <strong class="text-slate-800">{{ Auth::user()->name ?? 'Admin Laporan' }}</strong>
             </div>
             <div class="flex gap-2">
-                <a href="{{ route('kelola.user') }}" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                    ⚙️ Kelola User
-                </a>
+                <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                 ⚙️ Kelola User
+               </a>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                     @csrf
                     <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
