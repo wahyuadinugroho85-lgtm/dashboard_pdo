@@ -9,7 +9,6 @@ class Production extends Model
 {
     use HasFactory;
 
-    // Tambahkan semua kolom baru di dalam array fillable ini
     protected $fillable = [
         'estate_id', 
         'periode', 
@@ -18,15 +17,16 @@ class Production extends Model
         'janjang', 
         'hk_panen', 
         'luas_cavel',
-        'hs_ha',       // Tambahan baru
-        'hs_pokok',    // Tambahan baru
-        'kunjungan',   // Tambahan baru
-        'ha_hk',       // Tambahan baru
-        'kg_hk',       // Tambahan baru
-        'ton_cpo',     // Menggantikan oer
-        'ton_ker',     // Menggantikan ker
-        'ton_pko',     // Menggantikan pko
-        'ha_cavel_real'// Tambahan baru untuk input manual Ha Cavel
+        'hs_ha',       
+        'hs_pokok',    
+        'kunjungan',   
+        'ha_hk',       
+        'kg_hk',       
+        'ton_cpo',     
+        'ton_ker',     
+        'ton_pko',     
+        'ha_cavel_real',
+        'hke'          // TAMBAHAN BARU UNTUK HARI KERJA EFEKTIF
     ];
 
     public function estate()
