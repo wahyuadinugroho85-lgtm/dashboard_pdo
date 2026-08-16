@@ -98,8 +98,9 @@
             @csrf
             
             <div>
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Alamat Email">
-                @error('email')
+                <!-- Menggunakan 'name' alih-alih 'email' -->
+                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus placeholder="Nama Pengguna">
+                @error('name')
                     <span class="invalid-feedback text-warning mb-3 d-block" role="alert">
                         <strong>Kredensial tidak cocok dengan data kami.</strong>
                     </span>
