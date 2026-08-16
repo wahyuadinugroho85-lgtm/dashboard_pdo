@@ -48,9 +48,11 @@
 
         <div class="flex flex-col lg:flex-row gap-6">
             
-            <!-- PANEL KIRI: IMPORT EXCEL -->
+            <!-- PANEL KIRI: IMPORT & EXPORT EXCEL -->
             <div class="w-full lg:w-1/3">
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 mb-6">
+                    
+                    <!-- BOX IMPORT -->
                     <h2 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-3 mb-4 flex items-center gap-2">
                         <span>📥</span> Import Data Cepat (Excel)
                     </h2>
@@ -63,6 +65,24 @@
                             <a href="/download-template" class="w-full text-center bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 px-4 rounded-lg transition-colors border border-slate-300 text-sm">Unduh Template</a>
                         </div>
                     </form>
+
+                    <!-- BOX EXPORT (BARU DITAMBAHKAN) -->
+                    <h2 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-3 mt-8 mb-4 flex items-center gap-2">
+                        <span>📤</span> Export Data Terinput
+                    </h2>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">Unduh data bulan tertentu yang sudah ada di sistem ke dalam format Excel untuk melihat, merevisi, atau membackup data.</p>
+                    <form action="{{ route('export.data') }}" method="GET" class="space-y-4">
+                        <div class="flex gap-2">
+                            <select name="bulan" required class="form-input bg-white w-1/2">
+                                @for($i=1; $i<=12; $i++) <option value="{{ $i }}" {{ date('n') == $i ? 'selected' : '' }}>Bulan {{ $i }}</option> @endfor
+                            </select>
+                            <select name="tahun" required class="form-input bg-white w-1/2">
+                                @for($i=2023; $i<=date('Y')+1; $i++) <option value="{{ $i }}" {{ date('Y') == $i ? 'selected' : '' }}>{{ $i }}</option> @endfor
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors shadow-sm text-sm">Download Data (.xlsx)</button>
+                    </form>
+                    
                 </div>
 
                 <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-5 text-indigo-800 text-sm shadow-sm">
@@ -135,7 +155,6 @@
                                 <div class="grid grid-cols-3 gap-3">
                                     <div><label class="form-label">Hektar Statement (Ha)</label><input type="number" step="0.01" name="produksi[hs_ha]" class="form-input"></div>
                                     <div><label class="form-label">HS Pokok</label><input type="number" step="1" name="produksi[hs_pokok]" class="form-input"></div>
-                                    <!-- TAMBAHAN: Input Ha Cavel Real -->
                                     <div><label class="form-label">Ha Cavel (Real)</label><input type="number" step="0.01" name="produksi[ha_cavel_real]" class="form-input" placeholder="0.00"></div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-3">
@@ -161,7 +180,6 @@
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
                                 
-                                <!-- TAMBAHAN: Input PDO Bi & Sbi -->
                                 <div class="grid grid-cols-2 gap-3 mt-2">
                                     <div><label class="form-label">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input" placeholder="Rp..."></div>
                                     <div><label class="form-label">Biaya PDO (Sbi)</label><input type="number" step="1" name="biaya[pdo_sbi]" class="form-input" placeholder="Rp..."></div>
