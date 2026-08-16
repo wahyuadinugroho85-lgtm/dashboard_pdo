@@ -71,11 +71,10 @@
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                         <tr>
-                            <th class="py-3 px-6">ID</th>
+                            <th class="py-3 px-6 w-16">ID</th>
                             <th class="py-3 px-6">Nama Pengguna</th>
-                            <th class="py-3 px-6">Email</th>
-                            <th class="py-3 px-6 text-center">Tanggal Dibuat</th>
-                            <th class="py-3 px-6 text-center">Aksi</th>
+                            <th class="py-3 px-6 text-center w-48">Tanggal Dibuat</th>
+                            <th class="py-3 px-6 text-center w-48">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
@@ -83,16 +82,15 @@
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="py-3 px-6 text-slate-500">{{ $user->id }}</td>
                             <td class="py-3 px-6 font-semibold text-slate-800">{{ $user->name }}</td>
-                            <td class="py-3 px-6 text-indigo-600">{{ $user->email }}</td>
                             <td class="py-3 px-6 text-center text-slate-500">{{ $user->created_at->format('d M Y') }}</td>
                             <td class="py-3 px-6 flex justify-center gap-2">
-                                <button onclick="openEditModal({{ $user->id }}, '{{ $user->name }}', '{{ $user->email }}')" class="bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1.5 rounded text-xs font-bold transition-colors">Edit</button>
-                                <button onclick="openDeleteModal({{ $user->id }}, '{{ $user->name }}')" class="bg-rose-100 text-rose-700 hover:bg-rose-200 px-3 py-1.5 rounded text-xs font-bold transition-colors" {{ auth()->id() == $user->id ? 'disabled' : '' }}>Hapus</button>
+                                <button onclick="openEditModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="bg-amber-100 text-amber-700 hover:bg-amber-200 px-3 py-1.5 rounded text-xs font-bold transition-colors">Edit</button>
+                                <button onclick="openDeleteModal({{ $user->id }}, '{{ addslashes($user->name) }}')" class="bg-rose-100 text-rose-700 hover:bg-rose-200 px-3 py-1.5 rounded text-xs font-bold transition-colors" {{ auth()->id() == $user->id ? 'disabled' : '' }}>Hapus</button>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="py-6 px-6 text-center text-slate-500 italic">Belum ada data pengguna.</td>
+                            <td colspan="4" class="py-6 px-6 text-center text-slate-500 italic">Belum ada data pengguna.</td>
                         </tr>
                         @endforelse
                     </tbody>
@@ -106,22 +104,18 @@
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden modal-enter">
             <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800">Tambah Pengguna Baru</h3>
-                <button onclick="closeModal('modal-add')" class="text-slate-400 hover:text-rose-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button type="button" onclick="closeModal('modal-add')" class="text-slate-400 hover:text-rose-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <form action="{{ route('kelola.user.store') }}" method="POST">
                 @csrf
                 <div class="p-6 space-y-4 text-sm">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
-                        <input type="text" name="name" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Email</label>
-                        <input type="email" name="email" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
+                        <label class="block font-semibold text-slate-700 mb-1">Nama Pengguna (Username)</label>
+                        <input type="text" name="name" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none" placeholder="Masukkan nama pengguna...">
                     </div>
                     <div>
                         <label class="block font-semibold text-slate-700 mb-1">Password</label>
-                        <input type="password" name="password" required minlength="8" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
+                        <input type="password" name="password" required minlength="8" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none" placeholder="Minimal 8 karakter">
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-2">
@@ -137,23 +131,19 @@
         <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden modal-enter">
             <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <h3 class="font-bold text-slate-800">Edit Pengguna</h3>
-                <button onclick="closeModal('modal-edit')" class="text-slate-400 hover:text-rose-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <button type="button" onclick="closeModal('modal-edit')" class="text-slate-400 hover:text-rose-500"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
             </div>
             <form id="form-edit" method="POST">
                 @csrf
                 @method('PUT')
                 <div class="p-6 space-y-4 text-sm">
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Nama Lengkap</label>
+                        <label class="block font-semibold text-slate-700 mb-1">Nama Pengguna (Username)</label>
                         <input type="text" name="name" id="edit-name" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block font-semibold text-slate-700 mb-1">Email</label>
-                        <input type="email" name="email" id="edit-email" required class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
-                    </div>
-                    <div>
                         <label class="block font-semibold text-slate-700 mb-1">Password Baru <span class="text-xs font-normal text-slate-400">(Kosongkan jika tidak diubah)</span></label>
-                        <input type="password" name="password" minlength="8" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none">
+                        <input type="password" name="password" minlength="8" class="w-full border border-slate-300 rounded-lg px-3 py-2 focus:border-indigo-500 focus:outline-none" placeholder="Minimal 8 karakter">
                     </div>
                 </div>
                 <div class="px-6 py-4 border-t border-slate-200 bg-slate-50 flex justify-end gap-2">
@@ -190,9 +180,8 @@
             document.getElementById('modal-add').classList.remove('hidden');
         }
 
-        function openEditModal(id, name, email) {
+        function openEditModal(id, name) {
             document.getElementById('edit-name').value = name;
-            document.getElementById('edit-email').value = email;
             document.getElementById('form-edit').action = '/kelola-user/' + id;
             document.getElementById('modal-edit').classList.remove('hidden');
         }
