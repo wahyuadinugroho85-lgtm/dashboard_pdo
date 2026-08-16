@@ -162,6 +162,11 @@
                                     <div><label class="form-label">Kunjungan</label><input type="number" step="0.01" name="produksi[kunjungan]" class="form-input"></div>
                                     <div><label class="form-label">Ha/Hk</label><input type="number" step="0.01" name="produksi[ha_hk]" class="form-input"></div>
                                 </div>
+                                <div class="mt-3">
+                                    <label class="form-label text-indigo-700 font-bold">HKE (Hari Kerja Efektif) - WAJIB DIISI!</label>
+                                    <p class="text-[10px] text-slate-500 mb-1 leading-tight">Jika sedang isi REAL (Bulan Ini), isi angka misal: 26.<br>Jika sedang isi RKB (Bulan Depan), isi angka misal: 24.</p>
+                                    <input type="number" step="1" name="produksi[hke]" class="form-input w-1/3 bg-indigo-50 border-indigo-300 font-bold text-indigo-700" placeholder="Contoh: 26">
+                                </div>
                                 
                                 <h3 class="font-bold text-indigo-700 border-b pb-2 pt-4">Data Ekstraksi Mill (Ton)</h3>
                                 <div class="grid grid-cols-3 gap-3">
@@ -179,11 +184,7 @@
                                 <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
-                                
-                                <div class="grid grid-cols-2 gap-3 mt-2">
-                                    <div><label class="form-label">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input" placeholder="Rp..."></div>
-                                    <div><label class="form-label">Biaya PDO (Sbi)</label><input type="number" step="1" name="biaya[pdo_sbi]" class="form-input" placeholder="Rp..."></div>
-                                </div>
+                                <div><label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input" placeholder="Isi Biaya PDO Bulan ini..."></div>
                                 
                                 <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
                                     <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
@@ -293,22 +294,18 @@
     <!-- SCRIPT TABULASI -->
     <script>
         function openTab(tabId) {
-            // Sembunyikan semua konten tab
             document.querySelectorAll('.tab-content').forEach(el => {
                 el.classList.remove('block');
                 el.classList.add('hidden');
             });
-            // Ubah gaya semua tombol tab menjadi inactive
             document.querySelectorAll('.tab-btn').forEach(el => {
                 el.classList.remove('tab-active');
                 el.classList.add('tab-inactive');
             });
             
-            // Tampilkan tab yang dipilih
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             document.getElementById('tab-' + tabId).classList.add('block');
             
-            // Beri warna aktif pada tombol yang ditekan
             document.getElementById('btn-' + tabId).classList.remove('tab-inactive');
             document.getElementById('btn-' + tabId).classList.add('tab-active');
         }
