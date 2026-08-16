@@ -19,7 +19,9 @@ class OperationalCost extends Model
         'cost_teknik', 
         'cost_pks',
         'bgt_cost_palm_produk', // Tambahan Baru
-        'bgt_cost_palm_oil'     // Tambahan Baru
+        'bgt_cost_palm_oil',    // Tambahan Baru
+        'pdo_bi',               // Tambahan baru untuk biaya PDO Bi
+        'pdo_sbi'               // Tambahan baru untuk biaya PDO Sbi
     ];
 
     public function estate()

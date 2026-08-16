@@ -25,7 +25,8 @@ class Production extends Model
         'kg_hk',       // Tambahan baru
         'ton_cpo',     // Menggantikan oer
         'ton_ker',     // Menggantikan ker
-        'ton_pko'      // Menggantikan pko
+        'ton_pko',     // Menggantikan pko
+        'ha_cavel_real'// Tambahan baru untuk input manual Ha Cavel
     ];
 
     public function estate()
