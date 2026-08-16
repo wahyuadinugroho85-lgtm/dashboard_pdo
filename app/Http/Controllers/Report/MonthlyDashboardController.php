@@ -14,7 +14,7 @@ use App\Models\OperationalCost;
 use Carbon\Carbon;
 use App\Imports\LaporanImport;
 use App\Exports\LaporanTemplateExport;
-use App\Exports\LaporanDataExport; // <-- Import class Export yang baru kita buat
+use App\Exports\LaporanDataExport; 
 use Maatwebsite\Excel\Facades\Excel;
 
 class MonthlyDashboardController extends Controller
@@ -106,10 +106,18 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
             ];
             
+            // PERBAIKAN RUMUS SBI:
+            // Menjumlahkan pdo_bi dari bulan 1 sampai bulan yang dipilih (Sbi otomatis)
+            $pdoSbiOtomatis = OperationalCost::where('estate_id', $estate->id)
+                ->whereYear('periode', $tahun)
+                ->whereMonth('periode', '<=', $bulan)
+                ->where('tipe', 'REAL')
+                ->sum('pdo_bi');
+
             $biayaReal = $dataMatrix[$kode]['biaya']['real'] ?? null;
             $dataMatrix[$kode]['biaya_pdo'] = [
                 'bi' => $biayaReal ? ($biayaReal->pdo_bi ?? 0) : 0,
-                'sbi' => $biayaReal ? ($biayaReal->pdo_sbi ?? 0) : 0,
+                'sbi' => $pdoSbiOtomatis, // Menggunakan hasil perhitungan otomatis
             ];
             
             $dataMatrix[$kode]['kualitas']['rkb'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('kriteria');
@@ -247,6 +255,7 @@ class MonthlyDashboardController extends Controller
                 }
             }
 
+            // Sbi Total BP-2 juga akan menyesuaikan otomatis karena Sbi masing-masing Estate sudah dihitung dengan akurat
             $total['biaya_pdo']['bi'] += $matrix[$kode]['biaya_pdo']['bi'] ?? 0;
             $total['biaya_pdo']['sbi'] += $matrix[$kode]['biaya_pdo']['sbi'] ?? 0;
 
@@ -387,7 +396,6 @@ class MonthlyDashboardController extends Controller
         return Excel::download(new LaporanTemplateExport, 'Template_Data_Operasional.xlsx');
     }
 
-    // FUNGSI BARU UNTUK EXPORT DATA YANG SUDAH ADA
     public function exportData(Request $request)
     {
         $bulan = $request->input('bulan', date('n'));
