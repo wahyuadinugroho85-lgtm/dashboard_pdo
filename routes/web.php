@@ -27,10 +27,11 @@ Route::middleware(['auth'])->group(function () {
     // Route Download Template
     Route::get('/download-template', [MonthlyDashboardController::class, 'downloadTemplate']);
     
-    // Route Kelola User (Poin 1)
-    Route::get('/kelola-user', [UserController::class, 'index']);
-    Route::post('/kelola-user', [UserController::class, 'store']);
-    Route::delete('/kelola-user/{id}', [UserController::class, 'destroy']);
+    // Route Kelola User (Poin 1) - Ditambahkan rute update dan penamaan (name) agar terhubung dengan tombol di view
+    Route::get('/kelola-user', [UserController::class, 'index'])->name('kelola.user');
+    Route::post('/kelola-user', [UserController::class, 'store'])->name('kelola.user.store');
+    Route::put('/kelola-user/{id}', [UserController::class, 'update'])->name('kelola.user.update');
+    Route::delete('/kelola-user/{id}', [UserController::class, 'destroy'])->name('kelola.user.destroy');
     
 });
 
