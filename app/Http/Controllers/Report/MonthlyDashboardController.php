@@ -14,6 +14,7 @@ use App\Models\OperationalCost;
 use Carbon\Carbon;
 use App\Imports\LaporanImport;
 use App\Exports\LaporanTemplateExport;
+use App\Exports\LaporanDataExport; // <-- Import class Export yang baru kita buat
 use Maatwebsite\Excel\Facades\Excel;
 
 class MonthlyDashboardController extends Controller
@@ -105,7 +106,6 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
             ];
             
-            // PERBAIKAN PENTING: Penanganan Null-Safe untuk mencegah Error 500
             $biayaReal = $dataMatrix[$kode]['biaya']['real'] ?? null;
             $dataMatrix[$kode]['biaya_pdo'] = [
                 'bi' => $biayaReal ? ($biayaReal->pdo_bi ?? 0) : 0,
@@ -385,5 +385,15 @@ class MonthlyDashboardController extends Controller
     public function downloadTemplate()
     {
         return Excel::download(new LaporanTemplateExport, 'Template_Data_Operasional.xlsx');
+    }
+
+    // FUNGSI BARU UNTUK EXPORT DATA YANG SUDAH ADA
+    public function exportData(Request $request)
+    {
+        $bulan = $request->input('bulan', date('n'));
+        $tahun = $request->input('tahun', date('Y'));
+        
+        $fileName = 'Data_Operasional_Bulan_' . $bulan . '_Tahun_' . $tahun . '.xlsx';
+        return Excel::download(new LaporanDataExport($bulan, $tahun), $fileName);
     }
 }
