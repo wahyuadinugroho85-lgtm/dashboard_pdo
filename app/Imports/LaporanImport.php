@@ -46,9 +46,10 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'kunjungan' => $row['kunjungan'] ?? 0,  
                 'ha_hk' => $row['ha_hk'] ?? 0,          
                 'kg_hk' => $row['kg_hk'] ?? 0,
-                'ton_cpo' => $row['ton_cpo'] ?? 0,      // UPDATE
-                'ton_ker' => $row['ton_ker'] ?? 0,      // UPDATE
-                'ton_pko' => $row['ton_pko'] ?? 0       // UPDATE
+                'ton_cpo' => $row['ton_cpo'] ?? 0,      
+                'ton_ker' => $row['ton_ker'] ?? 0,      
+                'ton_pko' => $row['ton_pko'] ?? 0,
+                'ha_cavel_real' => $row['ha_cavel_real'] ?? 0 // UPDATE: Tambah ha_cavel_real
             ]);
 
             // 2. Simpan Data Biaya Operasional
@@ -58,6 +59,10 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'cost_kantor' => $row['cost_kantor'] ?? 0,
                 'cost_teknik' => $row['cost_teknik'] ?? 0,
                 'cost_pks' => $row['cost_pks'] ?? 0,
+                'pdo_bi' => $row['pdo_bi'] ?? 0,               // UPDATE: Tambah Biaya PDO Bi
+                'pdo_sbi' => $row['pdo_sbi'] ?? 0,             // UPDATE: Tambah Biaya PDO Sbi
+                'bgt_cost_palm_produk' => $row['bgt_cost_palm_produk'] ?? 0,
+                'bgt_cost_palm_oil' => $row['bgt_cost_palm_oil'] ?? 0
             ]);
 
             // 3. Simpan Data Perawatan Kebun
@@ -118,8 +123,13 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Umur' => ['< 25' => 'tk_umur_kurang_25', '25 - 40' => 'tk_umur_25_40', '40 - 50' => 'tk_umur_40_50', '> 50' => 'tk_umur_lebih_50'],
                 'Status Keluarga' => ['KK' => 'tk_status_kk', 'Lj' => 'tk_status_lj'],
                 'Masa Kerja' => ['<= 1bln' => 'tk_masa_kurang_1bln', '2-3Bln' => 'tk_masa_2_3bln', '> 3Bln' => 'tk_masa_lebih_3bln'],
-                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Masuk (Sbi)' => 'tk_mutasi_masuk_sbi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi', 'Keluar (Sbi)' => 'tk_mutasi_keluar_sbi']
+                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Masuk (Sbi)' => 'tk_mutasi_masuk_sbi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi', 'Keluar (Sbi)' => 'tk_mutasi_keluar_sbi'],
+                // UPDATE: Menambahkan 3 kategori pekerja baru
+                'HKNE' => ['Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'],
+                'Jam Kerja' => ['Tersedia' => 'tk_jam_tersedia', 'Pagi' => 'tk_jam_pagi', 'Siang' => 'tk_jam_siang', 'Sore' => 'tk_jam_sore'],
+                'Kelas Pemanen' => ['A' => 'tk_kelas_a', 'B' => 'tk_kelas_b', 'C' => 'tk_kelas_c', 'D' => 'tk_kelas_d']
             ];
+            
             foreach ($tkMap as $kategori => $subs) {
                 foreach ($subs as $subKat => $col) {
                     if (isset($row[$col]) && $row[$col] > 0) {

@@ -23,7 +23,6 @@ class MonthlyDashboardController extends Controller
     private $jenisPupuk = ['Dolomite', 'Kieserite', 'Kaptan', 'TSP / RP', 'Urea', 'MOP', 'Mikro-Mg'];
     private $kriteriaMutu = ['Unripe', 'Ripe', 'Over Ripe', 'Empty Bunch', 'Abnormal'];
     
-    // PEMBARUAN: Tambah Kategori Pekerja baru untuk HKNE, Jam Kerja, dan Kelas Pemanen
     private $kategoriPekerja = ['Umur', 'Status Keluarga', 'Masa Kerja', 'Mutasi', 'HKNE', 'Jam Kerja', 'Kelas Pemanen'];
 
     public function index(Request $request)
@@ -87,7 +86,6 @@ class MonthlyDashboardController extends Controller
             $dataMatrix[$kode]['upkeep']['rkb'] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('jenis_pekerjaan');
             $dataMatrix[$kode]['upkeep']['real'] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pekerjaan');
             
-            // Pengambilan Data Rotasi Pruning
             foreach($this->kategoriPruning as $kp) {
                 $dataMatrix[$kode]['rotasi_pruning'][$kp] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->where('jenis_pekerjaan', $kp)->first();
             }
@@ -105,6 +103,12 @@ class MonthlyDashboardController extends Controller
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
                 'budget' => OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)->where('tipe', 'BUDGET')
                     ->selectRaw('SUM(cost_panen) as cost_panen, SUM(cost_rawat) as cost_rawat, SUM(cost_kantor) as cost_kantor, SUM(cost_teknik) as cost_teknik, SUM(cost_pks) as cost_pks')->first(),
+            ];
+            
+            // Mengirim data PDO Bi dan Sbi yang tersimpan agar bisa ditampilkan di blade
+            $dataMatrix[$kode]['biaya_pdo'] = [
+                'bi' => $dataMatrix[$kode]['biaya']['real']->pdo_bi ?? 0,
+                'sbi' => $dataMatrix[$kode]['biaya']['real']->pdo_sbi ?? 0,
             ];
             
             $dataMatrix[$kode]['kualitas']['rkb'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'RKB')->get()->keyBy('kriteria');
@@ -137,12 +141,16 @@ class MonthlyDashboardController extends Controller
             ], 
             'histori' => [], 
             'biaya' => [
-                'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0],
+                'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0, 'pdo_bi' => 0, 'pdo_sbi' => 0],
                 'budget_year' => (object)['bgt_cost_palm_produk' => 0, 'bgt_cost_palm_oil' => 0] 
             ],
             'biaya_sd_bln' => [
                 'real' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0],
                 'budget' => (object)['cost_panen' => 0, 'cost_rawat' => 0, 'cost_kantor' => 0, 'cost_teknik' => 0, 'cost_pks' => 0]
+            ],
+            'biaya_pdo' => [
+                'bi' => 0,
+                'sbi' => 0
             ],
             'rotasi_pruning' => []
         ];
@@ -156,7 +164,8 @@ class MonthlyDashboardController extends Controller
             $total['produksi']['current'][$k] = (object)[
                 'tonase' => 0, 'janjang' => 0, 'hs_ha' => 0, 'hs_pokok' => 0,
                 'kunjungan' => 0, 'ha_hk' => 0, 'kg_hk' => 0,
-                'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0
+                'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0,
+                'ha_cavel_real' => 0
             ]; 
         }
         
@@ -192,6 +201,7 @@ class MonthlyDashboardController extends Controller
                     $total['produksi']['current'][$k]->janjang += $item->janjang ?? 0;
                     $total['produksi']['current'][$k]->hs_ha += $item->hs_ha ?? 0;
                     $total['produksi']['current'][$k]->hs_pokok += $item->hs_pokok ?? 0;
+                    $total['produksi']['current'][$k]->ha_cavel_real += $item->ha_cavel_real ?? 0;
                 }
             }
             
@@ -236,6 +246,9 @@ class MonthlyDashboardController extends Controller
                 }
             }
 
+            $total['biaya_pdo']['bi'] += $matrix[$kode]['biaya_pdo']['bi'] ?? 0;
+            $total['biaya_pdo']['sbi'] += $matrix[$kode]['biaya_pdo']['sbi'] ?? 0;
+
             foreach($this->kategoriPruning as $kp) {
                 if(isset($matrix[$kode]['rotasi_pruning'][$kp])) {
                     $total['rotasi_pruning'][$kp]->jml_blok += $matrix[$kode]['rotasi_pruning'][$kp]->jml_blok ?? 0;
@@ -278,7 +291,7 @@ class MonthlyDashboardController extends Controller
         
         if ($request->has('produksi')) {
             $dataProd = [];
-            $fields = ['tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko'];
+            $fields = ['tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko', 'ha_cavel_real'];
             foreach ($fields as $field) {
                 if (isset($request->produksi[$field]) && $request->produksi[$field] !== '') {
                     $dataProd[$field] = $request->produksi[$field];
@@ -291,7 +304,7 @@ class MonthlyDashboardController extends Controller
 
         if ($request->has('biaya')) {
             $dataBiaya = [];
-            $fields = ['cost_panen', 'cost_rawat', 'cost_kantor', 'cost_teknik', 'cost_pks', 'bgt_cost_palm_produk', 'bgt_cost_palm_oil'];
+            $fields = ['cost_panen', 'cost_rawat', 'cost_kantor', 'cost_teknik', 'cost_pks', 'bgt_cost_palm_produk', 'bgt_cost_palm_oil', 'pdo_bi', 'pdo_sbi'];
             foreach ($fields as $field) {
                 if (isset($request->biaya[$field]) && $request->biaya[$field] !== '') {
                     $dataBiaya[$field] = $request->biaya[$field];

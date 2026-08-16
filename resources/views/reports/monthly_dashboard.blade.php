@@ -25,13 +25,11 @@
         #analytics-container:-webkit-full-screen { background-color: #f8fafc; padding: 2rem; overflow-y: auto; }
         #analytics-container:fullscreen { background-color: #f8fafc; padding: 2rem; overflow-y: auto; }
         
-        /* Lebar Tooltip Extra */
         .tooltip-table { width: max-content; min-width: 250px; }
     </style>
 </head>
 <body class="text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
 
-    <!-- POIN 2: NAVBAR DIRAPIKAN SESUAI GAMBAR 2 -->
     <nav class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center sticky top-0 z-50 shadow-sm">
         <div class="flex items-center gap-4">
             <a href="/input-data" class="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-bold px-5 py-2.5 rounded-lg shadow-sm transition-colors flex items-center gap-2">
@@ -55,7 +53,7 @@
                 Masuk sebagai: <strong class="text-slate-800">{{ Auth::user()->name ?? 'Admin Laporan' }}</strong>
             </div>
             <div class="flex gap-2">
-                <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
+                <a href="{{ route('kelola.user') }}" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
                     ⚙️ Kelola User
                 </a>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">
@@ -364,10 +362,25 @@
                                         @php $gpct = ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->tonase ?? 0) / ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) * 100 : 0; @endphp
                                         <td class="py-2 px-4 font-bold text-amber-800 bg-amber-100/50">{{ number_format($gpct, 2) }}</td>
                                     </tr>
+                                    <!-- POIN 2: PERBAIKAN RUMUS DEVIASI Jjg/Pkk -->
                                     <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
                                         <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Jjg/Pkk</td>
-                                        @foreach($estates as $estate) <td class="py-2 px-4 text-slate-400">(0.00)</td> @endforeach
-                                        <td class="py-2 px-4 text-slate-400 bg-indigo-50/30">(0.00)</td>
+                                        @foreach($estates as $estate)
+                                            @php
+                                                $hsPkk = $dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0;
+                                                $rkbJjgPkk = $hsPkk > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['rkb']->janjang ?? 0) / $hsPkk : 0;
+                                                $realJjgPkk = $hsPkk > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['real']->janjang ?? 0) / $hsPkk : 0;
+                                                $devJjgPkk = $realJjgPkk - $rkbJjgPkk;
+                                            @endphp
+                                            <td class="py-2 px-4 font-bold {{ $devJjgPkk < 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ $devJjgPkk < 0 ? '('.number_format(abs($devJjgPkk), 2).')' : number_format($devJjgPkk, 2) }}</td>
+                                        @endforeach
+                                        @php
+                                            $gHsPkk = $dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0;
+                                            $grkbJjgPkk = $gHsPkk > 0 ? ($dataMatrix['BP-2']['produksi']['current']['rkb']->janjang ?? 0) / $gHsPkk : 0;
+                                            $grealJjgPkk = $gHsPkk > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->janjang ?? 0) / $gHsPkk : 0;
+                                            $gdevJjgPkk = $grealJjgPkk - $grkbJjgPkk;
+                                        @endphp
+                                        <td class="py-2 px-4 font-bold {{ $gdevJjgPkk < 0 ? 'text-rose-600' : 'text-emerald-600' }} bg-indigo-50/30">{{ $gdevJjgPkk < 0 ? '('.number_format(abs($gdevJjgPkk), 2).')' : number_format($gdevJjgPkk, 2) }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -534,7 +547,6 @@
                         </div>
                     </div>
 
-                    <!-- POIN 3: TOTAL RAWAT DITAMBAH COST/HA, %, DAN BLOK -->
                     <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all cursor-help">
                         <div>
                             <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
@@ -870,31 +882,47 @@
                             @endphp
                             <td class="text-right font-bold text-amber-800 bg-amber-100/50">{{ number_format($gpct, 2) }}</td>
                         </tr>
+                        <!-- POIN 2: PERBAIKAN RUMUS DEVIASI Jjg/Pkk -->
                         <tr class="row-border-strong">
-                            <td class="">Jjg/Pkk</td>
-                            @foreach($estates as $estate) <td class="text-right text-slate-400">(0.00)</td> @endforeach
-                            <td class="text-right text-slate-400 bg-indigo-50/30">(0.00)</td>
+                            <td class="text-left font-bold text-rose-600">Jjg/Pkk</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $hsPkk = $dataMatrix[$estate->kode]['produksi']['current']['real']->hs_pokok ?? 0;
+                                    $rkbJjgPkk = $hsPkk > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['rkb']->janjang ?? 0) / $hsPkk : 0;
+                                    $realJjgPkk = $hsPkk > 0 ? ($dataMatrix[$estate->kode]['produksi']['current']['real']->janjang ?? 0) / $hsPkk : 0;
+                                    $devJjgPkk = $realJjgPkk - $rkbJjgPkk;
+                                @endphp
+                                <td class="text-right font-bold {{ $devJjgPkk < 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ $devJjgPkk < 0 ? '('.number_format(abs($devJjgPkk), 2).')' : number_format($devJjgPkk, 2) }}</td>
+                            @endforeach
+                            @php
+                                $gHsPkk = $dataMatrix['BP-2']['produksi']['current']['real']->hs_pokok ?? 0;
+                                $grkbJjgPkk = $gHsPkk > 0 ? ($dataMatrix['BP-2']['produksi']['current']['rkb']->janjang ?? 0) / $gHsPkk : 0;
+                                $grealJjgPkk = $gHsPkk > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->janjang ?? 0) / $gHsPkk : 0;
+                                $gdevJjgPkk = $grealJjgPkk - $grkbJjgPkk;
+                            @endphp
+                            <td class="text-right font-bold {{ $gdevJjgPkk < 0 ? 'text-rose-600' : 'text-emerald-600' }} bg-indigo-50/30">{{ $gdevJjgPkk < 0 ? '('.number_format(abs($gdevJjgPkk), 2).')' : number_format($gdevJjgPkk, 2) }}</td>
                         </tr>
 
                         <tr class="bg-emerald-50/20">
-                            <td colspan="2" class="font-semibold text-emerald-800 border-r border-slate-100">Kunjungan</td>
+                            <td colspan="2" class="font-semibold text-emerald-800 border-r border-slate-100 pl-4">Kunjungan</td>
                             <td class=""></td>
                             @foreach($estates as $estate) <td class="text-right font-medium text-emerald-700">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->kunjungan ?? 0, 2) }}</td> @endforeach
                             <td class="text-right font-bold text-emerald-800 bg-emerald-100/40">{{ number_format($dataMatrix['BP-2']['produksi']['current']['real']->kunjungan ?? 0, 2) }}</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100">Ha/Hk</td>
+                            <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Ha/Hk</td>
                             <td class=""></td>
                             @foreach($estates as $estate) <td class="text-right">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->ha_hk ?? 0, 2) }}</td> @endforeach
                             <td class="text-right font-bold bg-indigo-50/30">{{ number_format($dataMatrix['BP-2']['produksi']['current']['real']->ha_hk ?? 0, 2) }}</td>
                         </tr>
                         <tr class="row-border-strong">
-                            <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100">Kg/Hk</td>
+                            <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Kg/Hk</td>
                             <td class=""></td>
                             @foreach($estates as $estate) <td class="text-right font-medium">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->kg_hk ?? 0, 0) }}</td> @endforeach
                             <td class="text-right font-bold bg-indigo-50/30">{{ number_format($dataMatrix['BP-2']['produksi']['current']['real']->kg_hk ?? 0, 0) }}</td>
                         </tr>
                         
+                        <!-- POIN 3: HA CAVEL REAL & DEVIASI -->
                         <tr>
                             <td rowspan="3" class="valign-top font-semibold text-slate-700 bg-slate-50/80 border-r border-slate-100 text-center">
                                 Ha Cavel / Hari<br>
@@ -912,16 +940,42 @@
                         <tr>
                             <td class="font-semibold text-slate-700 border-r border-slate-100 text-center">Real</td>
                             <td class="text-center text-slate-500">Ha</td>
-                            @foreach($estates as $estate) <td class="text-right font-medium text-slate-800">0.00</td> @endforeach
-                            <td class="text-right font-bold bg-indigo-50/30">0.00</td>
+                            @foreach($estates as $estate)
+                                @php $realHa = $dataMatrix[$estate->kode]['produksi']['current']['real']->ha_cavel_real ?? 0; @endphp
+                                <td class="text-right font-medium text-slate-800">
+                                    <!-- INPUTAN MANUAL HA CAVEL REAL -->
+                                    <input type="number" step="0.01" value="{{ $realHa }}" class="w-16 text-right border border-slate-300 rounded px-1 text-sm bg-slate-50">
+                                </td>
+                            @endforeach
+                            <td class="text-right font-bold bg-indigo-50/30">
+                                @php $gRealHa = $dataMatrix['BP-2']['produksi']['current']['real']->ha_cavel_real ?? 0; @endphp
+                                {{ number_format($gRealHa, 2) }}
+                            </td>
                         </tr>
                         <tr class="row-border-strong">
                             <td class="font-semibold text-rose-600 border-r border-slate-100 text-center">Dev</td>
                             <td class="text-center text-slate-500">Ha</td>
-                            @foreach($estates as $estate) <td class="text-right text-rose-500 bg-rose-50/30 font-medium">0.00</td> @endforeach
-                            <td class="text-right font-bold text-rose-600 bg-rose-100/50">0.00</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $cavel = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0) / 6;
+                                    $realHa = $dataMatrix[$estate->kode]['produksi']['current']['real']->ha_cavel_real ?? 0;
+                                    $devHa = $realHa - $cavel;
+                                @endphp
+                                <td class="text-right font-medium {{ $devHa < 0 ? 'text-rose-500 bg-rose-50/30' : 'text-emerald-500 bg-emerald-50/30' }}">
+                                    {{ $devHa < 0 ? '('.number_format(abs($devHa), 2).')' : number_format($devHa, 2) }}
+                                </td>
+                            @endforeach
+                            <td class="text-right font-bold text-rose-600 bg-rose-100/50">
+                                @php
+                                    $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / 6;
+                                    $gRealHa = $dataMatrix['BP-2']['produksi']['current']['real']->ha_cavel_real ?? 0;
+                                    $gDevHa = $gRealHa - $gcavel;
+                                @endphp
+                                {{ $gDevHa < 0 ? '('.number_format(abs($gDevHa), 2).')' : number_format($gDevHa, 2) }}
+                            </td>
                         </tr>
 
+                        <!-- POIN 5: SCRIPT JS OTOMATIS & POIN 4: JJG/HA -->
                         <tr class="border-t-[3px] border-slate-300">
                             <td rowspan="6" class="valign-top font-bold text-slate-800 bg-slate-50/80 border-r border-slate-100 text-center">{{ $labelBulanNext }}</td>
                             <td class="font-bold text-indigo-700 bg-indigo-50/30 border-r border-slate-100 text-center">RKB</td>
@@ -937,7 +991,8 @@
                         </tr>
                         <tr>
                             <td rowspan="4" class="valign-top bg-indigo-50/30 border-r border-slate-100 text-center pt-3">
-                                <input type="number" value="24" class="w-14 text-center text-sm font-bold text-indigo-700 border border-indigo-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white shadow-sm py-1">
+                                <!-- HKE INPUT ID DITAMBAHKAN UNTUK HITUNGAN JS -->
+                                <input type="number" id="input-hke" value="24" oninput="calculateTonHari()" class="w-14 text-center text-sm font-bold text-indigo-700 border border-indigo-300 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white shadow-sm py-1">
                             </td>
                             <td class="font-medium text-slate-700">Bjr</td>
                             @foreach($estates as $estate)
@@ -971,27 +1026,40 @@
                             @endphp
                             <td class="text-right font-bold bg-indigo-50/30 text-indigo-400">{{ number_format($gnJjgPkk, 2) }}</td>
                         </tr>
+                        
+                        <!-- POIN 4: RUMUS Jjg/Ha = Janjang / (Kunjungan * Luas HS) -->
                         <tr class="bg-amber-50/40">
                             <td class="font-bold text-amber-800">Jjg/Ha</td>
-                            @foreach($estates as $estate) <td class="text-right font-semibold text-amber-700">0.00</td> @endforeach
-                            <td class="text-right font-bold text-amber-800 bg-amber-100/50">0.00</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $nJjg = $dataMatrix[$estate->kode]['produksi']['next']['rkb']->janjang ?? 0;
+                                    $kunjungan = $dataMatrix[$estate->kode]['produksi']['current']['real']->kunjungan ?? 0;
+                                    $hsHa = $dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0;
+                                    $jjgHa = ($kunjungan * $hsHa) > 0 ? $nJjg / ($kunjungan * $hsHa) : 0;
+                                @endphp
+                                <td class="text-right font-semibold text-amber-700">{{ number_format($jjgHa, 2) }}</td>
+                            @endforeach
+                            @php
+                                $gnJjg = $dataMatrix['BP-2']['produksi']['next']['rkb']->janjang ?? 0;
+                                $gKunjungan = $dataMatrix['BP-2']['produksi']['current']['real']->kunjungan ?? 0;
+                                $gHsHa = $dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0;
+                                $gJjgHa = ($gKunjungan * $gHsHa) > 0 ? $gnJjg / ($gKunjungan * $gHsHa) : 0;
+                            @endphp
+                            <td class="text-right font-bold text-amber-800 bg-amber-100/50">{{ number_format($gJjgHa, 2) }}</td>
                         </tr>
+                        
+                        <!-- POIN 5: RUMUS Ton/Hari DIHITUNG VIA JAVASCRIPT BERDASARKAN INPUTAN HKE -->
                         <tr class="row-border-strong">
                             <td class="font-bold text-slate-800">Ton/Hari</td>
-                            @foreach($estates as $estate) <td class="text-right font-bold text-slate-800">0</td> @endforeach
-                            <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">0</td>
+                            @foreach($estates as $estate)
+                                @php $nTon = ($dataMatrix[$estate->kode]['produksi']['next']['rkb']->tonase ?? 0) / 1000; @endphp
+                                <td class="text-right font-bold text-slate-800 ton-hari-cell" data-ton="{{ $nTon }}">0</td>
+                            @endforeach
+                            @php $gnTon = ($dataMatrix['BP-2']['produksi']['next']['rkb']->tonase ?? 0) / 1000; @endphp
+                            <td class="text-right font-bold bg-indigo-50/30 text-indigo-900 ton-hari-cell" data-ton="{{ $gnTon }}">0</td>
                         </tr>
 
-                        <tr class="bg-slate-800 text-white">
-                            <td colspan="3" class="font-bold border-r border-slate-700 pl-4 tracking-wide">Rerata Real {{ $namaBulanIni }}</td>
-                            @foreach($estates as $estate) <td class="text-center border-slate-700">-</td> @endforeach
-                            <td class="text-center font-bold border-slate-700">-</td>
-                        </tr>
-                        <tr class="bg-slate-800 text-white row-border-strong">
-                            <td colspan="3" class="font-bold italic border-r border-slate-700 pl-4 tracking-wide">Deviasi</td>
-                            @foreach($estates as $estate) <td class="text-right border-slate-700 text-rose-300 font-medium">(0)</td> @endforeach
-                            <td class="text-right font-bold border-slate-700 text-rose-300">(0)</td>
-                        </tr>
+                        <!-- Poin 6: Row "Rerata Real" dan "Deviasi" yang sebelumnya ada disini sudah dihapus secara permanen -->
 
                         <tr>
                             <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Bgt {{ $tahun }}</td>
@@ -1310,13 +1378,21 @@
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td rowspan="2" class="text-left py-2 px-3 border-r border-slate-200 bg-white sticky left-0 z-10 w-24">PDO</td>
                             <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 w-16 italic">Bi</td>
-                            @foreach($estates as $estate) <td class="text-right py-2 px-4">0</td> @endforeach
-                            <td class="text-right py-2 px-4 bg-slate-50">0</td>
+                            @foreach($estates as $estate)
+                                <td class="text-right py-2 px-4">
+                                    <input type="number" class="w-full text-right border border-slate-300 rounded px-1 font-medium bg-slate-50" value="{{ $dataMatrix[$estate->kode]['biaya_pdo']['bi'] ?? 0 }}">
+                                </td>
+                            @endforeach
+                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">0</td>
                         </tr>
                         <tr class="hover:bg-slate-50 transition-colors row-border-strong border-b-2 border-slate-300">
                             <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 italic">Sbi</td>
-                            @foreach($estates as $estate) <td class="text-right py-2 px-4">0</td> @endforeach
-                            <td class="text-right py-2 px-4 bg-slate-50">0</td>
+                            @foreach($estates as $estate)
+                                <td class="text-right py-2 px-4">
+                                    <input type="number" class="w-full text-right border border-slate-300 rounded px-1 font-medium bg-slate-50" value="{{ $dataMatrix[$estate->kode]['biaya_pdo']['sbi'] ?? 0 }}">
+                                </td>
+                            @endforeach
+                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">0</td>
                         </tr>
                     </tbody>
                     <tbody class="text-slate-600">
@@ -1908,6 +1984,17 @@
             if(window.myCharts) { window.myCharts.forEach(chart => chart.resize()); }
         });
 
+        // FUNGSI POIN 5: KALKULASI TON/HARI VIA JAVASCRIPT
+        function calculateTonHari() {
+            let hke = parseFloat(document.getElementById('input-hke').value) || 1; // || 1 untuk menghindari division by zero
+            document.querySelectorAll('.ton-hari-cell').forEach(cell => {
+                let ton = parseFloat(cell.getAttribute('data-ton')) || 0;
+                let result = ton / hke;
+                // Format angka dengan 2 angka di belakang koma
+                cell.innerText = result.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            });
+        }
+
         const defaultLayout = [
             { id: 'w-summary-prod', visible: true }, { id: 'w-biaya', visible: true }, 
             { id: 'w-cost', visible: true }, { id: 'w-cost-produk', visible: true },
@@ -1992,6 +2079,9 @@
         document.addEventListener('DOMContentLoaded', function () {
             renderLayout();
             new Sortable(document.getElementById('layout-list'), { animation: 150, handle: '.cursor-move' });
+            
+            // Panggil sekali untuk menghitung awal saat halaman di-load
+            calculateTonHari();
         });
     </script>
 
