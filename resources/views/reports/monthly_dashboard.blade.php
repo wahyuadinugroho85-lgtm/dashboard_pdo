@@ -54,8 +54,8 @@
             </div>
             <div class="flex gap-2">
                 <a href="/kelola-user" class="bg-white hover:bg-slate-50 text-slate-600 border border-slate-300 text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
-                 ⚙️ Kelola User
-               </a>
+                    ⚙️ Kelola User
+                </a>
                 <form action="{{ route('logout') }}" method="POST" class="m-0">
                     @csrf
                     <button type="submit" class="bg-rose-500 hover:bg-rose-600 text-white text-sm font-bold px-4 py-2 rounded-lg shadow-sm transition-colors flex items-center gap-2">
@@ -943,8 +943,7 @@
                             @foreach($estates as $estate)
                                 @php $realHa = $dataMatrix[$estate->kode]['produksi']['current']['real']->ha_cavel_real ?? 0; @endphp
                                 <td class="text-right font-medium text-slate-800">
-                                    <!-- INPUTAN MANUAL HA CAVEL REAL -->
-                                    <input type="number" step="0.01" value="{{ $realHa }}" class="w-16 text-right border border-slate-300 rounded px-1 text-sm bg-slate-50">
+                                    {{ number_format($realHa, 2) }}
                                 </td>
                             @endforeach
                             <td class="text-right font-bold bg-indigo-50/30">
@@ -1058,8 +1057,6 @@
                             @php $gnTon = ($dataMatrix['BP-2']['produksi']['next']['rkb']->tonase ?? 0) / 1000; @endphp
                             <td class="text-right font-bold bg-indigo-50/30 text-indigo-900 ton-hari-cell" data-ton="{{ $gnTon }}">0</td>
                         </tr>
-
-                        <!-- Poin 6: Row "Rerata Real" dan "Deviasi" yang sebelumnya ada disini sudah dihapus secara permanen -->
 
                         <tr>
                             <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Bgt {{ $tahun }}</td>
@@ -1379,20 +1376,36 @@
                             <td rowspan="2" class="text-left py-2 px-3 border-r border-slate-200 bg-white sticky left-0 z-10 w-24">PDO</td>
                             <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 w-16 italic">Bi</td>
                             @foreach($estates as $estate)
-                                <td class="text-right py-2 px-4">
-                                    <input type="number" class="w-full text-right border border-slate-300 rounded px-1 font-medium bg-slate-50" value="{{ $dataMatrix[$estate->kode]['biaya_pdo']['bi'] ?? 0 }}">
+                                <td class="text-right py-2 px-4 font-medium text-slate-700">
+                                    {{ number_format($dataMatrix[$estate->kode]['biaya_pdo']['bi'] ?? 0, 0) }}
                                 </td>
                             @endforeach
-                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">0</td>
+                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">
+                                @php 
+                                    $gPdoBi = 0; 
+                                    foreach($estates as $estate) { 
+                                        $gPdoBi += $dataMatrix[$estate->kode]['biaya_pdo']['bi'] ?? 0; 
+                                    } 
+                                @endphp
+                                {{ number_format($gPdoBi, 0) }}
+                            </td>
                         </tr>
                         <tr class="hover:bg-slate-50 transition-colors row-border-strong border-b-2 border-slate-300">
                             <td class="text-center py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[96px] z-10 italic">Sbi</td>
                             @foreach($estates as $estate)
-                                <td class="text-right py-2 px-4">
-                                    <input type="number" class="w-full text-right border border-slate-300 rounded px-1 font-medium bg-slate-50" value="{{ $dataMatrix[$estate->kode]['biaya_pdo']['sbi'] ?? 0 }}">
+                                <td class="text-right py-2 px-4 font-medium text-slate-700">
+                                    {{ number_format($dataMatrix[$estate->kode]['biaya_pdo']['sbi'] ?? 0, 0) }}
                                 </td>
                             @endforeach
-                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">0</td>
+                            <td class="text-right py-2 px-4 bg-slate-50 font-bold">
+                                @php 
+                                    $gPdoSbi = 0; 
+                                    foreach($estates as $estate) { 
+                                        $gPdoSbi += $dataMatrix[$estate->kode]['biaya_pdo']['sbi'] ?? 0; 
+                                    } 
+                                @endphp
+                                {{ number_format($gPdoSbi, 0) }}
+                            </td>
                         </tr>
                     </tbody>
                     <tbody class="text-slate-600">
