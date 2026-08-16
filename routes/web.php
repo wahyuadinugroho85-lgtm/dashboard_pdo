@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Report\MonthlyDashboardController;
-use App\Http\Controllers\UserController; // <-- INI YANG MEMPERBAIKI ERROR 404
+use App\Http\Controllers\UserController; 
 
 // Ini adalah baris ajaib yang baru saja dibuat oleh Laravel untuk mengatur Login/Register/Logout
 Auth::routes();
@@ -19,15 +19,14 @@ Route::middleware(['auth'])->group(function () {
     // Route Dashboard
     Route::get('/laporan-manajemen', [MonthlyDashboardController::class, 'index']);
 
-    // Route Input & Import Data
+    // Route Input, Import, & Export Data
     Route::get('/input-data', [MonthlyDashboardController::class, 'create']);
     Route::post('/input-data', [MonthlyDashboardController::class, 'store']);
     Route::post('/import-data', [MonthlyDashboardController::class, 'importExcel']);
-
-    // Route Download Template
+    Route::get('/export-data', [MonthlyDashboardController::class, 'exportData'])->name('export.data'); // <-- ROUTE EXPORT BARU
     Route::get('/download-template', [MonthlyDashboardController::class, 'downloadTemplate']);
     
-    // Route Kelola User (Poin 1) - Ditambahkan rute update dan penamaan (name) agar terhubung dengan tombol di view
+    // Route Kelola User
     Route::get('/kelola-user', [UserController::class, 'index'])->name('kelola.user');
     Route::post('/kelola-user', [UserController::class, 'store'])->name('kelola.user.store');
     Route::put('/kelola-user/{id}', [UserController::class, 'update'])->name('kelola.user.update');
