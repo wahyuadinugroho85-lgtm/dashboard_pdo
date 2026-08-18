@@ -66,7 +66,7 @@
                         </div>
                     </form>
 
-                    <!-- BOX EXPORT (BARU DITAMBAHKAN) -->
+                    <!-- BOX EXPORT -->
                     <h2 class="text-lg font-bold text-slate-800 border-b border-slate-200 pb-3 mt-8 mb-4 flex items-center gap-2">
                         <span>📤</span> Export Data Terinput
                     </h2>
@@ -164,7 +164,7 @@
                                 </div>
                                 <div class="mt-3">
                                     <label class="form-label text-indigo-700 font-bold">HKE (Hari Kerja Efektif) - WAJIB DIISI!</label>
-                                    <p class="text-[10px] text-slate-500 mb-1 leading-tight">Jika sedang isi REAL (Bulan Ini), isi angka misal: 26.<br>Jika sedang isi RKB (Bulan Depan), isi angka misal: 24.</p>
+                                    <p class="text-[10px] text-slate-500 mb-1 leading-tight">Bulan Ini misal: 26. Bulan Depan (RKB) misal: 24.</p>
                                     <input type="number" step="1" name="produksi[hke]" class="form-input w-1/3 bg-indigo-50 border-indigo-300 font-bold text-indigo-700" placeholder="Contoh: 26">
                                 </div>
                                 
@@ -184,7 +184,12 @@
                                 <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
-                                <div><label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input" placeholder="Isi Biaya PDO Bulan ini..."></div>
+                                
+                                <!-- HANYA ADA PDO BI, PDO SBI DIHILANGKAN -->
+                                <div class="mt-2">
+                                    <label class="form-label">Biaya PDO (Bi)</label>
+                                    <input type="number" step="1" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp...">
+                                </div>
                                 
                                 <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
                                     <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
@@ -203,23 +208,25 @@
                             <div class="space-y-4">
                                 <h3 class="font-bold text-teal-700 border-b pb-2">Perawatan Kebun Standar</h3>
                                 @foreach($jenisPerawatan as $rawat)
-                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between gap-4">
-                                    <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $rawat }}</div>
-                                    <div class="w-1/4"><label class="form-label">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $rawat }}][luas_ha]" class="form-input"></div>
-                                    <div class="w-1/4"><label class="form-label">Jml Blok</label><input type="number" step="1" name="rawat[{{ $rawat }}][jml_blok]" class="form-input"></div>
+                                <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between gap-2">
+                                    <div class="w-2/5 font-semibold text-sm text-slate-700">{{ $rawat }}</div>
+                                    <div class="w-1/5"><label class="form-label text-[10px]">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $rawat }}][luas_ha]" class="form-input px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px]">Jml Blok</label><input type="number" step="1" name="rawat[{{ $rawat }}][jml_blok]" class="form-input px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="1" name="rawat[{{ $rawat }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
                                 </div>
                                 @endforeach
                             </div>
                             
                             <div class="space-y-4">
                                 <h3 class="font-bold text-teal-700 border-b pb-2 flex items-center gap-2">
-                                    <span>✂️</span> Modul Rotasi Pruning (Baru)
+                                    <span>✂️</span> Modul Rotasi Pruning
                                 </h3>
                                 @foreach($kategoriPruning as $kp)
-                                <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex items-center justify-between gap-4">
-                                    <div class="w-1/2 font-semibold text-sm text-teal-800">{{ $kp }}</div>
-                                    <div class="w-1/4"><label class="form-label text-teal-700">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $kp }}][luas_ha]" class="form-input border-teal-300"></div>
-                                    <div class="w-1/4"><label class="form-label text-teal-700">Jml Blok</label><input type="number" step="1" name="rawat[{{ $kp }}][jml_blok]" class="form-input border-teal-300"></div>
+                                <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex items-center justify-between gap-2">
+                                    <div class="w-2/5 font-semibold text-sm text-teal-800">{{ $kp }}</div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-teal-700">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $kp }}][luas_ha]" class="form-input border-teal-300 px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-teal-700">Jml Blok</label><input type="number" step="1" name="rawat[{{ $kp }}][jml_blok]" class="form-input border-teal-300 px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="1" name="rawat[{{ $kp }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
                                 </div>
                                 @endforeach
                             </div>
