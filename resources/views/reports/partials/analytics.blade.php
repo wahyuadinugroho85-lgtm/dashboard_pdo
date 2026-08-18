@@ -62,7 +62,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- ROW RKB -->
                             <tr class="hover:bg-slate-50 transition-colors">
                                 <td rowspan="4" class="text-left py-2 px-3 font-bold text-slate-700 bg-white sticky left-0 z-10">{{ $labelBulan }}</td>
                                 <td rowspan="4" class="text-left py-2 px-3 font-bold text-indigo-600 bg-white sticky left-[96px] z-10">RKB</td>
@@ -90,7 +89,6 @@
                                 <td class="py-2 px-4 font-bold text-indigo-500 bg-indigo-50/50">{{ number_format($grkbJjgPkk, 2) }}</td>
                             </tr>
 
-                            <!-- ROW REAL -->
                             <tr class="bg-emerald-50/30 hover:bg-emerald-50/50 transition-colors">
                                 <td rowspan="4" class="text-left py-2 px-3 bg-white sticky left-0 z-10"></td>
                                 <td rowspan="4" class="text-left py-2 px-3 font-bold text-emerald-600 bg-white sticky left-[96px] z-10 border-l-4 border-emerald-500">Real</td>
@@ -118,7 +116,6 @@
                                 <td class="py-2 px-4 font-bold text-indigo-900 bg-indigo-50/50">{{ number_format($grealJjgPkk, 2) }}</td>
                             </tr>
 
-                            <!-- ROW DEV -->
                             <tr class="bg-rose-50/20 hover:bg-rose-50/50 transition-colors">
                                 <td rowspan="3" class="text-left py-2 px-3 bg-white sticky left-0 z-10"></td>
                                 <td rowspan="3" class="text-left py-2 px-3 font-bold text-rose-600 bg-white sticky left-[96px] z-10 border-l-4 border-rose-500">Dev</td>
@@ -145,7 +142,6 @@
                                 @php $gpct = ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) > 0 ? ($dataMatrix['BP-2']['produksi']['current']['real']->tonase ?? 0) / ($dataMatrix['BP-2']['produksi']['current']['rkb']->tonase ?? 0) * 100 : 0; @endphp
                                 <td class="py-2 px-4 font-bold text-amber-800 bg-amber-100/50">{{ number_format($gpct, 2) }}</td>
                             </tr>
-                            <!-- POIN 2: PERBAIKAN RUMUS DEVIASI Jjg/Pkk -->
                             <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
                                 <td class="text-left py-2 px-3 text-slate-600 border-r border-slate-200 bg-white sticky left-[192px] z-10">Jjg/Pkk</td>
                                 @foreach($estates as $estate)
@@ -336,41 +332,43 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
+                <!-- TOOLTIP RAWAT DIPERBARUI -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 400px;">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 480px;">
                         <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1 flex justify-between">
-                            <span>Detail Rawat per PT</span>
-                            <span class="text-slate-400 font-normal">Termasuk Cost/Ha & Pencapaian</span>
+                            <span>Detail Rawat & Cost per Pekerjaan</span>
                         </div>
                         <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600">
+                            <tr class="text-slate-400 border-b border-slate-600 bg-slate-800 sticky top-0">
                                 <th class="text-left pb-1">PT</th>
+                                <th class="text-left pb-1 pl-2">Jenis Pekerjaan</th>
                                 <th class="pb-1 pl-2 text-center">Blok</th>
                                 <th class="pb-1 pl-2">Luas (Ha)</th>
-                                <th class="pb-1 pl-2">% RKB</th>
                                 <th class="pb-1 pl-2">Cost/Ha (Rp)</th>
                             </tr>
                             @foreach($estates as $estate)
-                                @php
-                                    $luasTtl = 0; 
-                                    $blokTtl = 0; 
-                                    $luasRkb = 0;
-                                    foreach($jenisPerawatan as $rawat) { 
-                                        $luasTtl += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; 
-                                        $blokTtl += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->jml_blok ?? 0; 
-                                        $luasRkb += $dataMatrix[$estate->kode]['upkeep']['rkb'][$rawat]->luas_ha ?? 0; 
-                                    }
-                                    $pct = $luasRkb > 0 ? ($luasTtl / $luasRkb) * 100 : 0;
-                                    $costRawatSdBln = $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0;
-                                    $costHa = $luasTtl > 0 ? $costRawatSdBln / $luasTtl : 0;
+                                @php 
+                                    $isFirst = true; 
+                                    $allJobs = array_merge($jenisPerawatan, $kategoriPruning);
                                 @endphp
-                                <tr class="border-b border-slate-700 last:border-0">
-                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="pl-2 text-center">{{ number_format($blokTtl, 0) }}</td>
-                                    <td class="pl-2 font-bold text-white">{{ number_format($luasTtl, 2) }}</td>
-                                    <td class="pl-2 text-emerald-400">{{ number_format($pct, 1) }}%</td>
-                                    <td class="pl-2 text-amber-300">{{ number_format($costHa, 0) }}</td>
-                                </tr>
+                                @foreach($allJobs as $job)
+                                    @php
+                                        $l = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->luas_ha ?? 0; 
+                                        $b = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->jml_blok ?? 0; 
+                                        $c = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->cost_ha ?? 0; 
+                                    @endphp
+                                    
+                                    @if($l > 0 || $b > 0 || $c > 0)
+                                    <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
+                                        <td class="py-1.5 text-left font-bold text-slate-300">{{ $isFirst ? $estate->kode : '' }}</td>
+                                        <td class="py-1.5 text-left pl-2 text-slate-400 truncate max-w-[140px]" title="{{ $job }}">{{ $job }}</td>
+                                        <td class="py-1.5 pl-2 text-center">{{ number_format($b, 0) }}</td>
+                                        <td class="py-1.5 pl-2 font-bold text-white">{{ number_format($l, 2) }}</td>
+                                        <td class="py-1.5 pl-2 text-amber-400">{{ number_format($c, 0) }}</td>
+                                    </tr>
+                                    @php $isFirst = false; @endphp
+                                    @endif
+                                @endforeach
                             @endforeach
                         </table>
                     </div>
