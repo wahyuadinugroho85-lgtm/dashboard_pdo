@@ -182,8 +182,9 @@
                 </tr>
                 
                 @php 
-                    $hkeBulanIni = $dataMatrix['BP-2']['produksi']['current']['real']->hke_bulan_ini ?? 26;
-                    if($hkeBulanIni <= 0) $hkeBulanIni = 26; 
+                    // Variabel $hkeBulanIni sekarang menggunakan nilai global dari Controller.
+                    // Fallback di bawah ini hanya agar tidak error bagi 0 jika variabel kosong.
+                    if(!isset($hkeBulanIni) || $hkeBulanIni <= 0) $hkeBulanIni = 26; 
                 @endphp
                 <tr>
                     <td rowspan="3" class="valign-top font-semibold text-slate-700 bg-slate-50/80 border-r border-slate-100 text-center">
@@ -237,8 +238,9 @@
                 </tr>
 
                 @php 
-                    $hkeBulanDepan = $dataMatrix['BP-2']['produksi']['current']['real']->hke_bulan_depan ?? 24;
-                    if($hkeBulanDepan <= 0) $hkeBulanDepan = 24;
+                    // Variabel $hkeBulanDepan sekarang menggunakan nilai global dari Controller.
+                    // Fallback di bawah ini hanya agar tidak error bagi 0 jika variabel kosong.
+                    if(!isset($hkeBulanDepan) || $hkeBulanDepan <= 0) $hkeBulanDepan = 24;
                 @endphp
                 <tr class="border-t-[3px] border-slate-300">
                     <td rowspan="6" class="valign-top font-bold text-slate-800 bg-slate-50/80 border-r border-slate-100 text-center">{{ $labelBulanNext }}</td>
@@ -317,13 +319,13 @@
                     @foreach($estates as $estate)
                         @php 
                             $nTon = ($dataMatrix[$estate->kode]['produksi']['next']['rkb']->tonase ?? 0) / 1000; 
-                            $tonPerHari = $nTon / $hkeBulanDepan;
+                            $tonPerHari = $hkeBulanDepan > 0 ? $nTon / $hkeBulanDepan : 0;
                         @endphp
                         <td class="text-right font-bold text-slate-800">{{ number_format($tonPerHari, 2) }}</td>
                     @endforeach
                     @php 
                         $gnTon = ($dataMatrix['BP-2']['produksi']['next']['rkb']->tonase ?? 0) / 1000; 
-                        $gTonPerHari = $gnTon / $hkeBulanDepan;
+                        $gTonPerHari = $hkeBulanDepan > 0 ? $gnTon / $hkeBulanDepan : 0;
                     @endphp
                     <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gTonPerHari, 2) }}</td>
                 </tr>

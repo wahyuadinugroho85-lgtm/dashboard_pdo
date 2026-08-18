@@ -162,6 +162,7 @@
                                     <div><label class="form-label">Kunjungan</label><input type="number" step="0.01" name="produksi[kunjungan]" class="form-input"></div>
                                     <div><label class="form-label">Ha/Hk</label><input type="number" step="0.01" name="produksi[ha_hk]" class="form-input"></div>
                                 </div>
+                                
                                 <div class="mt-3">
                                     <label class="form-label text-indigo-700 font-bold">HKE (Hari Kerja Efektif) - WAJIB DIISI!</label>
                                     <p class="text-[10px] text-slate-500 mb-1 leading-tight">Bulan Ini misal: 26. Bulan Depan (RKB) misal: 24.</p>
@@ -185,9 +186,8 @@
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
                                 
-                                <!-- HANYA ADA PDO BI, PDO SBI DIHILANGKAN -->
                                 <div class="mt-2">
-                                    <label class="form-label">Biaya PDO (Bi)</label>
+                                    <label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label>
                                     <input type="number" step="1" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp...">
                                 </div>
                                 
