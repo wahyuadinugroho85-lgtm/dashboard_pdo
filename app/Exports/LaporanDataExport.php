@@ -26,6 +26,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
+        // Header ini sengaja disamakan persis dengan template Import agar bisa langsung diupload ulang
         $headers = [
             'kode_pt', 'tipe_data', 'bulan', 'tahun',
             'tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko', 'ha_cavel_real', 'hke',
@@ -44,7 +45,6 @@ class LaporanDataExport implements FromCollection, WithHeadings
             $headers[] = $slug . '_cost_ha';
         }
         
-        // Merging remaining headers
         $remainingHeaders = [
             'pupuk_dolomite_kg', 'pupuk_kieserite_kg', 'pupuk_kaptan_kg', 'pupuk_tsp_kg', 'pupuk_urea_kg', 'pupuk_mop_kg', 'pupuk_mikro_kg',
             'mutu_unripe', 'mutu_ripe', 'mutu_over_ripe', 'mutu_empty_bunch', 'mutu_abnormal',
@@ -76,6 +76,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
         foreach ($estates as $estate) {
             foreach ($tipes as $tipe) {
                 
+                // Mengambil model dari database
                 $prod = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->first();
                 $cost = OperationalCost::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->first();
                 $upkeeps = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get()->keyBy('jenis_pekerjaan');
@@ -83,11 +84,13 @@ class LaporanDataExport implements FromCollection, WithHeadings
                 $quals = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get()->keyBy('kriteria');
                 $workers = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get();
 
+                // Fungsi bantuan (Helper) untuk menarik data TK
                 $getTk = function($kat, $sub) use ($workers) {
                     $w = $workers->where('kategori', $kat)->where('sub_kategori', $sub)->first();
                     return $w ? $w->jumlah_tk : null;
                 };
 
+                // Menyusun per baris Excel
                 $row = [
                     'kode_pt' => $estate->kode,
                     'tipe_data' => $tipe,
