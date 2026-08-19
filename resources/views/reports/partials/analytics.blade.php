@@ -332,7 +332,7 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
-                <!-- TOOLTIP RAWAT DIPERBARUI -->
+                <!-- TOOLTIP RAWAT HANYA MEMUAT JENIS PERAWATAN UTAMA & PRUNING STANDARD -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 480px;">
                         <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1 flex justify-between">
@@ -349,9 +349,8 @@
                             @foreach($estates as $estate)
                                 @php 
                                     $isFirst = true; 
-                                    $allJobs = array_merge($jenisPerawatan, $kategoriPruning);
                                 @endphp
-                                @foreach($allJobs as $job)
+                                @foreach($jenisPerawatan as $job)
                                     @php
                                         $l = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->luas_ha ?? 0; 
                                         $b = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->jml_blok ?? 0; 
@@ -470,7 +469,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET BARU: EKSTRAKSI MILL CPO ================= -->
+            <!-- ================= WIDGET EKSTRAKSI MILL CPO ================= -->
             <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total CPO & OER</p>
@@ -497,7 +496,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET BARU: EKSTRAKSI MILL PKO ================= -->
+            <!-- ================= WIDGET EKSTRAKSI MILL PKO ================= -->
             <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total PKO & KER</p>
@@ -524,7 +523,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET BARU: KINERJA PEMANEN ================= -->
+            <!-- ================= WIDGET KINERJA PEMANEN ================= -->
             <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Kinerja Pemanen</p>
