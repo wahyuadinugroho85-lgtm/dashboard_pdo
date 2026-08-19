@@ -30,33 +30,29 @@ class LaporanImport implements ToCollection, WithHeadingRow
             $periode = Carbon::createFromDate($row['tahun'], $row['bulan'], 1)->format('Y-m-d');
             $matchAttr = ['estate_id' => $estate->id, 'periode' => $periode, 'tipe' => strtoupper($row['tipe_data'])];
 
-            // 1. Production
-            Production::updateOrCreate($matchAttr, [
-                'tonase' => $row['tonase'] ?? null,
-                'janjang' => $row['janjang'] ?? null,
-                'hs_ha' => $row['hs_ha'] ?? null,
-                'hs_pokok' => $row['hs_pokok'] ?? null,
-                'ha_cavel_real' => $row['ha_cavel_real'] ?? null,
-                'hk_panen' => $row['hk_panen'] ?? null,
-                'kunjungan' => $row['kunjungan'] ?? null,
-                'ha_hk' => $row['ha_hk'] ?? null,
-                'hke' => $row['hke'] ?? null,
-                'ton_cpo' => $row['ton_cpo'] ?? null,
-                'ton_ker' => $row['ton_ker'] ?? null,
-                'ton_pko' => $row['ton_pko'] ?? null,
-            ]);
+            // 1. Production (Hanya memproses yang ada isinya agar tidak Error NULL)
+            $dataProd = [];
+            $prodFields = ['tonase', 'janjang', 'hs_ha', 'hs_pokok', 'ha_cavel_real', 'hk_panen', 'kunjungan', 'ha_hk', 'hke', 'ton_cpo', 'ton_ker', 'ton_pko'];
+            foreach ($prodFields as $field) {
+                if (isset($row[$field]) && trim($row[$field]) !== '') {
+                    $dataProd[$field] = $row[$field];
+                }
+            }
+            if (!empty($dataProd)) {
+                Production::updateOrCreate($matchAttr, $dataProd);
+            }
 
             // 2. Operational Cost
-            OperationalCost::updateOrCreate($matchAttr, [
-                'cost_panen' => $row['cost_panen'] ?? null,
-                'cost_rawat' => $row['cost_rawat'] ?? null,
-                'cost_kantor' => $row['cost_kantor'] ?? null,
-                'cost_teknik' => $row['cost_teknik'] ?? null,
-                'cost_pks' => $row['cost_pks'] ?? null,
-                'pdo_bi' => $row['pdo_bi'] ?? null,
-                'bgt_cost_palm_produk' => $row['bgt_cost_palm_produk'] ?? null,
-                'bgt_cost_palm_oil' => $row['bgt_cost_palm_oil'] ?? null,
-            ]);
+            $dataBiaya = [];
+            $biayaFields = ['cost_panen', 'cost_rawat', 'cost_kantor', 'cost_teknik', 'cost_pks', 'pdo_bi', 'bgt_cost_palm_produk', 'bgt_cost_palm_oil'];
+            foreach ($biayaFields as $field) {
+                if (isset($row[$field]) && trim($row[$field]) !== '') {
+                    $dataBiaya[$field] = $row[$field];
+                }
+            }
+            if (!empty($dataBiaya)) {
+                OperationalCost::updateOrCreate($matchAttr, $dataBiaya);
+            }
 
             // 3. Upkeep / Perawatan
             $upkeeps = [
@@ -72,12 +68,13 @@ class LaporanImport implements ToCollection, WithHeadingRow
             ];
 
             foreach($upkeeps as $nama => $cols) {
-                if(isset($row[$cols['ha']]) || isset($row[$cols['blok']]) || isset($row[$cols['cost']])) {
-                    Upkeep::updateOrCreate(array_merge($matchAttr, ['jenis_pekerjaan' => $nama]), [
-                        'luas_ha' => $row[$cols['ha']] ?? null,
-                        'jml_blok' => $row[$cols['blok']] ?? null,
-                        'cost_ha' => $row[$cols['cost']] ?? null,
-                    ]);
+                $dataRawat = [];
+                if (isset($row[$cols['ha']]) && trim($row[$cols['ha']]) !== '') $dataRawat['luas_ha'] = $row[$cols['ha']];
+                if (isset($row[$cols['blok']]) && trim($row[$cols['blok']]) !== '') $dataRawat['jml_blok'] = $row[$cols['blok']];
+                if (isset($row[$cols['cost']]) && trim($row[$cols['cost']]) !== '') $dataRawat['cost_ha'] = $row[$cols['cost']];
+                
+                if (!empty($dataRawat)) {
+                    Upkeep::updateOrCreate(array_merge($matchAttr, ['jenis_pekerjaan' => $nama]), $dataRawat);
                 }
             }
 
@@ -86,13 +83,13 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Dolomite' => 'pupuk_dolomite_kg',
                 'Kieserite' => 'pupuk_kieserite_kg',
                 'Kaptan' => 'pupuk_kaptan_kg',
-                'TSP / RP' => 'pupuk_tsp_kg', // Harus match dgn Template
+                'TSP / RP' => 'pupuk_tsp_rp_kg',
                 'Urea' => 'pupuk_urea_kg',
                 'MOP' => 'pupuk_mop_kg',
-                'Mikro-Mg' => 'pupuk_mikro_kg',
+                'Mikro-Mg' => 'pupuk_mikromg_kg',
             ];
             foreach($ferts as $nama => $col) {
-                if(isset($row[$col])) {
+                if(isset($row[$col]) && trim($row[$col]) !== '') {
                     Fertilizer::updateOrCreate(array_merge($matchAttr, ['jenis_pupuk' => $nama]), ['jumlah_kg' => $row[$col]]);
                 }
             }
@@ -106,7 +103,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Abnormal' => 'mutu_abnormal',
             ];
             foreach($quals as $nama => $col) {
-                if(isset($row[$col])) {
+                if(isset($row[$col]) && trim($row[$col]) !== '') {
                     HarvestQuality::updateOrCreate(array_merge($matchAttr, ['kriteria' => $nama]), ['persentase' => $row[$col]]);
                 }
             }
@@ -123,7 +120,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
 
             foreach($workers as $kategori => $subs) {
                 foreach($subs as $sub => $col) {
-                    if(isset($row[$col])) {
+                    if(isset($row[$col]) && trim($row[$col]) !== '') {
                         WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => $kategori, 'sub_kategori' => $sub]), ['jumlah_tk' => $row[$col]]);
                     }
                 }
@@ -137,11 +134,12 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'D' => ['tk' => 'tk_kelas_d', 'avr' => 'tk_kelas_d_avr'],
             ];
             foreach($pemanen as $kelas => $cols) {
-                if(isset($row[$cols['tk']]) || isset($row[$cols['avr']])) {
-                    WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => 'Kelas Pemanen', 'sub_kategori' => $kelas]), [
-                        'jumlah_tk' => $row[$cols['tk']] ?? null,
-                        'avr_bln' => $row[$cols['avr']] ?? null,
-                    ]);
+                $dataPemanen = [];
+                if(isset($row[$cols['tk']]) && trim($row[$cols['tk']]) !== '') $dataPemanen['jumlah_tk'] = $row[$cols['tk']];
+                if(isset($row[$cols['avr']]) && trim($row[$cols['avr']]) !== '') $dataPemanen['avr_bln'] = $row[$cols['avr']];
+                
+                if(!empty($dataPemanen)) {
+                    WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => 'Kelas Pemanen', 'sub_kategori' => $kelas]), $dataPemanen);
                 }
             }
         }
