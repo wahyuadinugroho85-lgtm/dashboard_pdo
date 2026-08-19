@@ -128,10 +128,10 @@ class MonthlyDashboardController extends Controller
 
         // LOGIKA BARU HKE GLOBAL
         $hkeBulanIni = Production::whereYear('periode', $tahun)->whereMonth('periode', $bulan)->max('hke') ?? 0;
-        if($hkeBulanIni <= 0) $hkeBulanIni = 26; // Fallback jika tidak ada data sama sekali
+        if($hkeBulanIni <= 0) $hkeBulanIni = 26;
 
         $hkeBulanDepan = Production::whereYear('periode', $nextMonthDate->year)->whereMonth('periode', $nextMonthDate->month)->max('hke') ?? 0;
-        if($hkeBulanDepan <= 0) $hkeBulanDepan = 24; // Fallback jika tidak ada data sama sekali
+        if($hkeBulanDepan <= 0) $hkeBulanDepan = 24;
 
         $jenisPerawatan = $this->jenisPerawatan;
         $kategoriPruning = $this->kategoriPruning;
@@ -379,7 +379,6 @@ class MonthlyDashboardController extends Controller
             foreach ($request->pekerja as $kategori => $subs) {
                 foreach ($subs as $subKategori => $val) {
                     $dataPekerja = [];
-                    // MENAMBAHKAN 'avr_bln' KE DALAM ARRAY
                     foreach (['jumlah_tk', 'persentase', 'avr_bln'] as $field) {
                         if (isset($val[$field]) && $val[$field] !== '') { 
                             $dataPekerja[$field] = $val[$field]; 
@@ -401,7 +400,7 @@ class MonthlyDashboardController extends Controller
         try {
             Excel::import(new LaporanImport, $request->file('file_excel'));
             return redirect('/input-data')->with('success', 'Data Excel berhasil diimport dan masuk ke dalam database!');
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) { 
             return redirect('/input-data')->with('error', 'Gagal import. Detail: ' . $e->getMessage());
         }
     }
