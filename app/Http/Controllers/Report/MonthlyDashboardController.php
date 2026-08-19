@@ -300,7 +300,7 @@ class MonthlyDashboardController extends Controller
             'Status Keluarga' => ['KK', 'Lj'],
             'Masa Kerja' => ['<= 1bln', '2-3Bln', '> 3Bln'],
             'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', 'Keluar (Sbi)'],
-            'HKNE' => ['Sakit', 'Cuti', 'Mangkir', 'Ijin'],
+            'HKNE' => ['Sakit', 'Cuti', 'Mangkir', 'Ijin', 'Total TK'], // KOLOM BARU DI FORM INPUT
             'Jam Kerja' => ['Tersedia', 'Pagi', 'Siang', 'Sore'],
             'Kelas Pemanen' => ['A', 'B', 'C', 'D']
         ];
