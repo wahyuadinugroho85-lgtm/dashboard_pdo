@@ -409,34 +409,39 @@
                 </div>
             </div>
 
-            <div id="w-tk" data-wname="Total Kinerja TK (Org)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
+            <!-- ================= WIDGET BARU: DATA JAM KERJA ================= -->
+            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
-                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Kinerja TK</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalTK, 0) }}</h3>
-                    <p class="text-xs font-medium text-slate-400 mt-1">Jumlah Orang Terinput</p>
+                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
+                    @php
+                        $gTsd = 0; $gPgi = 0;
+                        foreach($estates as $estate){
+                            $gTsd += isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Tersedia')->jumlah_tk ?? 0) : 0;
+                            $gPgi += isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Pagi')->jumlah_tk ?? 0) : 0;
+                        }
+                        $pctPgi = $gTsd > 0 ? ($gPgi / $gTsd) * 100 : 0;
+                    @endphp
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTsd, 0) }} <span class="text-sm font-bold text-slate-500">TK Tersedia</span></h3>
+                    <p class="text-xs font-medium text-slate-400 mt-1">Kehadiran Pagi: {{ number_format($pctPgi, 2) }}%</p>
                 </div>
                 <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
-                        <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail TK per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-56">
+                        <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail Jam Kerja per PT</div>
                         <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Total Orang</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Tersedia</th><th class="pb-1 pl-2">% Pagi</th></tr>
                             @foreach($estates as $estate)
                                 @php 
-                                    $ptTk = 0; 
-                                    foreach($kategoriPekerja as $kat) { 
-                                        if(isset($dataMatrix[$estate->kode]['pekerja'][$kat])) { 
-                                            foreach($dataMatrix[$estate->kode]['pekerja'][$kat] as $pkj) { 
-                                                $ptTk += $pkj->jumlah_tk; 
-                                            } 
-                                        } 
-                                    } 
+                                    $tsd = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Tersedia')->jumlah_tk ?? 0) : 0;
+                                    $pgi = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Pagi')->jumlah_tk ?? 0) : 0;
+                                    $pC = $tsd > 0 ? ($pgi / $tsd) * 100 : 0;
                                 @endphp
                                 <tr class="border-b border-slate-700 last:border-0">
                                     <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="font-bold text-white">{{ number_format($ptTk, 0) }} Orang</td>
+                                    <td class="pl-2 font-bold text-white">{{ number_format($tsd, 0) }}</td>
+                                    <td class="pl-2 text-blue-300">{{ number_format($pC, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
