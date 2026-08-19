@@ -134,17 +134,17 @@
                 <tr class="bg-emerald-300 text-emerald-900 border-b border-emerald-400 border-dashed">
                     <td colspan="2" class="text-left border-r border-emerald-400">HKE</td>
                     <td class="text-center border-r border-emerald-400">Hari</td>
-                    @foreach($estates as $estate) <td class="text-center">20</td> @endforeach
-                    <td class="text-center bg-emerald-400">20</td>
+                    @foreach($estates as $estate) <td class="text-center">{{ number_format($hkeBulanIni, 0) }}</td> @endforeach
+                    <td class="text-center bg-emerald-400">{{ number_format($hkeBulanIni, 0) }}</td>
                 </tr>
                 <tr class="bg-emerald-300 text-emerald-900 row-border-strong border-b-4 border-emerald-500">
                     <td colspan="2" class="text-left border-r border-emerald-400"></td>
                     <td class="text-center border-r border-emerald-400">Ton/Hari</td>
                     @foreach($estates as $estate)
                         @php $tPpk = 0; foreach($jenisPupuk as $ppk){ $tPpk += $dataMatrix[$estate->kode]['pupuk']['budget'][$ppk]->jumlah_kg ?? 0; } @endphp
-                        <td class="text-right">{{ number_format($tPpk / 20, 0) }}</td>
+                        <td class="text-right">{{ number_format($hkeBulanIni > 0 ? $tPpk / $hkeBulanIni : 0, 0) }}</td>
                     @endforeach
-                    <td class="text-right bg-emerald-400">{{ number_format($gTppk / 20, 0) }}</td>
+                    <td class="text-right bg-emerald-400">{{ number_format($hkeBulanIni > 0 ? $gTppk / $hkeBulanIni : 0, 0) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -199,7 +199,17 @@
                 
                 <!-- BAGIAN HKNE KARYAWAN -->
                 <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
-                    <td rowspan="6" class="text-center align-middle border-r border-slate-200 w-32 bg-white">HKNE Kary PANEN<br><span class="text-xs text-slate-500 font-normal">HKE: 24</span></td>
+                    <td rowspan="8" class="text-center align-middle border-r border-slate-200 w-32 bg-white">HKNE Kary PANEN<br><span class="text-xs text-slate-500 font-normal">HKE: {{ number_format($hkeBulanIni, 0) }}</span></td>
+                    <td class="text-left border-r border-slate-200 w-24">Kerja</td>
+                    <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
+                    @foreach($estates as $estate)
+                        @php $v = isset($dataMatrix[$estate->kode]['pekerja']['HKNE']) ? ($dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', 'Kerja')->jumlah_tk ?? 0) : 0; @endphp
+                        <td class="text-right">{{ number_format($v, 0) }}</td>
+                    @endforeach
+                    @php $gKerja = 0; foreach($estates as $estate){ $gKerja += isset($dataMatrix[$estate->kode]['pekerja']['HKNE']) ? ($dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', 'Kerja')->jumlah_tk ?? 0) : 0; } @endphp
+                    <td class="text-right bg-slate-100">{{ number_format($gKerja, 0) }}</td>
+                </tr>
+                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
                     <td class="text-left border-r border-slate-200 w-24">Sakit</td>
                     <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Hk</td>
                     @foreach($estates as $estate)
@@ -240,29 +250,70 @@
                     <td class="text-right bg-slate-100">{{ number_format($gv, 0) }}</td>
                 </tr>
                 <tr class="bg-emerald-100/50 border-y border-emerald-300">
-                    <td class="text-left border-r border-emerald-200 w-24">Total</td>
+                    <td class="text-left border-r border-emerald-200 w-24">Total HKNE</td>
                     <td class="text-center border-r border-emerald-200 text-slate-500 font-medium">Hk</td>
                     @foreach($estates as $estate)
-                        @php $tHk = 0; if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { foreach($dataMatrix[$estate->kode]['pekerja']['HKNE'] as $p) $tHk+=$p->jumlah_tk; } @endphp
+                        @php 
+                            $tHk = 0; 
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { 
+                                foreach(['Sakit', 'Cuti', 'Mangkir', 'Ijin'] as $sub) {
+                                    $tHk += $dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', $sub)->jumlah_tk ?? 0;
+                                }
+                            } 
+                        @endphp
                         <td class="text-right text-emerald-800">{{ number_format($tHk, 0) }}</td>
                     @endforeach
-                    @php $gHk = 0; foreach($estates as $estate){ if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { foreach($dataMatrix[$estate->kode]['pekerja']['HKNE'] as $p) $gHk+=$p->jumlah_tk; } } @endphp
+                    @php 
+                        $gHk = 0; 
+                        foreach($estates as $estate){ 
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { 
+                                foreach(['Sakit', 'Cuti', 'Mangkir', 'Ijin'] as $sub) {
+                                    $gHk += $dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', $sub)->jumlah_tk ?? 0;
+                                }
+                            } 
+                        } 
+                    @endphp
                     <td class="text-right bg-emerald-200 text-emerald-900">{{ number_format($gHk, 0) }}</td>
                 </tr>
                 <tr class="bg-slate-50/50 border-b-2 border-slate-300">
                     <td class="text-left border-r border-slate-200 w-24">%</td>
                     <td class="text-center border-r border-slate-200 text-slate-500 font-medium"></td>
-                    @foreach($estates as $estate) <td class="text-right text-slate-600 font-medium">0.00</td> @endforeach
-                    <td class="text-right bg-slate-100 text-slate-700 font-medium">0.00</td>
+                    @foreach($estates as $estate)
+                        @php 
+                            $tHkne = 0; 
+                            $kerja = 0;
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { 
+                                foreach(['Sakit', 'Cuti', 'Mangkir', 'Ijin'] as $sub) {
+                                    $tHkne += $dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', $sub)->jumlah_tk ?? 0;
+                                }
+                                $kerja = $dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', 'Kerja')->jumlah_tk ?? 0;
+                            }
+                            $totHk = $kerja + $tHkne;
+                            $pct = $totHk > 0 ? ($tHkne / $totHk) * 100 : 0;
+                        @endphp
+                        <td class="text-right text-slate-600 font-medium">{{ number_format($pct, 2) }}</td>
+                    @endforeach
+                    @php 
+                        $gTotHk = $gKerja + $gHk;
+                        $gPct = $gTotHk > 0 ? ($gHk / $gTotHk) * 100 : 0;
+                    @endphp
+                    <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gPct, 2) }}</td>
                 </tr>
                 <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
                     <td colspan="2" class="text-left border-r border-yellow-400">Rata2 Hkne/hari</td>
                     <td class="text-center border-r border-yellow-400 font-medium">Hk</td>
                     @foreach($estates as $estate)
-                        @php $tHk = 0; if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { foreach($dataMatrix[$estate->kode]['pekerja']['HKNE'] as $p) $tHk+=$p->jumlah_tk; } @endphp
-                        <td class="text-right">{{ number_format($tHk / 24, 0) }}</td>
+                        @php 
+                            $tHkne = 0; 
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['HKNE'])) { 
+                                foreach(['Sakit', 'Cuti', 'Mangkir', 'Ijin'] as $sub) {
+                                    $tHkne += $dataMatrix[$estate->kode]['pekerja']['HKNE']->firstWhere('sub_kategori', $sub)->jumlah_tk ?? 0;
+                                }
+                            } 
+                        @endphp
+                        <td class="text-right">{{ number_format($hkeBulanIni > 0 ? $tHkne / $hkeBulanIni : 0, 0) }}</td>
                     @endforeach
-                    <td class="text-right bg-yellow-400">{{ number_format($gHk / 24, 0) }}</td>
+                    <td class="text-right bg-yellow-400">{{ number_format($hkeBulanIni > 0 ? $gHk / $hkeBulanIni : 0, 0) }}</td>
                 </tr>
 
                 <!-- BAGIAN JAM KERJA -->
@@ -314,13 +365,13 @@
                     <td class="text-center border-r border-slate-200 text-slate-500 font-medium">%</td>
                     @foreach($estates as $estate)
                         @php 
-                            $tsd = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Tersedia')->jumlah_tk ?? 0) : 0;
+                            $pgi = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Pagi')->jumlah_tk ?? 0) : 0;
                             $sng = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Siang')->jumlah_tk ?? 0) : 0;
-                            $pct = $tsd > 0 ? ($sng / $tsd) * 100 : 0;
+                            $pct = $pgi > 0 ? ($sng / $pgi) * 100 : 0;
                         @endphp
                         <td class="text-right text-slate-600 font-medium">{{ number_format($pct, 2) }}</td>
                     @endforeach
-                    <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gTsd > 0 ? ($gSng/$gTsd)*100 : 0, 2) }}</td>
+                    <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gPgi > 0 ? ($gSng/$gPgi)*100 : 0, 2) }}</td>
                 </tr>
                 
                 <tr class="bg-yellow-300 text-yellow-900 border-b border-yellow-500">
@@ -338,13 +389,13 @@
                     <td class="text-center border-r border-yellow-400 font-medium text-yellow-800">%</td>
                     @foreach($estates as $estate)
                         @php 
-                            $tsd = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Tersedia')->jumlah_tk ?? 0) : 0;
+                            $pgi = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Pagi')->jumlah_tk ?? 0) : 0;
                             $sor = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Sore')->jumlah_tk ?? 0) : 0;
-                            $pct = $tsd > 0 ? ($sor / $tsd) * 100 : 0;
+                            $pct = $pgi > 0 ? ($sor / $pgi) * 100 : 0;
                         @endphp
                         <td class="text-right">{{ number_format($pct, 2) }}</td>
                     @endforeach
-                    <td class="text-right bg-yellow-400">{{ number_format($gTsd > 0 ? ($gSor/$gTsd)*100 : 0, 2) }}</td>
+                    <td class="text-right bg-yellow-400">{{ number_format($gPgi > 0 ? ($gSor/$gPgi)*100 : 0, 2) }}</td>
                 </tr>
 
                 <!-- BAGIAN KELAS PEMANEN -->
