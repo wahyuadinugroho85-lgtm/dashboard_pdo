@@ -26,7 +26,6 @@ class LaporanDataExport implements FromCollection, WithHeadings
 
     public function headings(): array
     {
-        // Header ini sengaja disamakan persis dengan template Import agar bisa langsung diupload ulang
         $headers = [
             'kode_pt', 'tipe_data', 'bulan', 'tahun',
             'tonase', 'janjang', 'hk_panen', 'luas_cavel', 'hs_ha', 'hs_pokok', 'kunjungan', 'ha_hk', 'kg_hk', 'ton_cpo', 'ton_ker', 'ton_pko', 'ha_cavel_real', 'hke',
@@ -54,7 +53,10 @@ class LaporanDataExport implements FromCollection, WithHeadings
             'tk_mutasi_masuk_bi', 'tk_mutasi_masuk_sbi', 'tk_mutasi_keluar_bi', 'tk_mutasi_keluar_sbi',
             'tk_hkne_sakit', 'tk_hkne_cuti', 'tk_hkne_mangkir', 'tk_hkne_ijin',
             'tk_jam_tersedia', 'tk_jam_pagi', 'tk_jam_siang', 'tk_jam_sore',
-            'tk_kelas_a', 'tk_kelas_b', 'tk_kelas_c', 'tk_kelas_d'
+            'tk_kelas_a', 'tk_kelas_a_avr',
+            'tk_kelas_b', 'tk_kelas_b_avr',
+            'tk_kelas_c', 'tk_kelas_c_avr',
+            'tk_kelas_d', 'tk_kelas_d_avr'
         ];
 
         return array_merge($headers, $remainingHeaders);
@@ -76,7 +78,6 @@ class LaporanDataExport implements FromCollection, WithHeadings
         foreach ($estates as $estate) {
             foreach ($tipes as $tipe) {
                 
-                // Mengambil model dari database
                 $prod = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->first();
                 $cost = OperationalCost::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->first();
                 $upkeeps = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get()->keyBy('jenis_pekerjaan');
@@ -84,13 +85,16 @@ class LaporanDataExport implements FromCollection, WithHeadings
                 $quals = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get()->keyBy('kriteria');
                 $workers = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', $tipe)->get();
 
-                // Fungsi bantuan (Helper) untuk menarik data TK
                 $getTk = function($kat, $sub) use ($workers) {
                     $w = $workers->where('kategori', $kat)->where('sub_kategori', $sub)->first();
                     return $w ? $w->jumlah_tk : null;
                 };
 
-                // Menyusun per baris Excel
+                $getTkAvr = function($kat, $sub) use ($workers) {
+                    $w = $workers->where('kategori', $kat)->where('sub_kategori', $sub)->first();
+                    return $w ? $w->avr_bln : null;
+                };
+
                 $row = [
                     'kode_pt' => $estate->kode,
                     'tipe_data' => $tipe,
@@ -172,9 +176,13 @@ class LaporanDataExport implements FromCollection, WithHeadings
                     'tk_jam_sore' => $getTk('Jam Kerja', 'Sore'),
 
                     'tk_kelas_a' => $getTk('Kelas Pemanen', 'A'),
+                    'tk_kelas_a_avr' => $getTkAvr('Kelas Pemanen', 'A'),
                     'tk_kelas_b' => $getTk('Kelas Pemanen', 'B'),
+                    'tk_kelas_b_avr' => $getTkAvr('Kelas Pemanen', 'B'),
                     'tk_kelas_c' => $getTk('Kelas Pemanen', 'C'),
-                    'tk_kelas_d' => $getTk('Kelas Pemanen', 'D')
+                    'tk_kelas_c_avr' => $getTkAvr('Kelas Pemanen', 'C'),
+                    'tk_kelas_d' => $getTk('Kelas Pemanen', 'D'),
+                    'tk_kelas_d_avr' => $getTkAvr('Kelas Pemanen', 'D')
                 ];
 
                 $data[] = array_merge($row, $remainingData);

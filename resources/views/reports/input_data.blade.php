@@ -185,11 +185,7 @@
                                 <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
                                 <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
                                 <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
-                                
-                                <div class="mt-2">
-                                    <label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label>
-                                    <input type="number" step="1" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp...">
-                                </div>
+                                <div><label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp..."></div>
                                 
                                 <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
                                     <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
@@ -264,7 +260,7 @@
                     <!-- ISI TAB 4: TENAGA KERJA -->
                     <div id="tab-sdm" class="tab-content hidden p-6">
                         <p class="text-xs text-slate-500 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                            Isi jumlah orang (TK/Hk) pada kolom yang tersedia. Kelompok HKNE, Jam Kerja, dan Kelas Pemanen secara otomatis masuk dalam rekapitulasi Performance TK.
+                            Isi jumlah orang (TK/Hk) pada kolom yang tersedia. Khusus untuk Kelas Pemanen, isikan juga Avr/Bln nya.
                         </p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -274,8 +270,11 @@
                                 <div class="p-3 space-y-2">
                                     @foreach($subs as $sub)
                                     <div class="flex items-center justify-between gap-2">
-                                        <label class="text-sm text-slate-600 font-medium w-3/5 truncate" title="{{ $sub }}">{{ $sub }}</label>
-                                        <input type="number" step="1" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" class="form-input w-2/5 text-center" placeholder="Jml...">
+                                        <label class="text-sm text-slate-600 font-medium w-1/3 truncate" title="{{ $sub }}">{{ $sub }}</label>
+                                        <input type="number" step="1" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" class="form-input w-1/3 text-center px-1" placeholder="TK">
+                                        @if($kategori == 'Kelas Pemanen')
+                                            <input type="number" step="0.01" name="pekerja[{{ $kategori }}][{{ $sub }}][avr_bln]" class="form-input w-1/3 text-center px-1 border-emerald-300" placeholder="Avr/Bln">
+                                        @endif
                                     </div>
                                     @endforeach
                                 </div>

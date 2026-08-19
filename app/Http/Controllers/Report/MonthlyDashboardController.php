@@ -127,7 +127,6 @@ class MonthlyDashboardController extends Controller
         $dataMatrix['BP-2'] = $this->calculateGrandTotal($dataMatrix, $estates, $historicalYears);
 
         // LOGIKA BARU HKE GLOBAL
-        // Mencari nilai HKE tertinggi yang pernah diinput pada bulan kalender terkait, mengabaikan tipe REAL/RKB.
         $hkeBulanIni = Production::whereYear('periode', $tahun)->whereMonth('periode', $bulan)->max('hke') ?? 0;
         if($hkeBulanIni <= 0) $hkeBulanIni = 26; // Fallback jika tidak ada data sama sekali
 
@@ -380,7 +379,8 @@ class MonthlyDashboardController extends Controller
             foreach ($request->pekerja as $kategori => $subs) {
                 foreach ($subs as $subKategori => $val) {
                     $dataPekerja = [];
-                    foreach (['jumlah_tk', 'persentase'] as $field) {
+                    // MENAMBAHKAN 'avr_bln' KE DALAM ARRAY
+                    foreach (['jumlah_tk', 'persentase', 'avr_bln'] as $field) {
                         if (isset($val[$field]) && $val[$field] !== '') { 
                             $dataPekerja[$field] = $val[$field]; 
                         }

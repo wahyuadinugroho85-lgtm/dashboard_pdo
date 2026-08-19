@@ -149,6 +149,7 @@
             </tbody>
         </table>
     </div>
+
 </div>
 
 <!-- ================= TAB 4: KUALITAS BUAH ================= -->
@@ -366,23 +367,53 @@
                     <td class="text-left border-r border-slate-200 text-slate-600">%</td>
                     @foreach($estates as $estate)
                         @php 
-                            $tKls = 0; if(isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'])){ foreach($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'] as $p) $tKls+=$p->jumlah_tk; }
+                            $tKls = 0; 
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'])){ 
+                                foreach($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'] as $p) {
+                                    if(in_array($p->sub_kategori, ['A','B','C','D'])) { $tKls+=$p->jumlah_tk; }
+                                }
+                            }
                             $v = isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']) ? ($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']->firstWhere('sub_kategori', $kls)->jumlah_tk ?? 0) : 0;
                         @endphp
                         <td class="text-right text-slate-600 font-medium">{{ number_format($tKls > 0 ? ($v/$tKls)*100 : 0, 2) }}%</td>
                     @endforeach
-                    @php $gTkls = 0; foreach($estates as $estate){ if(isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'])){ foreach($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'] as $p) $gTkls+=$p->jumlah_tk; } } @endphp
+                    @php 
+                        $gTkls = 0; 
+                        foreach($estates as $estate){ 
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'])){ 
+                                foreach($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen'] as $p) {
+                                    if(in_array($p->sub_kategori, ['A','B','C','D'])) { $gTkls+=$p->jumlah_tk; }
+                                }
+                            } 
+                        } 
+                    @endphp
                     <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gTkls > 0 ? ($gKls/$gTkls)*100 : 0, 2) }}%</td>
                 </tr>
                 <tr class="hover:bg-slate-50 border-b border-slate-200 border-dotted">
                     <td class="text-left border-r border-slate-200 text-emerald-700">/ Hari</td>
-                    @foreach($estates as $estate) <td class="text-right text-emerald-700">0</td> @endforeach
-                    <td class="text-right bg-emerald-50 text-emerald-800">0</td>
+                    @foreach($estates as $estate) 
+                        @php 
+                            $avr = isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']) ? ($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']->firstWhere('sub_kategori', $kls)->avr_bln ?? 0) : 0;
+                            $perHari = $hkeBulanIni > 0 ? $avr / $hkeBulanIni : 0;
+                        @endphp
+                        <td class="text-right text-emerald-700">{{ number_format($perHari, 2) }}</td> 
+                    @endforeach
+                    @php
+                        $gAvr = 0;
+                        foreach($estates as $estate){
+                            $gAvr += isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']) ? ($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']->firstWhere('sub_kategori', $kls)->avr_bln ?? 0) : 0;
+                        }
+                        $gPerHari = $hkeBulanIni > 0 ? $gAvr / $hkeBulanIni : 0;
+                    @endphp
+                    <td class="text-right bg-emerald-50 text-emerald-800">{{ number_format($gPerHari, 2) }}</td>
                 </tr>
                 <tr class="bg-emerald-50/50 hover:bg-emerald-100/50 border-b border-slate-300 border-dashed">
                     <td class="text-left border-r border-slate-200 text-emerald-800">Avr/Bln</td>
-                    @foreach($estates as $estate) <td class="text-right text-emerald-800">0</td> @endforeach
-                    <td class="text-right bg-emerald-100 text-emerald-900">0</td>
+                    @foreach($estates as $estate) 
+                        @php $avr = isset($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']) ? ($dataMatrix[$estate->kode]['pekerja']['Kelas Pemanen']->firstWhere('sub_kategori', $kls)->avr_bln ?? 0) : 0; @endphp
+                        <td class="text-right text-emerald-800">{{ number_format($avr, 2) }}</td> 
+                    @endforeach
+                    <td class="text-right bg-emerald-100 text-emerald-900">{{ number_format($gAvr, 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>

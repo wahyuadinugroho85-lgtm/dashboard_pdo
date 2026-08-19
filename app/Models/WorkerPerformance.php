@@ -9,5 +9,6 @@ class WorkerPerformance extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $guarded = []; 
+    // Pastikan menggunakan $guarded = [] atau masukkan 'avr_bln' ke dalam $fillable
 }
