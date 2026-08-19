@@ -332,7 +332,6 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
-                <!-- TOOLTIP RAWAT HANYA MEMUAT JENIS PERAWATAN UTAMA & PRUNING STANDARD -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 480px;">
                         <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1 flex justify-between">
@@ -409,7 +408,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET BARU: DATA JAM KERJA ================= -->
+            <!-- ================= WIDGET DATA JAM KERJA (DIPERBARUI) ================= -->
             <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
@@ -428,20 +427,33 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-56">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail Jam Kerja per PT</div>
                         <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Tersedia</th><th class="pb-1 pl-2">% Pagi</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600">
+                                <th class="text-left pb-1">PT</th>
+                                <th class="pb-1 pl-2">Tersedia</th>
+                                <th class="pb-1 pl-2 text-emerald-300">% Pagi</th>
+                                <th class="pb-1 pl-2 text-yellow-300">% Siang</th>
+                                <th class="pb-1 pl-2 text-orange-300">% Sore</th>
+                            </tr>
                             @foreach($estates as $estate)
                                 @php 
                                     $tsd = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Tersedia')->jumlah_tk ?? 0) : 0;
                                     $pgi = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Pagi')->jumlah_tk ?? 0) : 0;
-                                    $pC = $tsd > 0 ? ($pgi / $tsd) * 100 : 0;
+                                    $sng = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Siang')->jumlah_tk ?? 0) : 0;
+                                    $sor = isset($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']) ? ($dataMatrix[$estate->kode]['pekerja']['Jam Kerja']->firstWhere('sub_kategori', 'Sore')->jumlah_tk ?? 0) : 0;
+                                    
+                                    $pPagi = $tsd > 0 ? ($pgi / $tsd) * 100 : 0;
+                                    $pSiang = $pgi > 0 ? ($sng / $pgi) * 100 : 0;
+                                    $pSore = $pgi > 0 ? ($sor / $pgi) * 100 : 0;
                                 @endphp
                                 <tr class="border-b border-slate-700 last:border-0">
                                     <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
                                     <td class="pl-2 font-bold text-white">{{ number_format($tsd, 0) }}</td>
-                                    <td class="pl-2 text-blue-300">{{ number_format($pC, 1) }}%</td>
+                                    <td class="pl-2 font-medium text-emerald-400">{{ number_format($pPagi, 1) }}%</td>
+                                    <td class="pl-2 font-medium text-yellow-400">{{ number_format($pSiang, 1) }}%</td>
+                                    <td class="pl-2 font-medium text-orange-400">{{ number_format($pSore, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -449,6 +461,7 @@
                 </div>
             </div>
 
+            <!-- ================= WIDGET HK PANEN ================= -->
             <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total HK Panen</p>
@@ -474,7 +487,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET EKSTRAKSI MILL CPO ================= -->
+            <!-- ================= WIDGET CPO & OER ================= -->
             <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total CPO & OER</p>
@@ -501,7 +514,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET EKSTRAKSI MILL PKO ================= -->
+            <!-- ================= WIDGET PKO & KER ================= -->
             <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total PKO & KER</p>
