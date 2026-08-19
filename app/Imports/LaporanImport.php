@@ -83,10 +83,10 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Dolomite' => 'pupuk_dolomite_kg',
                 'Kieserite' => 'pupuk_kieserite_kg',
                 'Kaptan' => 'pupuk_kaptan_kg',
-                'TSP / RP' => 'pupuk_tsp_rp_kg',
+                'TSP / RP' => 'pupuk_tsp_kg', // Harus match dgn Template
                 'Urea' => 'pupuk_urea_kg',
                 'MOP' => 'pupuk_mop_kg',
-                'Mikro-Mg' => 'pupuk_mikromg_kg',
+                'Mikro-Mg' => 'pupuk_mikro_kg',
             ];
             foreach($ferts as $nama => $col) {
                 if(isset($row[$col]) && trim($row[$col]) !== '') {
@@ -114,7 +114,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Status Keluarga' => ['KK' => 'tk_status_kk', 'Lj' => 'tk_status_lj'],
                 'Masa Kerja' => ['<= 1bln' => 'tk_masa_kurang_1bln', '2-3Bln' => 'tk_masa_2_3bln', '> 3Bln' => 'tk_masa_lebih_3bln'],
                 'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Masuk (Sbi)' => 'tk_mutasi_masuk_sbi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi', 'Keluar (Sbi)' => 'tk_mutasi_keluar_sbi'],
-                'HKNE' => ['Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'],
+                'HKNE' => ['Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin', 'Total TK' => 'tk_hkne_total_tk'], // TAMBAHAN TOTAL TK
                 'Jam Kerja' => ['Tersedia' => 'tk_jam_tersedia', 'Pagi' => 'tk_jam_pagi', 'Siang' => 'tk_jam_siang', 'Sore' => 'tk_jam_sore'],
             ];
 
