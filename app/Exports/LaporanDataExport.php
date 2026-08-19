@@ -52,7 +52,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
             'tk_status_kk', 'tk_status_lj',
             'tk_masa_kurang_1bln', 'tk_masa_2_3bln', 'tk_masa_lebih_3bln',
             'tk_mutasi_masuk_bi', 'tk_mutasi_masuk_sbi', 'tk_mutasi_keluar_bi', 'tk_mutasi_keluar_sbi',
-            'tk_hkne_sakit', 'tk_hkne_cuti', 'tk_hkne_mangkir', 'tk_hkne_ijin',
+            'tk_hkne_sakit', 'tk_hkne_cuti', 'tk_hkne_mangkir', 'tk_hkne_ijin', 'tk_hkne_total_tk', // KOLOM BARU TOTAL TK
             'tk_jam_tersedia', 'tk_jam_pagi', 'tk_jam_siang', 'tk_jam_sore',
             
             'tk_kelas_a', 'tk_kelas_a_avr',
@@ -175,6 +175,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
                     'tk_hkne_cuti' => $getTk('HKNE', 'Cuti'),
                     'tk_hkne_mangkir' => $getTk('HKNE', 'Mangkir'),
                     'tk_hkne_ijin' => $getTk('HKNE', 'Ijin'),
+                    'tk_hkne_total_tk' => $getTk('HKNE', 'Total TK'), // TAMBAHAN TOTAL TK
 
                     'tk_jam_tersedia' => $getTk('Jam Kerja', 'Tersedia'),
                     'tk_jam_pagi' => $getTk('Jam Kerja', 'Pagi'),
