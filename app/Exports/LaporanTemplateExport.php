@@ -102,11 +102,11 @@ class LaporanTemplateExport implements FromArray, WithHeadings
             'tk_mutasi_masuk_sbi',
             'tk_mutasi_keluar_bi',
             'tk_mutasi_keluar_sbi',
+            'tk_hkne_kerja', // SUDAH DIUBAH MENJADI tk_hkne_kerja
             'tk_hkne_sakit',
             'tk_hkne_cuti',
             'tk_hkne_mangkir',
             'tk_hkne_ijin',
-            'tk_hkne_total_tk', // KOLOM BARU TOTAL TK
             'tk_jam_tersedia',
             'tk_jam_pagi',
             'tk_jam_siang',
@@ -140,7 +140,7 @@ class LaporanTemplateExport implements FromArray, WithHeadings
                 55, 30,
                 10, 20, 55,
                 2, 1, 0, 1,
-                5, 2, 0, 1, 100, // Tambahan Dummy Data untuk Total TK
+                100, 5, 2, 0, 1, // Angka pertama (100) adalah dummy data untuk Kerja
                 80, 60, 15, 5,
                 20, 450.5, 30, 300.2, 10, 200.1, 5, 100.5
             ],
