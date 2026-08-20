@@ -49,7 +49,7 @@
                     </h3>
                 </div>
                 <div class="overflow-x-auto p-4">
-                    <table class="w-full text-sm text-right border-collapse">
+                    <table class="w-full text-sm text-right border-collapse min-w-[1000px]">
                         <thead>
                             <tr class="border-b border-slate-200">
                                 <th class="text-left py-2 px-3 text-slate-400 font-bold bg-white sticky left-0 z-10 w-24">Bulan</th>
