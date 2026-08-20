@@ -114,7 +114,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Status Keluarga' => ['KK' => 'tk_status_kk', 'Lj' => 'tk_status_lj'],
                 'Masa Kerja' => ['<= 1bln' => 'tk_masa_kurang_1bln', '2-3Bln' => 'tk_masa_2_3bln', '> 3Bln' => 'tk_masa_lebih_3bln'],
                 'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Masuk (Sbi)' => 'tk_mutasi_masuk_sbi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi', 'Keluar (Sbi)' => 'tk_mutasi_keluar_sbi'],
-                'HKNE' => ['Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin', 'Total TK' => 'tk_hkne_total_tk'], // TAMBAHAN TOTAL TK
+                'HKNE' => ['Kerja' => 'tk_hkne_kerja', 'Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'], // MENGGANTI TOTAL TK JADI KERJA
                 'Jam Kerja' => ['Tersedia' => 'tk_jam_tersedia', 'Pagi' => 'tk_jam_pagi', 'Siang' => 'tk_jam_siang', 'Sore' => 'tk_jam_sore'],
             ];
 
