@@ -1,7 +1,7 @@
 <!-- ================= TAB 2: RAWAT & PUPUK ================= -->
-<div id="tab-agronomi" class="tab-content hidden min-w-[900px]">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <table class="modern-matrix text-sm">
+<div id="tab-agronomi" class="tab-content hidden w-full space-y-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left text-slate-400 font-medium">Realisasi Rawat & Pemupukan</th>
@@ -24,9 +24,9 @@
         </table>
     </div>
 
-    <!-- POIN 4 & 5: TABLE ROTASI PRUNING -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <table class="modern-matrix text-sm">
+    <!-- TABLE ROTASI PRUNING -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">Rotasi Pruning</th>
@@ -98,9 +98,9 @@
         </table>
     </div>
 
-    <!-- POIN 6: TABLE RKB PUPUK -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <table class="modern-matrix text-sm">
+    <!-- TABLE RKB PUPUK -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">RKB Pupuk Per<br>{{ $namaBulanIni }} {{ $tahun }}</th>
@@ -153,9 +153,9 @@
 </div>
 
 <!-- ================= TAB 4: KUALITAS BUAH ================= -->
-<div id="tab-kualitas" class="tab-content hidden min-w-[900px] space-y-6">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <table class="modern-matrix text-sm">
+<div id="tab-kualitas" class="tab-content hidden w-full space-y-6">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left text-slate-400 font-medium">Kinerja Mutu Ancak (% Real vs Target)</th>
@@ -182,11 +182,11 @@
 </div>
 
 <!-- ================= TAB 5: PERFORMANCE TK ================= -->
-<div id="tab-performance" class="tab-content hidden min-w-[900px] space-y-6">
+<div id="tab-performance" class="tab-content hidden w-full space-y-6">
     
-    <!-- POIN 7: TABLE HKNE KARYAWAN & KELAS PEMANEN -->
+    <!-- TABLE HKNE KARYAWAN & KELAS PEMANEN -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
-        <table class="modern-matrix text-sm">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left font-bold text-slate-800 bg-slate-50 border-r border-slate-200 uppercase">Perihal</th>
@@ -300,7 +300,7 @@
                     <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gPct, 2) }}</td>
                 </tr>
                 <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
-                    <td colspan="2" class="text-left border-r border-yellow-400">Rata2 Hkne/hari</td>
+                    <td class="text-left border-r border-yellow-400">Rata2 Hkne/hari</td>
                     <td class="text-center border-r border-yellow-400 font-medium">Hk</td>
                     @foreach($estates as $estate)
                         @php 
@@ -318,7 +318,7 @@
 
                 <!-- BAGIAN JAM KERJA -->
                 <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
-                    <td rowspan="6" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Jam Kerja</td>
+                    <td rowspan="7" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Jam Kerja</td>
                     <td class="text-left border-r border-slate-200 w-24">Tersedia</td>
                     <td class="text-center border-r border-slate-200 text-slate-500 font-medium">Tk</td>
                     @foreach($estates as $estate)
@@ -385,7 +385,6 @@
                     <td class="text-right bg-yellow-400">{{ number_format($gSor, 0) }}</td>
                 </tr>
                 <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
-                    <td class="text-center align-middle border-r border-slate-200 w-32 bg-white border-b-0"></td>
                     <td class="text-center border-r border-yellow-400 font-medium text-yellow-800">%</td>
                     @foreach($estates as $estate)
                         @php 
@@ -472,8 +471,8 @@
     </div>
 
     <!-- TABLE EXISTING: PERFORMANCE TK (OLD) -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <table class="modern-matrix text-sm">
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
                     <th colspan="2" class="text-left text-slate-400 font-medium">Performance Tenaga Kerja Kategori Bawaan</th>
