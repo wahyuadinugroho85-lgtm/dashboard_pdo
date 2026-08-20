@@ -10,6 +10,7 @@
                 </tr>
             </thead>
             <tbody class="text-slate-600">
+                <!-- BARIS PERAWATAN -->
                 <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Perawatan Kebun (Ha)</td></tr>
                 @foreach($jenisPerawatan as $rawat)
                 <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors">
@@ -18,6 +19,18 @@
                     @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0, 2) }}</td> @endforeach
                     @php $gRawat = 0; foreach($estates as $estate){ $gRawat += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; } @endphp
                     <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gRawat, 2) }}</td>
+                </tr>
+                @endforeach
+
+                <!-- BARIS PEMUPUKAN (YANG SEBELUMNYA HILANG) -->
+                <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Aplikasi Pupuk (Kg)</td></tr>
+                @foreach($jenisPupuk as $pupuk)
+                <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors">
+                    <td class="font-bold text-slate-800 pl-4">{{ $pupuk }} (Real)</td>
+                    <td class="text-center font-medium text-slate-500 w-16">Kg</td>
+                    @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0, 0) }}</td> @endforeach
+                    @php $gPupuk = 0; foreach($estates as $estate){ $gPupuk += $dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0; } @endphp
+                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gPupuk, 0) }}</td>
                 </tr>
                 @endforeach
             </tbody>
