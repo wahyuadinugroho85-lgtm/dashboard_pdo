@@ -341,6 +341,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const labels = {!! json_encode($estates->pluck('kode')) !!};
             
+            // PERUBAHAN: DATA DIBAGI 1000 AGAR MENJADI TON
             const dataProdReal = [
                 @foreach($estates as $estate) {{ ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000 }}, @endforeach
             ];
