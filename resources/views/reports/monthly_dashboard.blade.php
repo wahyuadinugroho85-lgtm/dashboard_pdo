@@ -336,12 +336,11 @@
         });
     </script>
 
-    <!-- SCRIPT CHART.JS -->
+    <!-- SCRIPT CHART.JS FORMAT INDONESIA -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const labels = {!! json_encode($estates->pluck('kode')) !!};
             
-            // PERUBAHAN: DATA DIBAGI 1000 AGAR MENJADI TON
             const dataProdReal = [
                 @foreach($estates as $estate) {{ ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000 }}, @endforeach
             ];
@@ -375,6 +374,10 @@
 
             Chart.defaults.font.family = 'Inter';
 
+            // ALAT UNTUK MENGUBAH ANGKA MENJADI FORMAT INDONESIA (Titik untuk ribuan)
+            const fmt0 = (val) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(val);
+            const fmt2 = (val) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(val);
+
             const ctxProd = document.getElementById('chartProduksi').getContext('2d');
             const chartProd = new Chart(ctxProd, {
                 type: 'bar',
@@ -389,7 +392,19 @@
                 options: { 
                     responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { tooltip: { padding: 10, bodySpacing: 5 } }
+                    plugins: { 
+                        tooltip: { 
+                            padding: 10, bodySpacing: 5,
+                            callbacks: { 
+                                label: (ctx) => ctx.dataset.label + ': ' + fmt0(ctx.parsed.y) 
+                            }
+                        } 
+                    },
+                    scales: {
+                        y: {
+                            ticks: { callback: (val) => fmt0(val) }
+                        }
+                    }
                 }
             });
 
@@ -402,7 +417,20 @@
                         label: 'Cost / Kg (S.D Bln Ini)', data: dataCostKg, borderColor: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.1)', borderWidth: 3, pointBackgroundColor: '#fff', pointBorderColor: '#f43f5e', pointRadius: 4, tension: 0.3, fill: true
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false } }
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        tooltip: { 
+                            callbacks: { label: (ctx) => ctx.dataset.label + ': Rp ' + fmt0(ctx.parsed.y) } 
+                        } 
+                    },
+                    scales: {
+                        y: {
+                            ticks: { callback: (val) => fmt0(val) }
+                        }
+                    }
+                }
             });
 
             const ctxBiaya = document.getElementById('chartBiayaPie').getContext('2d');
@@ -422,7 +450,15 @@
                         borderWidth: 0, hoverOffset: 4
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '65%' }
+                options: { 
+                    responsive: true, maintainAspectRatio: false, cutout: '65%',
+                    plugins: { 
+                        legend: { position: 'right' },
+                        tooltip: { 
+                            callbacks: { label: (ctx) => ctx.label + ': ' + fmt2(ctx.parsed) + ' M' } 
+                        }
+                    } 
+                }
             });
 
             const ctxMutu = document.getElementById('chartMutu').getContext('2d');
@@ -432,7 +468,20 @@
                     labels: {!! json_encode($kriteriaMutu) !!},
                     datasets: [{ label: 'Persentase Mutu (%)', data: dataMutu, backgroundColor: '#0ea5e9', borderRadius: 4 }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false } }
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        tooltip: { 
+                            callbacks: { label: (ctx) => ctx.dataset.label + ': ' + fmt2(ctx.parsed.y) + '%' } 
+                        } 
+                    },
+                    scales: {
+                        y: {
+                            ticks: { callback: (val) => fmt0(val) + '%' }
+                        }
+                    }
+                }
             });
 
             window.myCharts = [chartProd, chartCost, chartBiaya, chartMutu];
