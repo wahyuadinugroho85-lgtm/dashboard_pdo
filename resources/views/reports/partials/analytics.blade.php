@@ -406,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET DATA JAM KERJA ================= -->
+            <!-- ================= WIDGET DATA JAM KERJA (DIPERBARUI) ================= -->
             <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
@@ -672,7 +672,8 @@
             </div>
 
             <div id="w-chart-mutu" data-wname="Chart: Mutu Ancak" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Rata-rata Mutu (%)</h3>
+                <!-- PERUBAHAN LABEL GRAFIK -->
+                <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Tren Rata-rata Mutu (%)</h3>
                 <div class="relative h-64 w-full"><canvas id="chartMutu"></canvas></div>
             </div>
 
