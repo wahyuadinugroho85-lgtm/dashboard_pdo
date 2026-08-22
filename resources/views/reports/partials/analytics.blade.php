@@ -346,9 +346,7 @@
                                 <th class="pb-1 pl-2">Cost/Ha (Rp)</th>
                             </tr>
                             @foreach($estates as $estate)
-                                @php 
-                                    $isFirst = true; 
-                                @endphp
+                                @php $isFirst = true; @endphp
                                 @foreach($jenisPerawatan as $job)
                                     @php
                                         $l = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->luas_ha ?? 0; 
@@ -408,7 +406,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET DATA JAM KERJA (DIPERBARUI) ================= -->
+            <!-- ================= WIDGET DATA JAM KERJA ================= -->
             <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
@@ -465,7 +463,7 @@
             <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total HK Panen</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalHkPanen, 0) }}</h3>
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalHkPanen ?? 0, 0) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Hari Kerja Panen Realisasi</p>
                 </div>
                 <div class="p-3 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-500 group-hover:text-white transition-colors">
@@ -489,10 +487,18 @@
 
             <!-- ================= WIDGET CPO & OER ================= -->
             <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all cursor-help">
+                @php
+                    $gCpoBi = 0; $gTbsBi = 0;
+                    foreach($estates as $estate) {
+                        $gCpoBi += $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_cpo ?? 0;
+                        $gTbsBi += ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000;
+                    }
+                    $gOerBi = $gTbsBi > 0 ? ($gCpoBi / $gTbsBi) * 100 : 0;
+                @endphp
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total CPO & OER</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ isset($gCpoBi) ? number_format($gCpoBi, 0) : 0 }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
-                    <p class="text-xs font-bold text-orange-600 mt-1">OER: {{ isset($gOerBi) ? number_format($gOerBi, 2) : 0 }}% (Bln Ini)</p>
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCpoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
+                    <p class="text-xs font-bold text-orange-600 mt-1">OER: {{ number_format($gOerBi, 2) }}% (Bln Ini)</p>
                 </div>
                 <div class="p-3 bg-orange-100 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
@@ -503,10 +509,15 @@
                         <table class="w-full text-right">
                             <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Ton</th><th class="pb-1 pl-2">OER %</th></tr>
                             @foreach($estates as $estate)
+                                @php
+                                    $cpo = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_cpo ?? 0;
+                                    $tbs = ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000;
+                                    $oer = $tbs > 0 ? ($cpo / $tbs) * 100 : 0;
+                                @endphp
                                 <tr class="border-b border-slate-700 last:border-0">
                                     <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="pl-2 font-bold text-white">{{ isset($millBi[$estate->kode]['tonCpoBi']) ? number_format($millBi[$estate->kode]['tonCpoBi'], 0) : 0 }}</td>
-                                    <td class="pl-2 text-orange-400">{{ isset($millBi[$estate->kode]['oerBi']) ? number_format($millBi[$estate->kode]['oerBi'], 2) : 0 }}%</td>
+                                    <td class="pl-2 font-bold text-white">{{ number_format($cpo, 0) }}</td>
+                                    <td class="pl-2 text-orange-400">{{ number_format($oer, 2) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -516,10 +527,18 @@
 
             <!-- ================= WIDGET PKO & KER ================= -->
             <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all cursor-help">
+                @php
+                    $gPkoBi = 0; $gKerBi = 0;
+                    foreach($estates as $estate) {
+                        $gPkoBi += $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_pko ?? 0;
+                        $gKerBi += $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_ker ?? 0;
+                    }
+                    $gPctKerBi = $gTbsBi > 0 ? ($gKerBi / $gTbsBi) * 100 : 0;
+                @endphp
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total PKO & KER</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ isset($gPkoBi) ? number_format($gPkoBi, 0) : 0 }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
-                    <p class="text-xs font-bold text-yellow-700 mt-1">KER: {{ isset($gPctKerBi) ? number_format($gPctKerBi, 2) : 0 }}% (Bln Ini)</p>
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gPkoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
+                    <p class="text-xs font-bold text-yellow-700 mt-1">KER: {{ number_format($gPctKerBi, 2) }}% (Bln Ini)</p>
                 </div>
                 <div class="p-3 bg-yellow-100 text-yellow-700 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
@@ -530,10 +549,16 @@
                         <table class="w-full text-right">
                             <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Ton</th><th class="pb-1 pl-2">KER %</th></tr>
                             @foreach($estates as $estate)
+                                @php
+                                    $pko = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_pko ?? 0;
+                                    $ker = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_ker ?? 0;
+                                    $tbs = ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000;
+                                    $pctKer = $tbs > 0 ? ($ker / $tbs) * 100 : 0;
+                                @endphp
                                 <tr class="border-b border-slate-700 last:border-0">
                                     <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="pl-2 font-bold text-white">{{ isset($millBi[$estate->kode]['tonPkoBi']) ? number_format($millBi[$estate->kode]['tonPkoBi'], 0) : 0 }}</td>
-                                    <td class="pl-2 text-yellow-400">{{ isset($millBi[$estate->kode]['kerBi']) ? number_format($millBi[$estate->kode]['kerBi'], 2) : 0 }}%</td>
+                                    <td class="pl-2 font-bold text-white">{{ number_format($pko, 0) }}</td>
+                                    <td class="pl-2 text-yellow-400">{{ number_format($pctKer, 2) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -587,6 +612,43 @@
                                     <td class="py-1.5 text-left font-bold text-indigo-400">Kelas {{ $kls }}</td>
                                     <td class="pl-2">{{ number_format($tkKls, 0) }} Org</td>
                                     <td class="pl-2 font-bold text-white">{{ number_format($avgKls, 2) }}</td>
+                                </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ================= WIDGET TOTAL KINERJA TK (AKURAT) ================= -->
+            <div id="w-tk" data-wname="Total Kinerja TK (Org)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
+                <div>
+                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Kinerja TK</p>
+                    @php
+                        $gTotalTK = 0;
+                        foreach($estates as $estate){
+                            if(isset($dataMatrix[$estate->kode]['pekerja']['Umur'])){
+                                $gTotalTK += $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk');
+                            }
+                        }
+                    @endphp
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalTK, 0) }}</h3>
+                    <p class="text-xs font-medium text-slate-400 mt-1">Jumlah Orang Terinput</p>
+                </div>
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                </div>
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
+                        <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail TK per PT</div>
+                        <table class="w-full text-right">
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Total Orang</th></tr>
+                            @foreach($estates as $estate)
+                                @php 
+                                    $ptTk = isset($dataMatrix[$estate->kode]['pekerja']['Umur']) ? $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk') : 0;
+                                @endphp
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="font-bold text-white">{{ number_format($ptTk, 0) }} Orang</td>
                                 </tr>
                             @endforeach
                         </table>
