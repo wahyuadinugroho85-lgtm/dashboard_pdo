@@ -22,7 +22,7 @@
                 </tr>
                 @endforeach
 
-                <!-- BARIS PEMUPUKAN (YANG SEBELUMNYA HILANG) -->
+                <!-- BARIS PEMUPUKAN -->
                 <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Aplikasi Pupuk (Kg)</td></tr>
                 @foreach($jenisPupuk as $pupuk)
                 <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors">
@@ -263,7 +263,7 @@
                     <td class="text-right bg-slate-100">{{ number_format($gv, 0) }}</td>
                 </tr>
                 <tr class="bg-emerald-100/50 border-y border-emerald-300">
-                    <td class="text-left border-r border-emerald-200 w-24">Total HKNE</td>
+                    <td class="text-left border-r border-emerald-200 w-24">Total</td>
                     <td class="text-center border-r border-emerald-200 text-slate-500 font-medium">Hk</td>
                     @foreach($estates as $estate)
                         @php 
@@ -312,8 +312,9 @@
                     @endphp
                     <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gPct, 2) }}</td>
                 </tr>
+                <!-- RATA-RATA HKNE DIPERBAIKI COLSPAN NYA AGAR LURUS -->
                 <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
-                    <td class="text-left border-r border-yellow-400">Rata2 Hkne/hari</td>
+                    <td class="text-left border-r border-yellow-400 w-24">Rata2 Hkne/hari</td>
                     <td class="text-center border-r border-yellow-400 font-medium">Hk</td>
                     @foreach($estates as $estate)
                         @php 
