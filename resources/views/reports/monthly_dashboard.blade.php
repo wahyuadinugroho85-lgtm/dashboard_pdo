@@ -204,6 +204,35 @@
             $gDevProdRp = $gDevProdRpKg * $gPalmProdukKgTotal;
             $gDevOilRpKg = $gCostPalmOilBgt - $gCostPalmOilReal;
             $gDevOilRp = $gDevOilRpKg * $gPalmOilKgTotal;
+
+            /* KALKULASI DATA TREN MUTU (CHART LINE BULAN PER BULAN) */
+            $trendBulanLabels = [];
+            $trendMutuData = [];
+            foreach($kriteriaMutu as $k) {
+                $trendMutuData[$k] = [];
+            }
+            
+            // Ambil semua data Mutu REAL di tahun ini
+            $allHq = \App\Models\HarvestQuality::whereYear('periode', $tahun)->where('tipe', 'REAL')->get();
+
+            // Lakukan perulangan dari Januari hingga bulan yang dipilih
+            for($m = 1; $m <= $bulan; $m++) {
+                $trendBulanLabels[] = $monthNames[$m];
+                $strBulan = str_pad($m, 2, '0', STR_PAD_LEFT);
+                $per = $tahun . '-' . $strBulan . '-01';
+                
+                // Saring data berdasarkan bulan tersebut
+                $hqBulanIni = $allHq->filter(function($item) use ($per) {
+                    return \Carbon\Carbon::parse($item->periode)->format('Y-m-d') == $per;
+                });
+                
+                foreach($kriteriaMutu as $k) {
+                    $hqKriteria = $hqBulanIni->where('kriteria', $k);
+                    // Rata-ratakan persentase di seluruh PT pada bulan tersebut
+                    $avg = $hqKriteria->count() > 0 ? $hqKriteria->avg('persentase') : 0;
+                    $trendMutuData[$k][] = round($avg, 2);
+                }
+            }
         @endphp
 
         <!-- PEMANGGILAN FILE PARTIALS -->
@@ -361,22 +390,11 @@
                 @endforeach
             ];
 
-            const dataMutu = [
-                @php
-                    $sampleEstate = $estates->first();
-                    if($sampleEstate) {
-                        foreach($kriteriaMutu as $mutu) {
-                            echo ($dataMatrix[$sampleEstate->kode]['kualitas']['real'][$mutu]->persentase ?? 0) . ',';
-                        }
-                    }
-                @endphp
-            ];
-
-            Chart.defaults.font.family = 'Inter';
-
             // ALAT UNTUK MENGUBAH ANGKA MENJADI FORMAT INDONESIA (Titik untuk ribuan)
             const fmt0 = (val) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(val);
             const fmt2 = (val) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 2 }).format(val);
+
+            Chart.defaults.font.family = 'Inter';
 
             const ctxProd = document.getElementById('chartProduksi').getContext('2d');
             const chartProd = new Chart(ctxProd, {
@@ -461,12 +479,35 @@
                 }
             });
 
+            /* ==== PERUBAHAN: LINE CHART TREN MUTU BERSERTA WARNANYA ==== */
+            const labelsMutuTrend = {!! json_encode($trendBulanLabels) !!};
+            const datasetsMutuTrend = [
+                @php 
+                    $colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']; 
+                    $bgColors = ['rgba(59,130,246,0.1)', 'rgba(16,185,129,0.1)', 'rgba(245,158,11,0.1)', 'rgba(239,68,68,0.1)', 'rgba(139,92,246,0.1)'];
+                @endphp
+                @foreach($kriteriaMutu as $idx => $k)
+                {
+                    label: '{{ $k }}',
+                    data: {!! json_encode($trendMutuData[$k]) !!},
+                    borderColor: '{{ $colors[$idx % 5] }}',
+                    backgroundColor: '{{ $bgColors[$idx % 5] }}',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '{{ $colors[$idx % 5] }}',
+                    pointRadius: 4,
+                    tension: 0.3,
+                    fill: false
+                },
+                @endforeach
+            ];
+
             const ctxMutu = document.getElementById('chartMutu').getContext('2d');
             const chartMutu = new Chart(ctxMutu, {
-                type: 'bar',
+                type: 'line', // Berubah dari 'bar' menjadi 'line'
                 data: {
-                    labels: {!! json_encode($kriteriaMutu) !!},
-                    datasets: [{ label: 'Persentase Mutu (%)', data: dataMutu, backgroundColor: '#0ea5e9', borderRadius: 4 }]
+                    labels: labelsMutuTrend,
+                    datasets: datasetsMutuTrend
                 },
                 options: { 
                     responsive: true, maintainAspectRatio: false, 
