@@ -99,11 +99,9 @@ class LaporanTemplateExport implements FromArray, WithHeadings
             'tk_masa_2_3bln',
             'tk_masa_lebih_3bln',
             'tk_mutasi_masuk_bi',
-            'tk_mutasi_masuk_sbi',
             'tk_mutasi_keluar_bi',
-            'tk_mutasi_keluar_sbi',
-            'tk_mutasi_pct_keluar_bi', // KOLOM BARU RKK PERSEN BI
-            'tk_mutasi_pct_keluar_sbi', // KOLOM BARU RKK PERSEN SBI
+            'tk_mutasi_pct_keluar_bi',
+            'tk_mutasi_pct_keluar_sbi',
             'tk_hkne_kerja',
             'tk_hkne_sakit',
             'tk_hkne_cuti',
@@ -141,7 +139,7 @@ class LaporanTemplateExport implements FromArray, WithHeadings
                 15, 45, 20, 5,
                 55, 30,
                 10, 20, 55,
-                2, 1, 0, 1, 8.15, 43.63, // Tambahan Dummy Data RKK Persen
+                2, 0, 8.15, 43.63,
                 100, 5, 2, 0, 1,
                 80, 60, 15, 5,
                 20, 450.5, 30, 300.2, 10, 200.1, 5, 100.5
