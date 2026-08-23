@@ -207,9 +207,18 @@
                                     $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
-                                    $tBgtSd = $dataMatrix[$estate->kode]['histori']['bgt_sd_bln']->tonase ?? 0;
-                                    $bBgtSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['budget']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['budget']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['budget']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['budget']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['budget']->cost_pks ?? 0);
-                                    $ptBgtCostKg = $tBgtSd > 0 ? ($bBgtSd / $tBgtSd) : 0;
+                                    
+                                    // PERUBAHAN: Bgt Rp/Kg menggunakan Total 1 Tahun (Flat)
+                                    $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
+                                    $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
+                                        ->whereYear('periode', $tahun)
+                                        ->where('tipe', 'BUDGET')
+                                        ->get()
+                                        ->sum(function($c) {
+                                            return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
+                                        });
+                                    
+                                    $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
                                     $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
                                 @endphp
                                 <tr class="border-b border-slate-700 last:border-0">
