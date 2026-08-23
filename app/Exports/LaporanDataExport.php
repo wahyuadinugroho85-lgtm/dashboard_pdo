@@ -51,7 +51,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
             'tk_umur_kurang_25', 'tk_umur_25_40', 'tk_umur_40_50', 'tk_umur_lebih_50',
             'tk_status_kk', 'tk_status_lj',
             'tk_masa_kurang_1bln', 'tk_masa_2_3bln', 'tk_masa_lebih_3bln',
-            'tk_mutasi_masuk_bi', 'tk_mutasi_masuk_sbi', 'tk_mutasi_keluar_bi', 'tk_mutasi_keluar_sbi', 'tk_mutasi_pct_keluar_bi', 'tk_mutasi_pct_keluar_sbi', // TAMBAHAN RKK
+            'tk_mutasi_masuk_bi', 'tk_mutasi_keluar_bi', 'tk_mutasi_pct_keluar_bi', 'tk_mutasi_pct_keluar_sbi',
             'tk_hkne_kerja', 'tk_hkne_sakit', 'tk_hkne_cuti', 'tk_hkne_mangkir', 'tk_hkne_ijin',
             'tk_jam_tersedia', 'tk_jam_pagi', 'tk_jam_siang', 'tk_jam_sore',
             
@@ -172,9 +172,7 @@ class LaporanDataExport implements FromCollection, WithHeadings
                     'tk_masa_lebih_3bln' => $getTk('Masa Kerja', '> 3Bln'),
 
                     'tk_mutasi_masuk_bi' => $getTk('Mutasi', 'Masuk (Bi)'),
-                    'tk_mutasi_masuk_sbi' => $getTk('Mutasi', 'Masuk (Sbi)'),
                     'tk_mutasi_keluar_bi' => $getTk('Mutasi', 'Keluar (Bi)'),
-                    'tk_mutasi_keluar_sbi' => $getTk('Mutasi', 'Keluar (Sbi)'),
                     'tk_mutasi_pct_keluar_bi' => $getTkPct('Mutasi', '% Keluar Bi'),
                     'tk_mutasi_pct_keluar_sbi' => $getTkPct('Mutasi', '% Keluar Sbi'),
 
