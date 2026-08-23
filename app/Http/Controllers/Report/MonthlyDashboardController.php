@@ -122,8 +122,14 @@ class MonthlyDashboardController extends Controller
             $dataMatrix[$kode]['kualitas']['real'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('kriteria');
             
             $dataMatrix[$kode]['pekerja'] = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->groupBy('kategori');
-            // Ambil data bulan sebelumnya untuk Sbi
-            $dataMatrix[$kode]['pekerja_lalu'] = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $lastMonth)->where('tipe', 'REAL')->get()->groupBy('kategori');
+            
+            // PERUBAHAN PENTING: Ambil data S.D Bulan ini (akumulasi dari Januari) untuk perhitungan Sbi otomatis
+            $dataMatrix[$kode]['pekerja_sbi'] = WorkerPerformance::where('estate_id', $estate->id)
+                ->whereYear('periode', $tahun)
+                ->whereMonth('periode', '<=', $bulan)
+                ->where('tipe', 'REAL')
+                ->get()
+                ->groupBy('kategori');
         }
 
         $dataMatrix['BP-2'] = $this->calculateGrandTotal($dataMatrix, $estates, $historicalYears);
