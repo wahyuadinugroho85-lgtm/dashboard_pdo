@@ -166,6 +166,7 @@
                 </div>
             </div>
 
+            <!-- ========================= PERUBAHAN WIDGET TOTAL BIAYA (M) ========================= -->
             <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
@@ -219,6 +220,7 @@
                     </div>
                 </div>
             </div>
+            <!-- ========================= SELESAI WIDGET TOTAL BIAYA ========================= -->
 
             <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all cursor-help">
                 <div>
@@ -240,7 +242,6 @@
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
                                     
-                                    // Bgt Rp/Kg menggunakan Total 1 Tahun (Flat)
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                                     $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
                                         ->whereYear('periode', $tahun)
@@ -741,7 +742,6 @@
                 </div>
             </div>
 
-            <!-- ========================= BAGIAN GRAFIK BAWAH ========================= -->
             <div id="w-chart-prod" data-wname="Chart: Produksi per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Kinerja Produksi (Ton) per PT</h3>
                 <div class="relative h-80 w-full"><canvas id="chartProduksi"></canvas></div>
@@ -765,215 +765,3 @@
         </div>
     </div>
 </div>
-
-<!-- ========================= SCRIPT GRAFIK ========================= -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        
-        // ----------------------------------------------------------------
-        // 1. DATA PERSIAPAN DARI PHP KE JS
-        // ----------------------------------------------------------------
-        @php
-            $labelsPT = [];
-            $dataProdRkb = [];
-            $dataProdReal = [];
-            $dataRealCostKg = [];
-            $dataPctBgt = [];
-
-            $gCostPanen = 0; $gCostRawat = 0; $gCostKantor = 0; $gCostTeknik = 0; $gCostPks = 0;
-
-            foreach($estates as $estate) {
-                $labelsPT[] = $estate->kode;
-                
-                // Produksi (Ton)
-                $dataProdRkb[] = round(($dataMatrix[$estate->kode]['produksi']['current']['rkb']->tonase ?? 0) / 1000, 0);
-                $dataProdReal[] = round(($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000, 0);
-
-                // Cost / Kg & Persentase Tooltip
-                $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
-                $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
-                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
-                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
-                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
-                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
-                $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
-
-                $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
-                $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
-                    ->whereYear('periode', $tahun)
-                    ->where('tipe', 'BUDGET')
-                    ->get()
-                    ->sum(function($c) {
-                        return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
-                    });
-                
-                $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
-                $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
-
-                $dataRealCostKg[] = round($ptCostKgSd, 0);
-                $dataPctBgt[] = number_format($pC, 2);
-
-                // Akumulasi Biaya untuk Pie Chart
-                $gCostPanen += $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0;
-                $gCostRawat += $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0;
-                $gCostKantor += $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0;
-                $gCostTeknik += $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0;
-                $gCostPks += $dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0;
-            }
-
-            // Data Mutu
-            $labelsMutu = [];
-            if(isset($kriteriaMutu)) {
-                $labelsMutu = $kriteriaMutu;
-            } else {
-                $labelsMutu = ['Unripe', 'Ripe', 'Over Ripe', 'Empty Bunch', 'Abnormal'];
-            }
-            
-            $dataMutuTarget = [];
-            $dataMutuReal = [];
-            foreach($labelsMutu as $mutu) {
-                $tTar = 0; $cTar = 0; $tReal = 0; $cReal = 0;
-                foreach($estates as $estate) {
-                    $vT = $dataMatrix[$estate->kode]['kualitas']['rkb'][$mutu]->persentase ?? 0;
-                    if($vT > 0) { $tTar += $vT; $cTar++; }
-                    
-                    $vR = $dataMatrix[$estate->kode]['kualitas']['real'][$mutu]->persentase ?? 0;
-                    if($vR > 0) { $tReal += $vR; $cReal++; }
-                }
-                $dataMutuTarget[] = $cTar > 0 ? round($tTar / $cTar, 2) : 0;
-                $dataMutuReal[] = $cReal > 0 ? round($tReal / $cReal, 2) : 0;
-            }
-        @endphp
-
-        // Utility: Hapus Chart lama jika ada
-        function destroyIfExists(chartId) {
-            if (window[chartId] instanceof Chart) {
-                window[chartId].destroy();
-            }
-        }
-
-        // ----------------------------------------------------------------
-        // 2. GRAFIK PRODUKSI PER PT (BAR)
-        // ----------------------------------------------------------------
-        const ctxProd = document.getElementById('chartProduksi');
-        if (ctxProd) {
-            destroyIfExists('myChartProd');
-            window.myChartProd = new Chart(ctxProd.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: {!! json_encode($labelsPT) !!},
-                    datasets: [
-                        { label: 'Target (Ton)', data: {!! json_encode($dataProdRkb) !!}, backgroundColor: '#cbd5e1', borderRadius: 4 },
-                        { label: 'Real (Ton)', data: {!! json_encode($dataProdReal) !!}, backgroundColor: '#4f46e5', borderRadius: 4 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'top' } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-        }
-
-        // ----------------------------------------------------------------
-        // 3. GRAFIK COST / KG (LINE DENGAN PERSENTASE TOOLTIP)
-        // ----------------------------------------------------------------
-        const ctxCost = document.getElementById('chartCostKg');
-        if (ctxCost) {
-            destroyIfExists('myChartCostKg');
-            const dataPct = {!! json_encode($dataPctBgt) !!};
-
-            window.myChartCostKg = new Chart(ctxCost.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: {!! json_encode($labelsPT) !!},
-                    datasets: [{
-                        label: 'Cost / Kg (S.D Bln Ini)',
-                        data: {!! json_encode($dataRealCostKg) !!},
-                        borderColor: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.1)',
-                        borderWidth: 2, fill: true, tension: 0.4,
-                        pointBackgroundColor: '#ffffff', pointBorderColor: '#f43f5e',
-                        pointBorderWidth: 2, pointRadius: 5, pointHoverRadius: 7
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: true, position: 'top' },
-                        tooltip: {
-                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
-                            titleFont: { size: 13, weight: 'bold' }, bodyFont: { size: 13 },
-                            padding: 10, cornerRadius: 8,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) { label += ': Rp '; }
-                                    if (context.parsed.y !== null) {
-                                        label += new Intl.NumberFormat('id-ID').format(context.parsed.y);
-                                    }
-                                    return label;
-                                },
-                                afterLabel: function(context) {
-                                    return '% thd Bgt 1 Thn: ' + dataPct[context.dataIndex] + '%';
-                                }
-                            }
-                        }
-                    },
-                    scales: { y: { beginAtZero: false } }
-                }
-            });
-        }
-
-        // ----------------------------------------------------------------
-        // 4. GRAFIK DISTRIBUSI BIAYA (PIE/DOUGHNUT)
-        // ----------------------------------------------------------------
-        const ctxBiaya = document.getElementById('chartBiayaPie');
-        if (ctxBiaya) {
-            destroyIfExists('myChartBiaya');
-            window.myChartBiaya = new Chart(ctxBiaya.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Panen', 'Rawat', 'Kantor', 'Teknik', 'PKS'],
-                    datasets: [{
-                        data: [
-                            {{ $gCostPanen }}, {{ $gCostRawat }}, {{ $gCostKantor }}, {{ $gCostTeknik }}, {{ $gCostPks }}
-                        ],
-                        backgroundColor: ['#ef4444', '#10b981', '#3b82f6', '#f59e0b', '#8b5cf6'],
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'right', labels: { boxWidth: 12 } } },
-                    cutout: '65%'
-                }
-            });
-        }
-
-        // ----------------------------------------------------------------
-        // 5. GRAFIK MUTU ANCAK (RADAR)
-        // ----------------------------------------------------------------
-        const ctxMutu = document.getElementById('chartMutu');
-        if (ctxMutu) {
-            destroyIfExists('myChartMutu');
-            window.myChartMutu = new Chart(ctxMutu.getContext('2d'), {
-                type: 'radar',
-                data: {
-                    labels: {!! json_encode($labelsMutu) !!},
-                    datasets: [
-                        { label: 'Target (%)', data: {!! json_encode($dataMutuTarget) !!}, borderColor: '#94a3b8', backgroundColor: 'rgba(148, 163, 184, 0.2)', borderWidth: 2 },
-                        { label: 'Real (%)', data: {!! json_encode($dataMutuReal) !!}, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.4)', borderWidth: 2 }
-                    ]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom' } },
-                    scales: { r: { angleLines: { color: 'rgba(0,0,0,0.1)' }, suggestedMin: 0 } }
-                }
-            });
-        }
-
-    });
-</script>
