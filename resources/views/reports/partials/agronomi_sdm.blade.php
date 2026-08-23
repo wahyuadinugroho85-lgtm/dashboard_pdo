@@ -295,7 +295,7 @@
                     @php 
                         $gKeluarSbi = 0; 
                         foreach($estates as $estate) { 
-                            $gKeluarSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0; 
+                            $gKeluarSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0; 
                         } 
                     @endphp
                     <td class="text-right bg-slate-100">{{ number_format($gKeluarSbi, 0) }}</td>
