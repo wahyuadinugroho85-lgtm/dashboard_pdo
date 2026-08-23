@@ -92,6 +92,7 @@
                         <li>Isi form sesuai dengan kelompok tabulasinya.</li>
                         <li>Kosongkan kolom (jangan diisi 0) jika data memang tidak tersedia atau belum ada, agar sistem tidak menghitungnya sebagai *pembagi* rata-rata.</li>
                         <li>Gunakan titik (.) untuk memasukkan angka desimal (Contoh: 7.40).</li>
+                        <li>Tekan tombol <strong>Enter</strong> untuk pindah ke kolom berikutnya.</li>
                     </ul>
                 </div>
             </div>
@@ -291,7 +292,7 @@
                     <!-- TOMBOL SUBMIT FINAL -->
                     <div class="bg-slate-100 border-t border-slate-200 p-6 flex justify-end gap-3">
                         <button type="reset" class="px-6 py-2.5 bg-white border border-slate-300 text-slate-600 font-bold rounded-lg hover:bg-slate-50 transition-colors shadow-sm text-sm">Kosongkan Form</button>
-                        <button type="submit" class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-md transition-all transform hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                        <button type="submit" id="btnSubmitForm" class="px-8 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg shadow-md transition-all transform hover:-translate-y-0.5 text-sm flex items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                             Simpan Seluruh Data
                         </button>
@@ -322,29 +323,24 @@
         }
     </script>
     
-    <!-- SCRIPT UNTUK MENYIMPAN PILIHAN FORM SECARA OTOMATIS -->
+    <!-- SCRIPT UNTUK MENYIMPAN PILIHAN FORM, MATIKAN SCROLL NUMBER & ENTER PINDAH KOLOM -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // Nama "name" dari elemen select dropdown di halaman input Anda
-            const formFields = ['estate_id', 'tipe', 'bulan', 'tahun'];
             
+            // --- 1. LOCAL STORAGE UNTUK OPSI FORM ---
+            const formFields = ['estate_id', 'tipe', 'bulan', 'tahun'];
             formFields.forEach(field => {
                 const el = document.querySelector(`select[name="${field}"]`);
                 if (el) {
-                    // 1. Saat halaman baru dimuat, kembalikan ke pilihan sebelumnya
                     const savedVal = localStorage.getItem(`input_${field}`);
-                    if (savedVal) {
-                        el.value = savedVal; 
-                    }
+                    if (savedVal) el.value = savedVal; 
                     
-                    // 2. Jika Bapak mengubah pilihan dropdown, otomatis catat di memori
                     el.addEventListener('change', function() {
                         localStorage.setItem(`input_${field}`, this.value);
                     });
                 }
             });
 
-            // 3. Cadangan: Pastikan memori tercatat juga saat tombol "Simpan" ditekan
             const formInput = document.getElementById('mainForm');
             if(formInput) {
                 formInput.addEventListener('submit', function() {
@@ -354,6 +350,44 @@
                     });
                 });
             }
+
+            // --- 2. MATIKAN SCROLL PADA INPUT NUMBER ---
+            const numberInputs = document.querySelectorAll('input[type="number"]');
+            numberInputs.forEach(function(input) {
+                input.addEventListener('wheel', function(e) {
+                    e.preventDefault();
+                }, { passive: false });
+            });
+
+            // --- 3. ENTER UNTUK PINDAH KOLOM (BUKAN SUBMIT) ---
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const active = document.activeElement;
+                    
+                    // Berlaku hanya di dalam elemen Input dan Select
+                    if (active.tagName === 'INPUT' || active.tagName === 'SELECT') {
+                        
+                        // Jika yang di-enter memang tombol submit, biarkan form terkirim
+                        if (active.type === 'submit' || active.id === 'btnSubmitForm') {
+                            return;
+                        }
+
+                        e.preventDefault(); // Cegah pengiriman form
+                        
+                        if (formInput && formInput.contains(active)) {
+                            // Ambil semua elemen input di dalam form yang TIDAK hidden dan TIDAK disabled (berada di tab aktif)
+                            const focusables = Array.from(formInput.querySelectorAll('input:not([type="hidden"]), select, button[type="submit"]'))
+                                .filter(el => !el.disabled && el.offsetParent !== null);
+                            
+                            const index = focusables.indexOf(active);
+                            if (index > -1 && index < focusables.length - 1) {
+                                focusables[index + 1].focus(); // Pindah ke elemen berikutnya
+                            }
+                        }
+                    }
+                }
+            });
+
         });
     </script>
 </body>
