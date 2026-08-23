@@ -122,6 +122,8 @@ class MonthlyDashboardController extends Controller
             $dataMatrix[$kode]['kualitas']['real'] = HarvestQuality::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('kriteria');
             
             $dataMatrix[$kode]['pekerja'] = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->groupBy('kategori');
+            // Ambil data bulan sebelumnya untuk Sbi
+            $dataMatrix[$kode]['pekerja_lalu'] = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $lastMonth)->where('tipe', 'REAL')->get()->groupBy('kategori');
         }
 
         $dataMatrix['BP-2'] = $this->calculateGrandTotal($dataMatrix, $estates, $historicalYears);
@@ -299,7 +301,8 @@ class MonthlyDashboardController extends Controller
             'Umur' => ['< 25', '25 - 40', '40 - 50', '> 50'],
             'Status Keluarga' => ['KK', 'Lj'],
             'Masa Kerja' => ['<= 1bln', '2-3Bln', '> 3Bln'],
-            'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', '% Keluar Bi', 'Keluar (Sbi)', '% Keluar Sbi'],
+            // HANYA INPUT Bi dan PERSEN YANG MANUAL
+            'Mutasi' => ['Masuk (Bi)', 'Keluar (Bi)', '% Keluar Bi', '% Keluar Sbi'],
             'HKNE' => ['Kerja', 'Sakit', 'Cuti', 'Mangkir', 'Ijin'],
             'Jam Kerja' => ['Tersedia', 'Pagi', 'Siang', 'Sore'],
             'Kelas Pemanen' => ['A', 'B', 'C', 'D']
