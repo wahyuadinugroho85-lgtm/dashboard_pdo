@@ -526,7 +526,7 @@
                     @foreach($estates as $estate)
                         @php 
                             // Sbi = (Bi bulan ini) + (Sbi bulan lalu) // otomatis dihitung dari controller/tabel, tp utk tampilan:
-                            $vSbiLalu = $dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0;
+                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0) : 0;
                             $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0;
                             $vSbi = $vSbiLalu + $vBiKini;
                         @endphp
@@ -535,7 +535,7 @@
                     @php 
                         $gMasukSbi = 0; 
                         foreach($estates as $estate) { 
-                            $vSbiLalu = $dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0;
+                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0) : 0;
                             $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0;
                             $gMasukSbi += ($vSbiLalu + $vBiKini); 
                         } 
@@ -578,7 +578,7 @@
                     @foreach($estates as $estate)
                         @php 
                             // Sbi = (Bi bulan ini) + (Sbi bulan lalu)
-                            $vSbiLalu = $dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0;
+                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0) : 0;
                             $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0;
                             $vSbi = $vSbiLalu + $vBiKini;
                         @endphp
@@ -587,7 +587,7 @@
                     @php 
                         $gKeluarSbi = 0; 
                         foreach($estates as $estate) { 
-                            $vSbiLalu = $dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0;
+                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0) : 0;
                             $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0;
                             $gKeluarSbi += ($vSbiLalu + $vBiKini); 
                         } 
