@@ -1,7 +1,6 @@
 <div id="tab-analytics" class="tab-content block w-full space-y-6">
     <div id="analytics-container" class="transition-all duration-300 rounded-xl">
         
-        <!-- HEADER ANALYTICS -->
         <div class="bg-gradient-to-r from-indigo-700 via-blue-600 to-sky-500 rounded-2xl shadow-lg p-6 mb-6 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <h2 class="text-3xl font-extrabold tracking-wide mb-1">Executive Analytics Summary</h2>
@@ -40,7 +39,6 @@
             </div>
         </div>
 
-        <!-- GRID WIDGETS -->
         <div id="dynamic-dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -803,7 +801,6 @@
                        ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                 $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
 
-                // Hitung Cost/Kg Budget (1 Tahun Flat)
                 $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                 $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
                     ->whereYear('periode', $tahun)
@@ -828,10 +825,16 @@
             }
 
             // Data Mutu
-            $labelsMutu = $kriteriaMutu;
+            $labelsMutu = [];
+            if(isset($kriteriaMutu)) {
+                $labelsMutu = $kriteriaMutu;
+            } else {
+                $labelsMutu = ['Unripe', 'Ripe', 'Over Ripe', 'Empty Bunch', 'Abnormal'];
+            }
+            
             $dataMutuTarget = [];
             $dataMutuReal = [];
-            foreach($kriteriaMutu as $mutu) {
+            foreach($labelsMutu as $mutu) {
                 $tTar = 0; $cTar = 0; $tReal = 0; $cReal = 0;
                 foreach($estates as $estate) {
                     $vT = $dataMatrix[$estate->kode]['kualitas']['rkb'][$mutu]->persentase ?? 0;
