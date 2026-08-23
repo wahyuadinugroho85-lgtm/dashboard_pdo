@@ -208,7 +208,6 @@
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
                                     
-                                    // PERUBAHAN: Bgt Rp/Kg menggunakan Total 1 Tahun (Flat)
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                                     $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
                                         ->whereYear('periode', $tahun)
@@ -394,40 +393,79 @@
             </div>
             <!-- ========================= SELESAI WIDGET TOTAL RAWAT (HA) ========================= -->
 
+            <!-- ========================= PERUBAHAN WIDGET TOTAL PUPUK ========================= -->
             <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Pupuk (Ton)</p>
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalPupuk, 0) }}</h3>
+                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalPupuk / 1000, 2) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Aplikasi Bulan Ini</p>
                 </div>
                 <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
-                        <div class="font-bold text-yellow-300 mb-2 border-b border-slate-600 pb-1">Detail Pupuk per PT (Ton)</div>
-                        <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Bgt</th><th class="pb-1 pl-2">Real</th><th class="pb-1 pl-2">% Pencapaian</th></tr>
-                            @foreach($estates as $estate)
-                                @php 
-                                    $pR = 0; $pB = 0; 
-                                    foreach($jenisPupuk as $ppk) { 
-                                        $pR += $dataMatrix[$estate->kode]['pupuk']['real'][$ppk]->jumlah_kg ?? 0; 
-                                        $pB += $dataMatrix[$estate->kode]['pupuk']['budget'][$ppk]->jumlah_kg ?? 0; 
-                                    } 
-                                    $pP = $pB > 0 ? ($pR/$pB)*100 : 0;
-                                @endphp
-                                <tr class="border-b border-slate-700 last:border-0">
-                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="pl-2">{{ number_format($pB, 0) }}</td>
-                                    <td class="pl-2 font-bold text-white">{{ number_format($pR, 0) }}</td>
-                                    <td class="pl-2 {{ $pP >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pP, 1) }}%</td>
-                                </tr>
-                            @endforeach
-                        </table>
+                
+                <!-- Tooltip Table dengan Max-Height dan Scroll -->
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 420px;">
+                        
+                        <!-- Header Sticky -->
+                        <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10">
+                            <div class="font-bold text-yellow-300">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</div>
+                        </div>
+                        
+                        <!-- Container Scroll Khusus Isi Tabel -->
+                        <div class="max-h-[300px] overflow-y-auto px-3 pb-3">
+                            <table class="w-full text-right relative">
+                                <thead>
+                                    <tr class="text-slate-400 bg-slate-800/95 backdrop-blur sticky top-0 z-10 border-b border-slate-600">
+                                        <th class="text-left py-2 font-semibold">PT</th>
+                                        <th class="text-left py-2 pl-2 font-semibold">Jenis Pupuk</th>
+                                        <th class="py-2 pl-2 font-semibold text-center">Bgt (Sbi)</th>
+                                        <th class="py-2 pl-2 font-semibold text-center">Real (Sbi)</th>
+                                        <th class="py-2 pl-2 font-semibold">% Pencapaian</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($estates as $estate)
+                                        @php $isFirst = true; @endphp
+                                        @foreach($jenisPupuk as $ppk)
+                                            @php
+                                                // Ambil Akumulasi Data dari Januari s/d Bulan Ini (Sbi)
+                                                $bgtSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
+                                                    ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
+                                                    ->where('tipe', 'BUDGET')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
+                                                    
+                                                $realSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
+                                                    ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
+                                                    ->where('tipe', 'REAL')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
+                                                
+                                                // Konversi ke Ton
+                                                $bgtSbiTon = $bgtSbiKg / 1000;
+                                                $realSbiTon = $realSbiKg / 1000;
+                                                
+                                                // Persentase
+                                                $pctSbi = $bgtSbiTon > 0 ? ($realSbiTon / $bgtSbiTon) * 100 : 0;
+                                            @endphp
+                                            
+                                            @if($bgtSbiTon > 0 || $realSbiTon > 0)
+                                            <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
+                                                <td class="py-2 text-left font-bold text-slate-300 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
+                                                <td class="py-2 text-left pl-2 text-slate-400 max-w-[140px] truncate" title="{{ $ppk }}">{{ $ppk }}</td>
+                                                <td class="py-2 pl-2 text-center">{{ number_format($bgtSbiTon, 2) }}</td>
+                                                <td class="py-2 pl-2 text-center font-bold text-white">{{ number_format($realSbiTon, 2) }}</td>
+                                                <td class="py-2 pl-2 {{ $pctSbi >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pctSbi, 1) }}%</td>
+                                            </tr>
+                                            @php $isFirst = false; @endphp
+                                            @endif
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- ========================= SELESAI WIDGET TOTAL PUPUK ========================= -->
 
             <!-- ================= WIDGET DATA JAM KERJA (DIPERBARUI) ================= -->
             <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
