@@ -166,7 +166,7 @@
                 </div>
             </div>
 
-            <!-- ========================= PERUBAHAN WIDGET TOTAL BIAYA (M) ========================= -->
+            <!-- ========================= WIDGET TOTAL BIAYA (M) ========================= -->
             <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
@@ -220,7 +220,6 @@
                     </div>
                 </div>
             </div>
-            <!-- ========================= SELESAI WIDGET TOTAL BIAYA ========================= -->
 
             <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all cursor-help">
                 <div>
@@ -765,3 +764,104 @@
         </div>
     </div>
 </div>
+
+<!-- ========================= SCRIPT GRAFIK COST/KG ========================= -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        @php
+            $labelsPT = [];
+            $dataRealCostKg = [];
+            $dataPctBgt = [];
+
+            foreach($estates as $estate) {
+                $labelsPT[] = $estate->kode;
+
+                // Hitung Cost/Kg Real (S.D Bulan Ini)
+                $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
+                $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
+                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
+                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
+                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
+                       ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
+                $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
+
+                // Hitung Cost/Kg Budget (1 Tahun Flat)
+                $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
+                $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
+                    ->whereYear('periode', $tahun)
+                    ->where('tipe', 'BUDGET')
+                    ->get()
+                    ->sum(function($c) {
+                        return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
+                    });
+                $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
+                
+                // Hitung Persentase Real vs Budget 1 Tahun
+                $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
+
+                // Masukkan ke Array
+                $dataRealCostKg[] = round($ptCostKgSd, 0);
+                $dataPctBgt[] = number_format($pC, 2);
+            }
+        @endphp
+
+        const ctxCost = document.getElementById('chartCostKg');
+        if (ctxCost) {
+            const labels = {!! json_encode($labelsPT) !!};
+            const dataCost = {!! json_encode($dataRealCostKg) !!};
+            const dataPct = {!! json_encode($dataPctBgt) !!};
+
+            if (window.myChartCostKg) { window.myChartCostKg.destroy(); }
+
+            window.myChartCostKg = new Chart(ctxCost.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Cost / Kg (S.D Bln Ini)',
+                        data: dataCost,
+                        borderColor: '#f43f5e',
+                        backgroundColor: 'rgba(244, 63, 94, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                            titleFont: { size: 13, weight: 'bold' },
+                            bodyFont: { size: 13 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': Rp '; }
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('id-ID').format(context.parsed.y);
+                                    }
+                                    return label;
+                                },
+                                afterLabel: function(context) {
+                                    return '% thd Bgt 1 Thn: ' + dataPct[context.dataIndex] + '%';
+                                }
+                            }
+                        }
+                    },
+                    scales: { y: { beginAtZero: false } }
+                }
+            });
+        }
+    });
+</script>
