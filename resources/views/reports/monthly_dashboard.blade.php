@@ -353,8 +353,13 @@
             });
             document.getElementById(tabId).classList.remove('hidden');
             let activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-800');
-            activeBtn.classList.add('border-indigo-600', 'text-indigo-700');
+            if(activeBtn) {
+                activeBtn.classList.remove('border-transparent', 'text-slate-500', 'hover:text-slate-800');
+                activeBtn.classList.add('border-indigo-600', 'text-indigo-700');
+            }
+            
+            // MEMORI: Simpan nama Tab terakhir yang di-klik
+            localStorage.setItem('activeDashboardTab', tabId);
             
             if(tabId === 'tab-analytics' && window.myCharts) { window.myCharts.forEach(chart => chart.resize()); }
         }
@@ -362,6 +367,10 @@
         document.addEventListener('DOMContentLoaded', function () {
             renderLayout();
             new Sortable(document.getElementById('layout-list'), { animation: 150, handle: '.cursor-move' });
+
+            // MEMORI: Otomatis memuat Tab yang sebelumnya disimpan
+            let savedTab = localStorage.getItem('activeDashboardTab') || 'tab-analytics';
+            switchTab(savedTab);
         });
     </script>
 
