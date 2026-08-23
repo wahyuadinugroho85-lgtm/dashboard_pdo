@@ -181,12 +181,28 @@
                 <tr class="bg-slate-50/30">
                     <td colspan="2" class="font-bold text-slate-800 pl-4">{{ $mutu }} (% Target)</td>
                     @foreach($estates as $estate) <td class="text-right font-medium text-slate-500">{{ number_format($dataMatrix[$estate->kode]['kualitas']['rkb'][$mutu]->persentase ?? 0, 2) }}</td> @endforeach
-                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">0.00</td>
+                    
+                    @php
+                        $tMutuRkb = 0; $cMutuRkb = 0;
+                        foreach($estates as $estate) {
+                            $vRkb = $dataMatrix[$estate->kode]['kualitas']['rkb'][$mutu]->persentase ?? 0;
+                            if($vRkb > 0) { $tMutuRkb += $vRkb; $cMutuRkb++; }
+                        }
+                    @endphp
+                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($cMutuRkb > 0 ? $tMutuRkb / $cMutuRkb : 0, 2) }}</td>
                 </tr>
                 <tr class="row-border-strong">
                     <td colspan="2" class="font-bold text-emerald-700 pl-4">{{ $mutu }} (% Real)</td>
                     @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['kualitas']['real'][$mutu]->persentase ?? 0, 2) }}</td> @endforeach
-                    <td class="text-right font-bold bg-emerald-100/50 text-emerald-800">0.00</td>
+                    
+                    @php
+                        $tMutuReal = 0; $cMutuReal = 0;
+                        foreach($estates as $estate) {
+                            $vReal = $dataMatrix[$estate->kode]['kualitas']['real'][$mutu]->persentase ?? 0;
+                            if($vReal > 0) { $tMutuReal += $vReal; $cMutuReal++; }
+                        }
+                    @endphp
+                    <td class="text-right font-bold bg-emerald-100/50 text-emerald-800">{{ number_format($cMutuReal > 0 ? $tMutuReal / $cMutuReal : 0, 2) }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -263,7 +279,7 @@
                     <td class="text-right bg-slate-100">{{ number_format($gv, 0) }}</td>
                 </tr>
                 <tr class="bg-emerald-100/50 border-y border-emerald-300">
-                    <td class="text-left border-r border-emerald-200 w-24">Total</td>
+                    <td class="text-left border-r border-emerald-200 w-24">Total HKNE</td>
                     <td class="text-center border-r border-emerald-200 text-slate-500 font-medium">Hk</td>
                     @foreach($estates as $estate)
                         @php 
@@ -312,7 +328,6 @@
                     @endphp
                     <td class="text-right bg-slate-100 text-slate-700 font-medium">{{ number_format($gPct, 2) }}</td>
                 </tr>
-                <!-- RATA-RATA HKNE DIPERBAIKI COLSPAN NYA AGAR LURUS -->
                 <tr class="bg-yellow-300 text-yellow-900 border-b-4 border-yellow-500">
                     <td class="text-left border-r border-yellow-400 w-24">Rata2 Hkne/hari</td>
                     <td class="text-center border-r border-yellow-400 font-medium">Hk</td>
