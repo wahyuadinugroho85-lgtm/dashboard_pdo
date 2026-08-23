@@ -166,6 +166,7 @@
                 </div>
             </div>
 
+            <!-- ========================= PERUBAHAN WIDGET TOTAL BIAYA (M) ========================= -->
             <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
@@ -176,17 +177,50 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-amber-300 mb-2 border-b border-slate-600 pb-1">Detail Biaya per PT (M)</div>
-                        <table class="w-full">
+                        <table class="w-full text-right">
+                            <tr class="text-slate-400 border-b border-slate-600">
+                                <th class="text-left pb-1">PT</th>
+                                <th class="pb-1 pl-2">Bgt (1 Thn)</th>
+                                <th class="pb-1 pl-2">Real (Sbi)</th>
+                                <th class="pb-1 pl-2">%</th>
+                            </tr>
                             @foreach($estates as $estate)
-                                @php $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); @endphp
-                                <tr class="border-b border-slate-700 last:border-0"><td class="py-1.5 font-medium">{{ $estate->kode }}</td><td class="text-right font-bold text-white">{{ number_format($ptBiaya / 1000000, 2) }} M</td></tr>
+                                @php 
+                                    // Ambil total budget 1 tahun
+                                    $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)
+                                        ->whereYear('periode', $tahun)
+                                        ->where('tipe', 'BUDGET')
+                                        ->get()
+                                        ->sum(function($c) {
+                                            return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
+                                        });
+                                        
+                                    // Ambil total biaya real s/d bulan ini (Sbi)
+                                    $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
+                                               
+                                    // Konversi ke satuan M (Juta)
+                                    $bgtM = $bgt1ThnCost / 1000000;
+                                    $realM = $ptBiaya / 1000000;
+                                    $pct = $bgtM > 0 ? ($realM / $bgtM) * 100 : 0;
+                                @endphp
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-2">{{ number_format($bgtM, 2) }}</td>
+                                    <td class="pl-2 font-bold text-white">{{ number_format($realM, 2) }}</td>
+                                    <td class="pl-2 {{ $pct <= 100 ? 'text-emerald-400' : 'text-rose-400' }}">{{ number_format($pct, 1) }}%</td>
+                                </tr>
                             @endforeach
                         </table>
                     </div>
                 </div>
             </div>
+            <!-- ========================= SELESAI WIDGET TOTAL BIAYA ========================= -->
 
             <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all cursor-help">
                 <div>
@@ -208,7 +242,6 @@
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
                                     
-                                    // PERUBAHAN: Bgt Rp/Kg menggunakan Total 1 Tahun (Flat)
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                                     $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
                                         ->whereYear('periode', $tahun)
@@ -332,7 +365,7 @@
                 </div>
             </div>
 
-            <!-- ========================= PERUBAHAN: WIDGET TOTAL RAWAT (HA) ========================= -->
+            <!-- ========================= WIDGET TOTAL RAWAT (HA) ========================= -->
             <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
@@ -343,16 +376,12 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
                 
-                <!-- Tooltip Table: Diubah ke max-height dan overflow-y-auto agar bisa di-scroll, dengan Sticky Header -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
-                        
-                        <!-- Header Sticky -->
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
                             <span class="font-bold text-teal-300">Detail Rawat & Cost per Pekerjaan</span>
                         </div>
                         
-                        <!-- Container Scroll Khusus Isi Tabel -->
                         <div class="max-h-[300px] overflow-y-auto px-3 pb-3">
                             <table class="w-full text-right relative">
                                 <thead>
@@ -392,9 +421,8 @@
                     </div>
                 </div>
             </div>
-            <!-- ========================= SELESAI WIDGET TOTAL RAWAT (HA) ========================= -->
 
-            <!-- ========================= PERUBAHAN WIDGET TOTAL PUPUK ========================= -->
+            <!-- ========================= WIDGET TOTAL PUPUK ========================= -->
             <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Pupuk (Ton)</p>
@@ -405,16 +433,12 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
                 
-                <!-- Tooltip Table dengan Max-Height dan Scroll -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
-                        
-                        <!-- Header Sticky -->
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10">
                             <div class="font-bold text-yellow-300">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</div>
                         </div>
                         
-                        <!-- Container Scroll Khusus Isi Tabel -->
                         <div class="max-h-[300px] overflow-y-auto px-3 pb-3">
                             <table class="w-full text-right relative">
                                 <thead>
@@ -467,9 +491,8 @@
                     </div>
                 </div>
             </div>
-            <!-- ========================= SELESAI WIDGET TOTAL PUPUK ========================= -->
 
-            <!-- ================= WIDGET DATA JAM KERJA (DIPERBARUI) ================= -->
+            <!-- ================= WIDGET DATA JAM KERJA ================= -->
             <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
@@ -682,7 +705,7 @@
                 </div>
             </div>
             
-            <!-- ================= WIDGET TOTAL KINERJA TK (AKURAT) ================= -->
+            <!-- ================= WIDGET TOTAL KINERJA TK ================= -->
             <div id="w-tk" data-wname="Total Kinerja TK (Org)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Kinerja TK</p>
