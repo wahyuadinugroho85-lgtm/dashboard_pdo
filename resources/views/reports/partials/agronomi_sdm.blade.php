@@ -212,6 +212,116 @@
 
 <!-- ================= TAB 5: PERFORMANCE TK ================= -->
 <div id="tab-performance" class="tab-content hidden w-full space-y-6">
+
+    <!-- TABLE RKK (MANUAL 100%) -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+        <table class="modern-matrix text-sm w-full min-w-[900px]">
+            <thead>
+                <tr>
+                    <th colspan="2" class="text-left font-bold text-slate-800 bg-slate-50 border-r border-slate-200 uppercase">PERFORMANCE TENAGA KERJA</th>
+                    @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
+                    <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase shadow-sm">BP-2</th>
+                </tr>
+            </thead>
+            <tbody class="text-slate-800 font-bold">
+                <!-- RKK MASUK -->
+                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                    <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Masuk</td>
+                    <td class="text-left border-r border-slate-200 w-24">Bi</td>
+                    @foreach($estates as $estate)
+                        @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; @endphp
+                        <td class="text-right">{{ number_format($v, 0) }}</td>
+                    @endforeach
+                    @php $gMasukBi = 0; foreach($estates as $estate){ $gMasukBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
+                    <td class="text-right bg-slate-100">{{ number_format($gMasukBi, 0) }}</td>
+                </tr>
+                <tr class="hover:bg-slate-50 border-b-2 border-slate-300 row-border-strong">
+                    <td class="text-left border-r border-slate-200 w-24">Sbi</td>
+                    @foreach($estates as $estate)
+                        @php 
+                            // Sbi = Sum seluruh 'Masuk (Bi)' dari Januari s/d Bulan Ini
+                            $vSbi = isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Masuk (Bi)')->sum('jumlah_tk') : 0;
+                        @endphp
+                        <td class="text-right">{{ number_format($vSbi, 0) }}</td>
+                    @endforeach
+                    @php 
+                        $gMasukSbi = 0; 
+                        foreach($estates as $estate) { 
+                            $gMasukSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Masuk (Bi)')->sum('jumlah_tk') : 0; 
+                        } 
+                    @endphp
+                    <td class="text-right bg-slate-100">{{ number_format($gMasukSbi, 0) }}</td>
+                </tr>
+                
+                <!-- RKK KELUAR -->
+                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                    <td rowspan="4" class="text-center align-top pt-4 border-r border-slate-200 w-32 bg-white">Keluar</td>
+                    <td class="text-left border-r border-slate-200 w-24">Bi</td>
+                    @foreach($estates as $estate)
+                        @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; @endphp
+                        <td class="text-right">{{ number_format($v, 0) }}</td>
+                    @endforeach
+                    @php $gKeluarBi = 0; foreach($estates as $estate){ $gKeluarBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
+                    <td class="text-right bg-slate-100">{{ number_format($gKeluarBi, 0) }}</td>
+                </tr>
+                <tr class="bg-yellow-50/50 hover:bg-yellow-100/50 border-b border-slate-300 border-dashed">
+                    <td class="text-left border-r border-slate-200 w-24">% Keluar Bi</td>
+                    @foreach($estates as $estate)
+                        @php 
+                            // Diambil dari inputan manual, disimpan di kolom persentase
+                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
+                        @endphp
+                        <td class="text-right text-yellow-800">{{ number_format($vPct, 2) }}%</td>
+                    @endforeach
+                    
+                    @php 
+                        $tPctKeluarBi = 0; $cPctKeluarBi = 0;
+                        foreach($estates as $estate) {
+                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
+                            if($v > 0) { $tPctKeluarBi += $v; $cPctKeluarBi++; }
+                        }
+                    @endphp
+                    <td class="text-right bg-yellow-100 text-yellow-900">{{ number_format($cPctKeluarBi > 0 ? $tPctKeluarBi / $cPctKeluarBi : 0, 2) }}%</td>
+                </tr>
+                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                    <td class="text-left border-r border-slate-200 w-24">Sbi</td>
+                    @foreach($estates as $estate)
+                        @php 
+                            // Sbi = Sum seluruh 'Keluar (Bi)' dari Januari s/d Bulan Ini
+                            $vSbi = isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0;
+                        @endphp
+                        <td class="text-right">{{ number_format($vSbi, 0) }}</td>
+                    @endforeach
+                    @php 
+                        $gKeluarSbi = 0; 
+                        foreach($estates as $estate) { 
+                            $gKeluarSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0; 
+                        } 
+                    @endphp
+                    <td class="text-right bg-slate-100">{{ number_format($gKeluarSbi, 0) }}</td>
+                </tr>
+                <tr class="bg-amber-300 text-amber-900 border-b border-amber-400">
+                    <td class="text-left border-r border-amber-400 w-24">% Keluar Sbi</td>
+                    @foreach($estates as $estate)
+                        @php 
+                            // Diambil dari inputan manual, disimpan di kolom persentase
+                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
+                        @endphp
+                        <td class="text-right">{{ number_format($vPct, 2) }}%</td>
+                    @endforeach
+                    
+                    @php 
+                        $tPctKeluarSbi = 0; $cPctKeluarSbi = 0;
+                        foreach($estates as $estate) {
+                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
+                            if($v > 0) { $tPctKeluarSbi += $v; $cPctKeluarSbi++; }
+                        }
+                    @endphp
+                    <td class="text-right bg-amber-400">{{ number_format($cPctKeluarSbi > 0 ? $tPctKeluarSbi / $cPctKeluarSbi : 0, 2) }}%</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     
     <!-- TABLE HKNE KARYAWAN & KELAS PEMANEN -->
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
@@ -495,124 +605,6 @@
                     <td class="text-right bg-emerald-100 text-emerald-900">{{ number_format($gAvr, 2) }}</td>
                 </tr>
                 @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <!-- TABLE RKK (MANUAL 100%) -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
-        <table class="modern-matrix text-sm w-full min-w-[900px]">
-            <thead>
-                <tr>
-                    <th colspan="2" class="text-left font-bold text-slate-800 bg-slate-50 border-r border-slate-200 uppercase">PERFORMANCE TENAGA KERJA</th>
-                    @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
-                    <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase shadow-sm">BP-2</th>
-                </tr>
-            </thead>
-            <tbody class="text-slate-800 font-bold">
-                <!-- RKK MASUK -->
-                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
-                    <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Masuk</td>
-                    <td class="text-left border-r border-slate-200 w-24">Bi</td>
-                    @foreach($estates as $estate)
-                        @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; @endphp
-                        <td class="text-right">{{ number_format($v, 0) }}</td>
-                    @endforeach
-                    @php $gMasukBi = 0; foreach($estates as $estate){ $gMasukBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
-                    <td class="text-right bg-slate-100">{{ number_format($gMasukBi, 0) }}</td>
-                </tr>
-                <tr class="hover:bg-slate-50 border-b-2 border-slate-300 row-border-strong">
-                    <td class="text-left border-r border-slate-200 w-24">Sbi</td>
-                    @foreach($estates as $estate)
-                        @php 
-                            // Sbi = (Bi bulan ini) + (Sbi bulan lalu) // otomatis dihitung dari controller/tabel, tp utk tampilan:
-                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0) : 0;
-                            $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0;
-                            $vSbi = $vSbiLalu + $vBiKini;
-                        @endphp
-                        <td class="text-right">{{ number_format($vSbi, 0) }}</td>
-                    @endforeach
-                    @php 
-                        $gMasukSbi = 0; 
-                        foreach($estates as $estate) { 
-                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Sbi)')->jumlah_tk ?? 0) : 0;
-                            $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0;
-                            $gMasukSbi += ($vSbiLalu + $vBiKini); 
-                        } 
-                    @endphp
-                    <td class="text-right bg-slate-100">{{ number_format($gMasukSbi, 0) }}</td>
-                </tr>
-                
-                <!-- RKK KELUAR -->
-                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
-                    <td rowspan="4" class="text-center align-top pt-4 border-r border-slate-200 w-32 bg-white">Keluar</td>
-                    <td class="text-left border-r border-slate-200 w-24">Bi</td>
-                    @foreach($estates as $estate)
-                        @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; @endphp
-                        <td class="text-right">{{ number_format($v, 0) }}</td>
-                    @endforeach
-                    @php $gKeluarBi = 0; foreach($estates as $estate){ $gKeluarBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
-                    <td class="text-right bg-slate-100">{{ number_format($gKeluarBi, 0) }}</td>
-                </tr>
-                <tr class="bg-yellow-50/50 hover:bg-yellow-100/50 border-b border-slate-300 border-dashed">
-                    <td class="text-left border-r border-slate-200 w-24">% Keluar Bi</td>
-                    @foreach($estates as $estate)
-                        @php 
-                            // Diambil dari inputan manual, disimpan di kolom persentase
-                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
-                        @endphp
-                        <td class="text-right text-yellow-800">{{ number_format($vPct, 2) }}%</td>
-                    @endforeach
-                    
-                    @php 
-                        $tPctKeluarBi = 0; $cPctKeluarBi = 0;
-                        foreach($estates as $estate) {
-                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
-                            if($v > 0) { $tPctKeluarBi += $v; $cPctKeluarBi++; }
-                        }
-                    @endphp
-                    <td class="text-right bg-yellow-100 text-yellow-900">{{ number_format($cPctKeluarBi > 0 ? $tPctKeluarBi / $cPctKeluarBi : 0, 2) }}%</td>
-                </tr>
-                <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
-                    <td class="text-left border-r border-slate-200 w-24">Sbi</td>
-                    @foreach($estates as $estate)
-                        @php 
-                            // Sbi = (Bi bulan ini) + (Sbi bulan lalu)
-                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0) : 0;
-                            $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0;
-                            $vSbi = $vSbiLalu + $vBiKini;
-                        @endphp
-                        <td class="text-right">{{ number_format($vSbi, 0) }}</td>
-                    @endforeach
-                    @php 
-                        $gKeluarSbi = 0; 
-                        foreach($estates as $estate) { 
-                            $vSbiLalu = isset($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja_lalu']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0) : 0;
-                            $vBiKini = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0;
-                            $gKeluarSbi += ($vSbiLalu + $vBiKini); 
-                        } 
-                    @endphp
-                    <td class="text-right bg-slate-100">{{ number_format($gKeluarSbi, 0) }}</td>
-                </tr>
-                <tr class="bg-amber-300 text-amber-900 border-b border-amber-400">
-                    <td class="text-left border-r border-amber-400 w-24">% Keluar Sbi</td>
-                    @foreach($estates as $estate)
-                        @php 
-                            // Diambil dari inputan manual, disimpan di kolom persentase
-                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
-                        @endphp
-                        <td class="text-right">{{ number_format($vPct, 2) }}%</td>
-                    @endforeach
-                    
-                    @php 
-                        $tPctKeluarSbi = 0; $cPctKeluarSbi = 0;
-                        foreach($estates as $estate) {
-                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
-                            if($v > 0) { $tPctKeluarSbi += $v; $cPctKeluarSbi++; }
-                        }
-                    @endphp
-                    <td class="text-right bg-amber-400">{{ number_format($cPctKeluarSbi > 0 ? $tPctKeluarSbi / $cPctKeluarSbi : 0, 2) }}%</td>
-                </tr>
             </tbody>
         </table>
     </div>
