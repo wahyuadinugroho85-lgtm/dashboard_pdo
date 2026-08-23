@@ -208,6 +208,7 @@
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
                                     
+                                    // PERUBAHAN: Bgt Rp/Kg menggunakan Total 1 Tahun (Flat)
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
                                     $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
                                         ->whereYear('periode', $tahun)
@@ -406,7 +407,7 @@
                 
                 <!-- Tooltip Table dengan Max-Height dan Scroll -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 420px;">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         
                         <!-- Header Sticky -->
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10">
@@ -420,7 +421,7 @@
                                     <tr class="text-slate-400 bg-slate-800/95 backdrop-blur sticky top-0 z-10 border-b border-slate-600">
                                         <th class="text-left py-2 font-semibold">PT</th>
                                         <th class="text-left py-2 pl-2 font-semibold">Jenis Pupuk</th>
-                                        <th class="py-2 pl-2 font-semibold text-center">Bgt (Sbi)</th>
+                                        <th class="py-2 pl-2 font-semibold text-center">Bgt (1 Thn)</th>
                                         <th class="py-2 pl-2 font-semibold text-center">Real (Sbi)</th>
                                         <th class="py-2 pl-2 font-semibold">% Pencapaian</th>
                                     </tr>
@@ -430,28 +431,29 @@
                                         @php $isFirst = true; @endphp
                                         @foreach($jenisPupuk as $ppk)
                                             @php
-                                                // Ambil Akumulasi Data dari Januari s/d Bulan Ini (Sbi)
-                                                $bgtSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
-                                                    ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
+                                                // Bgt 1 Tahun
+                                                $bgt1ThnKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
+                                                    ->whereYear('periode', $tahun)
                                                     ->where('tipe', 'BUDGET')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
                                                     
+                                                // Real Sbi (Akumulasi Jan s/d Bulan Ini)
                                                 $realSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
                                                     ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
                                                     ->where('tipe', 'REAL')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
                                                 
                                                 // Konversi ke Ton
-                                                $bgtSbiTon = $bgtSbiKg / 1000;
+                                                $bgt1ThnTon = $bgt1ThnKg / 1000;
                                                 $realSbiTon = $realSbiKg / 1000;
                                                 
                                                 // Persentase
-                                                $pctSbi = $bgtSbiTon > 0 ? ($realSbiTon / $bgtSbiTon) * 100 : 0;
+                                                $pctSbi = $bgt1ThnTon > 0 ? ($realSbiTon / $bgt1ThnTon) * 100 : 0;
                                             @endphp
                                             
-                                            @if($bgtSbiTon > 0 || $realSbiTon > 0)
+                                            @if($bgt1ThnTon > 0 || $realSbiTon > 0)
                                             <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
                                                 <td class="py-2 text-left font-bold text-slate-300 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
                                                 <td class="py-2 text-left pl-2 text-slate-400 max-w-[140px] truncate" title="{{ $ppk }}">{{ $ppk }}</td>
-                                                <td class="py-2 pl-2 text-center">{{ number_format($bgtSbiTon, 2) }}</td>
+                                                <td class="py-2 pl-2 text-center">{{ number_format($bgt1ThnTon, 2) }}</td>
                                                 <td class="py-2 pl-2 text-center font-bold text-white">{{ number_format($realSbiTon, 2) }}</td>
                                                 <td class="py-2 pl-2 {{ $pctSbi >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pctSbi, 1) }}%</td>
                                             </tr>
