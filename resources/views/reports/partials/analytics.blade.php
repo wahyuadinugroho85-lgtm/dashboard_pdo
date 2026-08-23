@@ -332,6 +332,7 @@
                 </div>
             </div>
 
+            <!-- ========================= PERUBAHAN: WIDGET TOTAL RAWAT (HA) ========================= -->
             <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
@@ -341,44 +342,57 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 480px;">
-                        <div class="font-bold text-teal-300 mb-2 border-b border-slate-600 pb-1 flex justify-between">
-                            <span>Detail Rawat & Cost per Pekerjaan</span>
+                
+                <!-- Tooltip Table: Diubah ke max-height dan overflow-y-auto agar bisa di-scroll, dengan Sticky Header -->
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
+                        
+                        <!-- Header Sticky -->
+                        <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
+                            <span class="font-bold text-teal-300">Detail Rawat & Cost per Pekerjaan</span>
                         </div>
-                        <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600 bg-slate-800 sticky top-0">
-                                <th class="text-left pb-1">PT</th>
-                                <th class="text-left pb-1 pl-2">Jenis Pekerjaan</th>
-                                <th class="pb-1 pl-2 text-center">Blok</th>
-                                <th class="pb-1 pl-2">Luas (Ha)</th>
-                                <th class="pb-1 pl-2">Cost/Ha (Rp)</th>
-                            </tr>
-                            @foreach($estates as $estate)
-                                @php $isFirst = true; @endphp
-                                @foreach($jenisPerawatan as $job)
-                                    @php
-                                        $l = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->luas_ha ?? 0; 
-                                        $b = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->jml_blok ?? 0; 
-                                        $c = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->cost_ha ?? 0; 
-                                    @endphp
-                                    
-                                    @if($l > 0 || $b > 0 || $c > 0)
-                                    <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
-                                        <td class="py-1.5 text-left font-bold text-slate-300">{{ $isFirst ? $estate->kode : '' }}</td>
-                                        <td class="py-1.5 text-left pl-2 text-slate-400 truncate max-w-[140px]" title="{{ $job }}">{{ $job }}</td>
-                                        <td class="py-1.5 pl-2 text-center">{{ number_format($b, 0) }}</td>
-                                        <td class="py-1.5 pl-2 font-bold text-white">{{ number_format($l, 2) }}</td>
-                                        <td class="py-1.5 pl-2 text-amber-400">{{ number_format($c, 0) }}</td>
+                        
+                        <!-- Container Scroll Khusus Isi Tabel -->
+                        <div class="max-h-[300px] overflow-y-auto px-3 pb-3">
+                            <table class="w-full text-right relative">
+                                <thead>
+                                    <tr class="text-slate-400 bg-slate-800/95 backdrop-blur sticky top-0 z-10 border-b border-slate-600">
+                                        <th class="text-left py-2 font-semibold">PT</th>
+                                        <th class="text-left py-2 pl-2 font-semibold">Jenis Pekerjaan</th>
+                                        <th class="py-2 pl-2 text-center font-semibold">Blok</th>
+                                        <th class="py-2 pl-2 font-semibold">Luas (Ha)</th>
+                                        <th class="py-2 pl-2 font-semibold">Cost/Ha (Rp)</th>
                                     </tr>
-                                    @php $isFirst = false; @endphp
-                                    @endif
-                                @endforeach
-                            @endforeach
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach($estates as $estate)
+                                        @php $isFirst = true; @endphp
+                                        @foreach($jenisPerawatan as $job)
+                                            @php
+                                                $l = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->luas_ha ?? 0; 
+                                                $b = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->jml_blok ?? 0; 
+                                                $c = $dataMatrix[$estate->kode]['upkeep']['real'][$job]->cost_ha ?? 0; 
+                                            @endphp
+                                            
+                                            @if($l > 0 || $b > 0 || $c > 0)
+                                            <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
+                                                <td class="py-2 text-left font-bold text-slate-300 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
+                                                <td class="py-2 text-left pl-2 text-slate-400 max-w-[140px]" title="{{ $job }}">{{ $job }}</td>
+                                                <td class="py-2 pl-2 text-center">{{ number_format($b, 0) }}</td>
+                                                <td class="py-2 pl-2 font-bold text-white">{{ number_format($l, 2) }}</td>
+                                                <td class="py-2 pl-2 text-amber-400">{{ number_format($c, 0) }}</td>
+                                            </tr>
+                                            @php $isFirst = false; @endphp
+                                            @endif
+                                        @endforeach
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+            <!-- ========================= SELESAI WIDGET TOTAL RAWAT (HA) ========================= -->
 
             <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all cursor-help">
                 <div>
@@ -681,7 +695,6 @@
             </div>
 
             <div id="w-chart-mutu" data-wname="Chart: Mutu Ancak" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-                <!-- PERUBAHAN LABEL GRAFIK -->
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Tren Rata-rata Mutu (%)</h3>
                 <div class="relative h-64 w-full"><canvas id="chartMutu"></canvas></div>
             </div>
