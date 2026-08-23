@@ -316,5 +316,40 @@
             document.getElementById('btn-' + tabId).classList.add('tab-active');
         }
     </script>
+    
+    <!-- SCRIPT UNTUK MENYIMPAN PILIHAN FORM SECARA OTOMATIS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Nama "name" dari elemen select dropdown di halaman input Anda
+            const formFields = ['estate_id', 'tipe', 'bulan', 'tahun'];
+            
+            formFields.forEach(field => {
+                const el = document.querySelector(`select[name="${field}"]`);
+                if (el) {
+                    // 1. Saat halaman baru dimuat, kembalikan ke pilihan sebelumnya
+                    const savedVal = localStorage.getItem(`input_${field}`);
+                    if (savedVal) {
+                        el.value = savedVal; 
+                    }
+                    
+                    // 2. Jika Bapak mengubah pilihan dropdown, otomatis catat di memori
+                    el.addEventListener('change', function() {
+                        localStorage.setItem(`input_${field}`, this.value);
+                    });
+                }
+            });
+
+            // 3. Cadangan: Pastikan memori tercatat juga saat tombol "Simpan" ditekan
+            const formInput = document.getElementById('mainForm');
+            if(formInput) {
+                formInput.addEventListener('submit', function() {
+                    formFields.forEach(field => {
+                        const el = document.querySelector(`select[name="${field}"]`);
+                        if(el) localStorage.setItem(`input_${field}`, el.value);
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
