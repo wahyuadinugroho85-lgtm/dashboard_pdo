@@ -83,7 +83,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 'Dolomite' => 'pupuk_dolomite_kg',
                 'Kieserite' => 'pupuk_kieserite_kg',
                 'Kaptan' => 'pupuk_kaptan_kg',
-                'TSP / RP' => 'pupuk_tsp_kg', // Harus match dgn Template
+                'TSP / RP' => 'pupuk_tsp_kg',
                 'Urea' => 'pupuk_urea_kg',
                 'MOP' => 'pupuk_mop_kg',
                 'Mikro-Mg' => 'pupuk_mikro_kg',
@@ -108,13 +108,13 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 }
             }
 
-            // 6. Worker Performance (Standard)
+            // 6. Worker Performance (Standard - Hanya input "Bi" dan "Kerja")
             $workers = [
                 'Umur' => ['< 25' => 'tk_umur_kurang_25', '25 - 40' => 'tk_umur_25_40', '40 - 50' => 'tk_umur_40_50', '> 50' => 'tk_umur_lebih_50'],
                 'Status Keluarga' => ['KK' => 'tk_status_kk', 'Lj' => 'tk_status_lj'],
                 'Masa Kerja' => ['<= 1bln' => 'tk_masa_kurang_1bln', '2-3Bln' => 'tk_masa_2_3bln', '> 3Bln' => 'tk_masa_lebih_3bln'],
-                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Masuk (Sbi)' => 'tk_mutasi_masuk_sbi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi', 'Keluar (Sbi)' => 'tk_mutasi_keluar_sbi'],
-                'HKNE' => ['Kerja' => 'tk_hkne_kerja', 'Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'], // MENGGANTI TOTAL TK JADI KERJA
+                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi'], // Sbi tidak diimport karena otomatis
+                'HKNE' => ['Kerja' => 'tk_hkne_kerja', 'Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'],
                 'Jam Kerja' => ['Tersedia' => 'tk_jam_tersedia', 'Pagi' => 'tk_jam_pagi', 'Siang' => 'tk_jam_siang', 'Sore' => 'tk_jam_sore'],
             ];
 
@@ -126,7 +126,18 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 }
             }
             
-            // 7. Worker Performance (Kelas Pemanen dgn Avr)
+            // 7. Mutasi RKK dengan Persentase (BARU)
+            $mutasiPct = [
+                '% Keluar Bi' => 'tk_mutasi_pct_keluar_bi',
+                '% Keluar Sbi' => 'tk_mutasi_pct_keluar_sbi',
+            ];
+            foreach($mutasiPct as $sub => $col) {
+                if(isset($row[$col]) && trim($row[$col]) !== '') {
+                    WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => 'Mutasi', 'sub_kategori' => $sub]), ['persentase' => $row[$col]]);
+                }
+            }
+            
+            // 8. Worker Performance (Kelas Pemanen dgn Avr)
             $pemanen = [
                 'A' => ['tk' => 'tk_kelas_a', 'avr' => 'tk_kelas_a_avr'],
                 'B' => ['tk' => 'tk_kelas_b', 'avr' => 'tk_kelas_b_avr'],
