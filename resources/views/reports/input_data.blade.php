@@ -91,6 +91,7 @@
                         <li>Pilih Divisi/PT, Periode, dan Jenis Data (RKB/REAL) terlebih dahulu di Panel Kanan.</li>
                         <li>Isi form sesuai dengan kelompok tabulasinya.</li>
                         <li>Kosongkan kolom (jangan diisi 0) jika data memang tidak tersedia atau belum ada, agar sistem tidak menghitungnya sebagai *pembagi* rata-rata.</li>
+                        <li>Gunakan titik (.) untuk memasukkan angka desimal (Contoh: 7.40).</li>
                     </ul>
                 </div>
             </div>
@@ -149,18 +150,18 @@
                             <div class="space-y-4">
                                 <h3 class="font-bold text-indigo-700 border-b pb-2">Data Produksi Inti</h3>
                                 <div class="grid grid-cols-2 gap-3">
-                                    <div><label class="form-label">Tonase TBS (Kg)</label><input type="number" step="0.01" name="produksi[tonase]" class="form-input"></div>
+                                    <div><label class="form-label">Tonase TBS (Kg)</label><input type="number" step="any" name="produksi[tonase]" class="form-input"></div>
                                     <div><label class="form-label">Janjang Panen</label><input type="number" step="1" name="produksi[janjang]" class="form-input"></div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <div><label class="form-label">Hektar Statement (Ha)</label><input type="number" step="0.01" name="produksi[hs_ha]" class="form-input"></div>
+                                    <div><label class="form-label">Hektar Statement (Ha)</label><input type="number" step="any" name="produksi[hs_ha]" class="form-input"></div>
                                     <div><label class="form-label">HS Pokok</label><input type="number" step="1" name="produksi[hs_pokok]" class="form-input"></div>
-                                    <div><label class="form-label">Ha Cavel (Real)</label><input type="number" step="0.01" name="produksi[ha_cavel_real]" class="form-input" placeholder="0.00"></div>
+                                    <div><label class="form-label">Ha Cavel (Real)</label><input type="number" step="any" name="produksi[ha_cavel_real]" class="form-input" placeholder="0.00"></div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <div><label class="form-label">HK Panen</label><input type="number" step="0.01" name="produksi[hk_panen]" class="form-input"></div>
-                                    <div><label class="form-label">Kunjungan</label><input type="number" step="0.01" name="produksi[kunjungan]" class="form-input"></div>
-                                    <div><label class="form-label">Ha/Hk</label><input type="number" step="0.01" name="produksi[ha_hk]" class="form-input"></div>
+                                    <div><label class="form-label">HK Panen</label><input type="number" step="any" name="produksi[hk_panen]" class="form-input"></div>
+                                    <div><label class="form-label">Kunjungan</label><input type="number" step="any" name="produksi[kunjungan]" class="form-input"></div>
+                                    <div><label class="form-label">Ha/Hk</label><input type="number" step="any" name="produksi[ha_hk]" class="form-input"></div>
                                 </div>
                                 
                                 <div class="mt-3">
@@ -171,27 +172,27 @@
                                 
                                 <h3 class="font-bold text-indigo-700 border-b pb-2 pt-4">Data Ekstraksi Mill (Ton)</h3>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <div><label class="form-label">Produksi CPO</label><input type="number" step="0.01" name="produksi[ton_cpo]" class="form-input"></div>
-                                    <div><label class="form-label">Produksi KER</label><input type="number" step="0.01" name="produksi[ton_ker]" class="form-input"></div>
-                                    <div><label class="form-label">Produksi PKO</label><input type="number" step="0.01" name="produksi[ton_pko]" class="form-input"></div>
+                                    <div><label class="form-label">Produksi CPO</label><input type="number" step="any" name="produksi[ton_cpo]" class="form-input"></div>
+                                    <div><label class="form-label">Produksi KER</label><input type="number" step="any" name="produksi[ton_ker]" class="form-input"></div>
+                                    <div><label class="form-label">Produksi PKO</label><input type="number" step="any" name="produksi[ton_pko]" class="form-input"></div>
                                 </div>
                             </div>
                             
                             <!-- Kolom Biaya -->
                             <div class="space-y-4">
                                 <h3 class="font-bold text-amber-700 border-b pb-2">Biaya Operasional (Rp)</h3>
-                                <div><label class="form-label">Biaya Panen</label><input type="number" step="1" name="biaya[cost_panen]" class="form-input"></div>
-                                <div><label class="form-label">Biaya Rawat</label><input type="number" step="1" name="biaya[cost_rawat]" class="form-input"></div>
-                                <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="1" name="biaya[cost_kantor]" class="form-input"></div>
-                                <div><label class="form-label">Biaya Teknik</label><input type="number" step="1" name="biaya[cost_teknik]" class="form-input"></div>
-                                <div><label class="form-label">Biaya PKS</label><input type="number" step="1" name="biaya[cost_pks]" class="form-input"></div>
-                                <div><label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label><input type="number" step="1" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp..."></div>
+                                <div><label class="form-label">Biaya Panen</label><input type="number" step="any" name="biaya[cost_panen]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Rawat</label><input type="number" step="any" name="biaya[cost_rawat]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Kantor/Admin</label><input type="number" step="any" name="biaya[cost_kantor]" class="form-input"></div>
+                                <div><label class="form-label">Biaya Teknik</label><input type="number" step="any" name="biaya[cost_teknik]" class="form-input"></div>
+                                <div><label class="form-label">Biaya PKS</label><input type="number" step="any" name="biaya[cost_pks]" class="form-input"></div>
+                                <div><label class="form-label font-bold text-emerald-700">Biaya PDO (Bi)</label><input type="number" step="any" name="biaya[pdo_bi]" class="form-input w-1/2" placeholder="Rp..."></div>
                                 
                                 <div class="bg-amber-50 p-3 rounded-lg mt-4 border border-amber-200">
                                     <h4 class="text-xs font-bold text-amber-800 mb-2">Khusus Target Budget (Hanya diisi jika memilih Jenis Data BUDGET)</h4>
                                     <div class="grid grid-cols-2 gap-3">
-                                        <div><label class="form-label">Bgt Cost Palm Produk (Rp/Kg)</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_produk]" class="form-input"></div>
-                                        <div><label class="form-label">Bgt Cost Palm Oil (Rp/Kg)</label><input type="number" step="0.01" name="biaya[bgt_cost_palm_oil]" class="form-input"></div>
+                                        <div><label class="form-label">Bgt Cost Palm Produk (Rp/Kg)</label><input type="number" step="any" name="biaya[bgt_cost_palm_produk]" class="form-input"></div>
+                                        <div><label class="form-label">Bgt Cost Palm Oil (Rp/Kg)</label><input type="number" step="any" name="biaya[bgt_cost_palm_oil]" class="form-input"></div>
                                     </div>
                                 </div>
                             </div>
@@ -206,9 +207,9 @@
                                 @foreach($jenisPerawatan as $rawat)
                                 <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 flex items-center justify-between gap-2">
                                     <div class="w-2/5 font-semibold text-sm text-slate-700">{{ $rawat }}</div>
-                                    <div class="w-1/5"><label class="form-label text-[10px]">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $rawat }}][luas_ha]" class="form-input px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px]">Luas (Ha)</label><input type="number" step="any" name="rawat[{{ $rawat }}][luas_ha]" class="form-input px-2 py-1"></div>
                                     <div class="w-1/5"><label class="form-label text-[10px]">Jml Blok</label><input type="number" step="1" name="rawat[{{ $rawat }}][jml_blok]" class="form-input px-2 py-1"></div>
-                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="1" name="rawat[{{ $rawat }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="any" name="rawat[{{ $rawat }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
                                 </div>
                                 @endforeach
                             </div>
@@ -220,9 +221,9 @@
                                 @foreach($kategoriPruning as $kp)
                                 <div class="bg-teal-50 p-3 rounded-lg border border-teal-100 flex items-center justify-between gap-2">
                                     <div class="w-2/5 font-semibold text-sm text-teal-800">{{ $kp }}</div>
-                                    <div class="w-1/5"><label class="form-label text-[10px] text-teal-700">Luas (Ha)</label><input type="number" step="0.01" name="rawat[{{ $kp }}][luas_ha]" class="form-input border-teal-300 px-2 py-1"></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-teal-700">Luas (Ha)</label><input type="number" step="any" name="rawat[{{ $kp }}][luas_ha]" class="form-input border-teal-300 px-2 py-1"></div>
                                     <div class="w-1/5"><label class="form-label text-[10px] text-teal-700">Jml Blok</label><input type="number" step="1" name="rawat[{{ $kp }}][jml_blok]" class="form-input border-teal-300 px-2 py-1"></div>
-                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="1" name="rawat[{{ $kp }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
+                                    <div class="w-1/5"><label class="form-label text-[10px] text-amber-600">Cost/Ha (Rp)</label><input type="number" step="any" name="rawat[{{ $kp }}][cost_ha]" class="form-input border-amber-300 px-2 py-1" placeholder="Rp..."></div>
                                 </div>
                                 @endforeach
                             </div>
@@ -237,7 +238,7 @@
                                 @foreach($jenisPupuk as $pupuk)
                                 <div class="flex items-center justify-between gap-4 bg-slate-50 p-2 border-b border-slate-100 rounded">
                                     <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $pupuk }}</div>
-                                    <div class="w-1/2"><input type="number" step="0.01" name="pupuk[{{ $pupuk }}][jumlah_kg]" class="form-input" placeholder="Total Kg..."></div>
+                                    <div class="w-1/2"><input type="number" step="any" name="pupuk[{{ $pupuk }}][jumlah_kg]" class="form-input" placeholder="Total Kg..."></div>
                                 </div>
                                 @endforeach
                             </div>
@@ -248,7 +249,7 @@
                                 <div class="flex items-center justify-between gap-4 bg-slate-50 p-2 border-b border-slate-100 rounded">
                                     <div class="w-1/2 font-semibold text-sm text-slate-700">{{ $mutu }}</div>
                                     <div class="w-1/2 relative">
-                                        <input type="number" step="0.01" name="mutu[{{ $mutu }}][persentase]" class="form-input pr-8" placeholder="0.00">
+                                        <input type="number" step="any" name="mutu[{{ $mutu }}][persentase]" class="form-input pr-8" placeholder="0.00">
                                         <span class="absolute right-3 top-2 text-slate-400 font-bold">%</span>
                                     </div>
                                 </div>
@@ -260,7 +261,8 @@
                     <!-- ISI TAB 4: TENAGA KERJA -->
                     <div id="tab-sdm" class="tab-content hidden p-6">
                         <p class="text-xs text-slate-500 mb-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                            Isi jumlah orang (TK/Hk) pada kolom yang tersedia. Khusus untuk Kelas Pemanen, isikan juga Avr/Bln nya.
+                            Isi jumlah orang (TK/Hk) pada kolom yang tersedia. Khusus untuk Kelas Pemanen, isikan juga Avr/Bln nya. <br>
+                            Kolom persentase (%) dapat menerima angka desimal (Contoh: 7.40).
                         </p>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -271,9 +273,12 @@
                                     @foreach($subs as $sub)
                                     <div class="flex items-center justify-between gap-2">
                                         <label class="text-sm text-slate-600 font-medium w-1/3 truncate" title="{{ $sub }}">{{ $sub }}</label>
-                                        <input type="number" step="1" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" class="form-input w-1/3 text-center px-1" placeholder="TK">
+                                        
+                                        <!-- MENGGUNAKAN STEP="ANY" AGAR BISA DESIMAL -->
+                                        <input type="number" step="any" name="pekerja[{{ $kategori }}][{{ $sub }}][jumlah_tk]" class="form-input w-1/3 text-center px-1" placeholder="{{ str_starts_with($sub, '%') ? '%' : 'TK' }}">
+                                        
                                         @if($kategori == 'Kelas Pemanen')
-                                            <input type="number" step="0.01" name="pekerja[{{ $kategori }}][{{ $sub }}][avr_bln]" class="form-input w-1/3 text-center px-1 border-emerald-300" placeholder="Avr/Bln">
+                                            <input type="number" step="any" name="pekerja[{{ $kategori }}][{{ $sub }}][avr_bln]" class="form-input w-1/3 text-center px-1 border-emerald-300" placeholder="Avr/Bln">
                                         @endif
                                     </div>
                                     @endforeach
