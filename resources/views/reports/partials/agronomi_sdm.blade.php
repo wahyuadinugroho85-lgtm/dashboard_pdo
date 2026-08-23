@@ -173,7 +173,7 @@
                 <tr>
                     <th colspan="2" class="text-left text-slate-400 font-medium">Kinerja Mutu Ancak (% Real vs Target)</th>
                     @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
-                    <th class="text-center font-bold text-indigo-800 bg-indigo-50 uppercase tracking-wider shadow-sm">BP-2</th>
+                    <th class="text-center font-bold text-indigo-800 bg-indigo-50 uppercase tracking-wider shadow-sm">BP-2 (Rata-rata)</th>
                 </tr>
             </thead>
             <tbody class="text-slate-600">
@@ -546,18 +546,20 @@
                     <td class="text-left border-r border-slate-200 w-24">% Keluar Bi</td>
                     @foreach($estates as $estate)
                         @php 
-                            $kBi = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0;
-                            // Asumsi total tk untuk persen dihitung dari kategori Umur spt widget Total Kinerja TK
-                            $totTk = isset($dataMatrix[$estate->kode]['pekerja']['Umur']) ? $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk') : 0;
-                            $pctBi = $totTk > 0 ? ($kBi / $totTk) * 100 : 0;
+                            // Diambil dari inputan manual, disimpan di kolom persentase
+                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
                         @endphp
-                        <td class="text-right text-yellow-800">{{ number_format($pctBi, 2) }}%</td>
+                        <td class="text-right text-yellow-800">{{ number_format($vPct, 2) }}%</td>
                     @endforeach
+                    
                     @php 
-                        $gTotTk = 0; foreach($estates as $estate){ if(isset($dataMatrix[$estate->kode]['pekerja']['Umur'])) $gTotTk += $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk'); }
-                        $gPctKeluarBi = $gTotTk > 0 ? ($gKeluarBi / $gTotTk) * 100 : 0; 
+                        $tPctKeluarBi = 0; $cPctKeluarBi = 0;
+                        foreach($estates as $estate) {
+                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
+                            if($v > 0) { $tPctKeluarBi += $v; $cPctKeluarBi++; }
+                        }
                     @endphp
-                    <td class="text-right bg-yellow-100 text-yellow-900">{{ number_format($gPctKeluarBi, 2) }}%</td>
+                    <td class="text-right bg-yellow-100 text-yellow-900">{{ number_format($cPctKeluarBi > 0 ? $tPctKeluarBi / $cPctKeluarBi : 0, 2) }}%</td>
                 </tr>
                 <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
                     <td class="text-left border-r border-slate-200 w-24">Sbi</td>
@@ -572,16 +574,20 @@
                     <td class="text-left border-r border-amber-400 w-24">% Keluar Sbi</td>
                     @foreach($estates as $estate)
                         @php 
-                            $kSbi = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Sbi)')->jumlah_tk ?? 0) : 0;
-                            $totTk = isset($dataMatrix[$estate->kode]['pekerja']['Umur']) ? $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk') : 0;
-                            $pctSbi = $totTk > 0 ? ($kSbi / $totTk) * 100 : 0;
+                            // Diambil dari inputan manual, disimpan di kolom persentase
+                            $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
                         @endphp
-                        <td class="text-right">{{ number_format($pctSbi, 2) }}%</td>
+                        <td class="text-right">{{ number_format($vPct, 2) }}%</td>
                     @endforeach
+                    
                     @php 
-                        $gPctKeluarSbi = $gTotTk > 0 ? ($gKeluarSbi / $gTotTk) * 100 : 0; 
+                        $tPctKeluarSbi = 0; $cPctKeluarSbi = 0;
+                        foreach($estates as $estate) {
+                            $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
+                            if($v > 0) { $tPctKeluarSbi += $v; $cPctKeluarSbi++; }
+                        }
                     @endphp
-                    <td class="text-right bg-amber-400">{{ number_format($gPctKeluarSbi, 2) }}%</td>
+                    <td class="text-right bg-amber-400">{{ number_format($cPctKeluarSbi > 0 ? $tPctKeluarSbi / $cPctKeluarSbi : 0, 2) }}%</td>
                 </tr>
             </tbody>
         </table>
@@ -598,7 +604,7 @@
                 </tr>
             </thead>
             <tbody class="text-slate-600">
-                @foreach(['Umur', 'Status Keluarga', 'Masa Kerja'] as $kategori)
+                @foreach(['Umur', 'Status Keluarga', 'Masa Kerja', 'Mutasi'] as $kategori)
                     <tr>
                         <td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">{{ $kategori }}</td>
                     </tr>
