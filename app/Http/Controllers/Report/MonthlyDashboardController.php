@@ -299,8 +299,8 @@ class MonthlyDashboardController extends Controller
             'Umur' => ['< 25', '25 - 40', '40 - 50', '> 50'],
             'Status Keluarga' => ['KK', 'Lj'],
             'Masa Kerja' => ['<= 1bln', '2-3Bln', '> 3Bln'],
-            'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', 'Keluar (Sbi)'],
-            'HKNE' => ['Kerja', 'Sakit', 'Cuti', 'Mangkir', 'Ijin'], // SUDAH DIUBAH MENJADI "Kerja" DI PALING ATAS
+            'Mutasi' => ['Masuk (Bi)', 'Masuk (Sbi)', 'Keluar (Bi)', '% Keluar Bi', 'Keluar (Sbi)', '% Keluar Sbi'],
+            'HKNE' => ['Kerja', 'Sakit', 'Cuti', 'Mangkir', 'Ijin'],
             'Jam Kerja' => ['Tersedia', 'Pagi', 'Siang', 'Sore'],
             'Kelas Pemanen' => ['A', 'B', 'C', 'D']
         ];
@@ -379,11 +379,21 @@ class MonthlyDashboardController extends Controller
             foreach ($request->pekerja as $kategori => $subs) {
                 foreach ($subs as $subKategori => $val) {
                     $dataPekerja = [];
-                    foreach (['jumlah_tk', 'persentase', 'avr_bln'] as $field) {
-                        if (isset($val[$field]) && $val[$field] !== '') { 
-                            $dataPekerja[$field] = $val[$field]; 
+                    // Karena kita punya persentase (yang bisa disave ke field jumlah_tk walau desimal, atau persentase)
+                    // kita akan mapping. Khusus untuk text berawalan '%' masukkan ke kolom 'persentase'
+                    if (str_starts_with($subKategori, '%')) {
+                        if (isset($val['jumlah_tk']) && $val['jumlah_tk'] !== '') {
+                            $dataPekerja['persentase'] = $val['jumlah_tk'];
+                        }
+                    } else {
+                        if (isset($val['jumlah_tk']) && $val['jumlah_tk'] !== '') {
+                            $dataPekerja['jumlah_tk'] = $val['jumlah_tk'];
+                        }
+                        if (isset($val['avr_bln']) && $val['avr_bln'] !== '') {
+                            $dataPekerja['avr_bln'] = $val['avr_bln'];
                         }
                     }
+
                     if (!empty($dataPekerja)) {
                         WorkerPerformance::updateOrCreate(array_merge($matchAttr, ['kategori' => $kategori, 'sub_kategori' => $subKategori]), $dataPekerja);
                     }
