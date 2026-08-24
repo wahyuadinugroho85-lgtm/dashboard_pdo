@@ -5,6 +5,7 @@ namespace App\Imports;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Models\Estate;
 use App\Models\Production;
 use App\Models\Upkeep;
@@ -14,7 +15,22 @@ use App\Models\HarvestQuality;
 use App\Models\OperationalCost;
 use Carbon\Carbon;
 
-class LaporanImport implements ToCollection, WithHeadingRow
+class LaporanImport implements WithMultipleSheets 
+{
+    public function sheets(): array
+    {
+        return [
+            // Baca semua sheet (0 = sheet pertama, 1 = sheet kedua, dst) menggunakan class pembaca universal di bawah
+            0 => new LaporanSheetImport(),
+            1 => new LaporanSheetImport(),
+            2 => new LaporanSheetImport(),
+            3 => new LaporanSheetImport(),
+            4 => new LaporanSheetImport(),
+        ];
+    }
+}
+
+class LaporanSheetImport implements ToCollection, WithHeadingRow
 {
     public function collection(Collection $rows)
     {
@@ -30,7 +46,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
             $periode = Carbon::createFromDate($row['tahun'], $row['bulan'], 1)->format('Y-m-d');
             $matchAttr = ['estate_id' => $estate->id, 'periode' => $periode, 'tipe' => strtoupper($row['tipe_data'])];
 
-            // 1. Production (Hanya memproses yang ada isinya agar tidak Error NULL)
+            // 1. Production
             $dataProd = [];
             $prodFields = ['tonase', 'janjang', 'hs_ha', 'hs_pokok', 'ha_cavel_real', 'hk_panen', 'kunjungan', 'ha_hk', 'hke', 'ton_cpo', 'ton_ker', 'ton_pko'];
             foreach ($prodFields as $field) {
@@ -108,12 +124,12 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 }
             }
 
-            // 6. Worker Performance (Standard - Hanya input "Bi" dan "Kerja")
+            // 6. Worker Performance (Standard)
             $workers = [
                 'Umur' => ['< 25' => 'tk_umur_kurang_25', '25 - 40' => 'tk_umur_25_40', '40 - 50' => 'tk_umur_40_50', '> 50' => 'tk_umur_lebih_50'],
                 'Status Keluarga' => ['KK' => 'tk_status_kk', 'Lj' => 'tk_status_lj'],
                 'Masa Kerja' => ['<= 1bln' => 'tk_masa_kurang_1bln', '2-3Bln' => 'tk_masa_2_3bln', '> 3Bln' => 'tk_masa_lebih_3bln'],
-                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi'], // Sbi tidak diimport karena otomatis
+                'Mutasi' => ['Masuk (Bi)' => 'tk_mutasi_masuk_bi', 'Keluar (Bi)' => 'tk_mutasi_keluar_bi'], 
                 'HKNE' => ['Kerja' => 'tk_hkne_kerja', 'Sakit' => 'tk_hkne_sakit', 'Cuti' => 'tk_hkne_cuti', 'Mangkir' => 'tk_hkne_mangkir', 'Ijin' => 'tk_hkne_ijin'],
                 'Jam Kerja' => ['Tersedia' => 'tk_jam_tersedia', 'Pagi' => 'tk_jam_pagi', 'Siang' => 'tk_jam_siang', 'Sore' => 'tk_jam_sore'],
             ];
@@ -126,7 +142,7 @@ class LaporanImport implements ToCollection, WithHeadingRow
                 }
             }
             
-            // 7. Mutasi RKK dengan Persentase (BARU)
+            // 7. Mutasi RKK dengan Persentase
             $mutasiPct = [
                 '% Keluar Bi' => 'tk_mutasi_pct_keluar_bi',
                 '% Keluar Sbi' => 'tk_mutasi_pct_keluar_sbi',
