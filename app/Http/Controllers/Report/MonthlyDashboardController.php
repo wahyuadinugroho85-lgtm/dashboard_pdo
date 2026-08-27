@@ -91,7 +91,10 @@ class MonthlyDashboardController extends Controller
                 $dataMatrix[$kode]['rotasi_pruning'][$kp] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->where('jenis_pekerjaan', $kp)->first();
             }
 
-            $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'BUDGET')->get()->keyBy('jenis_pupuk');
+            // PERUBAHAN PENTING: Menarik RKB/Budget Pupuk untuk bulan depan ($nextPeriode)
+            $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $nextPeriode)->where('tipe', 'BUDGET')->get()->keyBy('jenis_pupuk');
+            
+            // Untuk Realisasi tetap bulan ini ($periode)
             $dataMatrix[$kode]['pupuk']['real'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pupuk');
             
             $dataMatrix[$kode]['biaya'] = [
@@ -123,7 +126,6 @@ class MonthlyDashboardController extends Controller
             
             $dataMatrix[$kode]['pekerja'] = WorkerPerformance::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->groupBy('kategori');
             
-            // PERUBAHAN PENTING: Ambil data S.D Bulan ini (akumulasi dari Januari) untuk perhitungan Sbi otomatis
             $dataMatrix[$kode]['pekerja_sbi'] = WorkerPerformance::where('estate_id', $estate->id)
                 ->whereYear('periode', $tahun)
                 ->whereMonth('periode', '<=', $bulan)
