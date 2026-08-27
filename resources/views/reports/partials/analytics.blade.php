@@ -19,13 +19,15 @@
         overflow-y: auto;
     }
 
-    /* 2. Efek Card & Animasi Masuk berurutan (TIDAK merubah warna asli card) */
+    /* 2. Efek Card & Animasi Masuk berurutan (TIDAK MERUSAK WARNA TABEL ASLI) */
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
     #analytics-container:fullscreen .widget-item {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(12px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         opacity: 0;
         animation: fadeUp 0.8s ease forwards;
@@ -39,35 +41,33 @@
     /* 3. Efek Sorot (Hover) Mewah dengan Glowing */
     #analytics-container:fullscreen .widget-item:hover {
         transform: translateY(-5px) scale(1.01);
-        border-color: rgba(56, 189, 248, 0.6) !important; /* Warna cyan/biru neon */
+        border-color: rgba(56, 189, 248, 0.6) !important;
         box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
         z-index: 50;
     }
 
-    /* 4. TOOLTIP PREMIUM (Terang/Putih agar sangat kontras dengan background gelap) */
+    /* 4. TOOLTIP PREMIUM (Sangat Kontras, Terang, & Jelas dibaca) */
     #analytics-container:fullscreen .tooltip-table .tooltip-box {
-        background: rgba(255, 255, 255, 0.95) !important;
+        background: rgba(255, 255, 255, 0.98) !important;
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 1) !important; 
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important; 
+        border: 1px solid #cbd5e1 !important; 
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important; 
     }
     
-    /* Memaksa semua teks di dalam tooltip menjadi gelap dan tebal */
+    /* Memaksa semua teks di dalam tooltip presentasi menjadi gelap tebal */
     #analytics-container:fullscreen .tooltip-table .tooltip-box * {
         color: #1e293b !important; 
     }
     
-    /* Pewarnaan Header dan Border di dalam Tooltip */
     #analytics-container:fullscreen .tooltip-table .tooltip-box th { 
-        border-bottom-color: rgba(0, 0, 0, 0.1) !important; 
+        border-bottom-color: #cbd5e1 !important; 
         color: #475569 !important; 
-        background: transparent !important;
     }
     #analytics-container:fullscreen .tooltip-table .tooltip-box td { 
-        border-bottom-color: rgba(0, 0, 0, 0.05) !important; 
+        border-bottom-color: #f1f5f9 !important; 
     }
     
-    /* Warna Highlight spesifik di Tooltip (Diubah gelap agar terbaca jelas di background putih) */
+    /* Mencegah highlight warna di tooltip jadi tidak terlihat karena background putih */
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-300,
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-400 { color: #059669 !important; }
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-300,
@@ -78,14 +78,10 @@
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-400 { color: #0284c7 !important; }
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-300,
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-400 { color: #ca8a04 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-blue-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-blue-400 { color: #2563eb !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-400 { color: #4f46e5 !important; }
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-300,
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-400 { color: #ea580c !important; }
 
-    /* Mencegah teks terpotong ke bawah di tooltip */
+    /* Mencegah teks terpotong melipat ke bawah di tooltip */
     .tooltip-box table { white-space: nowrap; }
 
     /* 5. Tombol Exit Melayang Canggih */
@@ -98,8 +94,8 @@
     #floating-exit-btn { display: none; }
     #analytics-container:fullscreen #floating-exit-btn {
         display: flex; position: fixed; top: 2rem; right: 3rem; z-index: 9999;
-        background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
-        border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5;
+        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
+        border: 1px solid rgba(226, 232, 240, 1); color: #ef4444;
         padding: 0.75rem 1.5rem; border-radius: 50px;
         align-items: center; gap: 0.5rem; font-weight: bold; cursor: pointer;
         transition: all 0.3s ease; animation: pulseNeon 2s infinite;
@@ -319,8 +315,18 @@
                             </tr>
                             @foreach($estates as $estate)
                                 @php 
-                                    $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->get()->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
-                                    $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
+                                    $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)
+                                        ->whereYear('periode', $tahun)
+                                        ->where('tipe', 'BUDGET')
+                                        ->get()
+                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
+                                        
+                                    $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
+                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
+                                               
                                     $bgtM = $bgt1ThnCost / 1000000;
                                     $realM = $ptBiaya / 1000000;
                                     $pct = $bgtM > 0 ? ($realM / $bgtM) * 100 : 0;
@@ -356,8 +362,14 @@
                                     $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
+                                    
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
-                                    $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->get()->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
+                                    $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
+                                        ->whereYear('periode', $tahun)
+                                        ->where('tipe', 'BUDGET')
+                                        ->get()
+                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
+                                    
                                     $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
                                     $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
                                 @endphp
@@ -482,6 +494,7 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
+                
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="tooltip-box bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800/90 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
