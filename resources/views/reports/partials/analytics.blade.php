@@ -705,41 +705,108 @@
                 </div>
             </div>
             
-            <!-- ================= WIDGET TOTAL KINERJA TK ================= -->
-            <div id="w-tk" data-wname="Total Kinerja TK (Org)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
-                <div>
-                    <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Kinerja TK</p>
-                    @php
-                        $gTotalTK = 0;
-                        foreach($estates as $estate){
-                            if(isset($dataMatrix[$estate->kode]['pekerja']['Umur'])){
-                                $gTotalTK += $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk');
-                            }
-                        }
-                    @endphp
-                    <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalTK, 0) }}</h3>
-                    <p class="text-xs font-medium text-slate-400 mt-1">Jumlah Orang Terinput</p>
-                </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
-                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
-                        <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail TK per PT</div>
-                        <table class="w-full text-right">
-                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-2">Total Orang</th></tr>
+            <!-- ================= WIDGET PERFORMANCE TK (PENGGANTI TOTAL KINERJA TK) ================= -->
+            <div id="w-tk" data-wname="Performance TK" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+                <table class="modern-matrix text-sm w-full min-w-[900px]">
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="text-left font-bold text-slate-800 bg-slate-50 border-r border-slate-200 uppercase">PERFORMANCE TENAGA KERJA</th>
+                            @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase tracking-wider">{{ $estate->kode }}</th> @endforeach
+                            <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase shadow-sm">BP-2</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-800 font-bold">
+                        <!-- RKK MASUK -->
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td rowspan="2" class="text-center align-middle border-r border-slate-200 w-32 bg-white">Masuk</td>
+                            <td class="text-left border-r border-slate-200 w-24">Bi</td>
                             @foreach($estates as $estate)
-                                @php 
-                                    $ptTk = isset($dataMatrix[$estate->kode]['pekerja']['Umur']) ? $dataMatrix[$estate->kode]['pekerja']['Umur']->sum('jumlah_tk') : 0;
-                                @endphp
-                                <tr class="border-b border-slate-700 last:border-0">
-                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
-                                    <td class="font-bold text-white">{{ number_format($ptTk, 0) }} Orang</td>
-                                </tr>
+                                @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; @endphp
+                                <td class="text-right">{{ number_format($v, 0) }}</td>
                             @endforeach
-                        </table>
-                    </div>
-                </div>
+                            @php $gMasukBi = 0; foreach($estates as $estate){ $gMasukBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Masuk (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
+                            <td class="text-right bg-slate-100">{{ number_format($gMasukBi, 0) }}</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b-2 border-slate-300 row-border-strong">
+                            <td class="text-left border-r border-slate-200 w-24">Sbi</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $vSbi = isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Masuk (Bi)')->sum('jumlah_tk') : 0;
+                                @endphp
+                                <td class="text-right">{{ number_format($vSbi, 0) }}</td>
+                            @endforeach
+                            @php
+                                $gMasukSbi = 0;
+                                foreach($estates as $estate) {
+                                    $gMasukSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Masuk (Bi)')->sum('jumlah_tk') : 0;
+                                }
+                            @endphp
+                            <td class="text-right bg-slate-100">{{ number_format($gMasukSbi, 0) }}</td>
+                        </tr>
+
+                        <!-- RKK KELUAR -->
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td rowspan="4" class="text-center align-top pt-4 border-r border-slate-200 w-32 bg-white">Keluar</td>
+                            <td class="text-left border-r border-slate-200 w-24">Bi</td>
+                            @foreach($estates as $estate)
+                                @php $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; @endphp
+                                <td class="text-right">{{ number_format($v, 0) }}</td>
+                            @endforeach
+                            @php $gKeluarBi = 0; foreach($estates as $estate){ $gKeluarBi += isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', 'Keluar (Bi)')->jumlah_tk ?? 0) : 0; } @endphp
+                            <td class="text-right bg-slate-100">{{ number_format($gKeluarBi, 0) }}</td>
+                        </tr>
+                        <tr class="bg-yellow-50/50 hover:bg-yellow-100/50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 w-24">% Keluar Bi</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
+                                @endphp
+                                <td class="text-right text-yellow-800">{{ number_format($vPct, 2) }}%</td>
+                            @endforeach
+                            @php
+                                $tPctKeluarBi = 0; $cPctKeluarBi = 0;
+                                foreach($estates as $estate) {
+                                    $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Bi')->persentase ?? 0) : 0;
+                                    if($v > 0) { $tPctKeluarBi += $v; $cPctKeluarBi++; }
+                                }
+                            @endphp
+                            <td class="text-right bg-yellow-100 text-yellow-900">{{ number_format($cPctKeluarBi > 0 ? $tPctKeluarBi / $cPctKeluarBi : 0, 2) }}%</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 border-b border-slate-300 border-dashed">
+                            <td class="text-left border-r border-slate-200 w-24">Sbi</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $vSbi = isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0;
+                                @endphp
+                                <td class="text-right">{{ number_format($vSbi, 0) }}</td>
+                            @endforeach
+                            @php
+                                $gKeluarSbi = 0;
+                                foreach($estates as $estate) {
+                                    $gKeluarSbi += isset($dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']) ? $dataMatrix[$estate->kode]['pekerja_sbi']['Mutasi']->where('sub_kategori', 'Keluar (Bi)')->sum('jumlah_tk') : 0;
+                                }
+                            @endphp
+                            <td class="text-right bg-slate-100">{{ number_format($gKeluarSbi, 0) }}</td>
+                        </tr>
+                        <tr class="bg-amber-300 text-amber-900 border-b border-amber-400">
+                            <td class="text-left border-r border-amber-400 w-24">% Keluar Sbi</td>
+                            @foreach($estates as $estate)
+                                @php
+                                    $vPct = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
+                                @endphp
+                                <td class="text-right">{{ number_format($vPct, 2) }}%</td>
+                            @endforeach
+                            @php
+                                $tPctKeluarSbi = 0; $cPctKeluarSbi = 0;
+                                foreach($estates as $estate) {
+                                    $v = isset($dataMatrix[$estate->kode]['pekerja']['Mutasi']) ? ($dataMatrix[$estate->kode]['pekerja']['Mutasi']->firstWhere('sub_kategori', '% Keluar Sbi')->persentase ?? 0) : 0;
+                                    if($v > 0) { $tPctKeluarSbi += $v; $cPctKeluarSbi++; }
+                                }
+                            @endphp
+                            <td class="text-right bg-amber-400">{{ number_format($cPctKeluarSbi > 0 ? $tPctKeluarSbi / $cPctKeluarSbi : 0, 2) }}%</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div id="w-chart-prod" data-wname="Chart: Produksi per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
