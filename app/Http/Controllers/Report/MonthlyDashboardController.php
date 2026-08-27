@@ -52,6 +52,16 @@ class MonthlyDashboardController extends Controller
             $prodBgt = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'BUDGET')->first();
             $prodSns = Production::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'SENSUS')->first();
 
+            // =========================================================================
+            // PERBAIKAN: Hitung Otomatis Kg/Hk dan Ha/Hk jika HK Panen ada isinya
+            // =========================================================================
+            foreach ([$prodRkb, $prodReal, $prodBgt, $prodSns] as $prod) {
+                if ($prod) {
+                    $prod->kg_hk = $prod->hk_panen > 0 ? $prod->tonase / $prod->hk_panen : 0;
+                    $prod->ha_hk = $prod->hk_panen > 0 ? $prod->ha_cavel_real / $prod->hk_panen : 0;
+                }
+            }
+
             $realLastMonth = Production::where('estate_id', $estate->id)->where('periode', $lastMonth)->where('tipe', 'REAL')->first();
             $realLastYearMonth = Production::where('estate_id', $estate->id)->where('periode', $lastYearMonth)->where('tipe', 'REAL')->first();
 
@@ -91,14 +101,12 @@ class MonthlyDashboardController extends Controller
                 $dataMatrix[$kode]['rotasi_pruning'][$kp] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->where('jenis_pekerjaan', $kp)->first();
             }
 
-            // PERBAIKAN: Mengambil data bulan depan ($nextPeriode) dan tipe RKB atau BUDGET agar otomatis muncul
             $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)
                 ->where('periode', $nextPeriode)
-                ->whereIn('tipe', ['RKB', 'BUDGET']) // Membaca baik inputan RKB maupun BUDGET
+                ->whereIn('tipe', ['RKB', 'BUDGET']) 
                 ->get()
                 ->keyBy('jenis_pupuk');
             
-            // Untuk Realisasi tetap bulan ini ($periode)
             $dataMatrix[$kode]['pupuk']['real'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pupuk');
             
             $dataMatrix[$kode]['biaya'] = [
@@ -191,7 +199,7 @@ class MonthlyDashboardController extends Controller
         foreach($kategoriProd as $k) { 
             $total['produksi']['current'][$k] = (object)[
                 'tonase' => 0, 'janjang' => 0, 'hs_ha' => 0, 'hs_pokok' => 0,
-                'kunjungan' => 0, 'ha_hk' => 0, 'kg_hk' => 0,
+                'kunjungan' => 0, 'ha_hk' => 0, 'kg_hk' => 0, 'hk_panen' => 0, // Ditambah hk_panen
                 'ton_cpo' => 0, 'ton_ker' => 0, 'ton_pko' => 0,
                 'ha_cavel_real' => 0, 'hke' => 0
             ]; 
@@ -232,6 +240,7 @@ class MonthlyDashboardController extends Controller
                     $total['produksi']['current'][$k]->hs_ha += $item->hs_ha ?? 0;
                     $total['produksi']['current'][$k]->hs_pokok += $item->hs_pokok ?? 0;
                     $total['produksi']['current'][$k]->ha_cavel_real += $item->ha_cavel_real ?? 0;
+                    $total['produksi']['current'][$k]->hk_panen += $item->hk_panen ?? 0; // Kalkulasi total HK
                     
                     if($k === 'real') {
                         $maxHkeIni = max($maxHkeIni, $item->hke ?? 0);
@@ -242,8 +251,6 @@ class MonthlyDashboardController extends Controller
             if(isset($matrix[$kode]['produksi']['current']['real']) && $matrix[$kode]['produksi']['current']['real'] !== null) {
                 $realData = $matrix[$kode]['produksi']['current']['real'];
                 $total['produksi']['current']['real']->kunjungan += $realData->kunjungan ?? 0;
-                $total['produksi']['current']['real']->ha_hk += $realData->ha_hk ?? 0;
-                $total['produksi']['current']['real']->kg_hk += $realData->kg_hk ?? 0;
             }
             
             if(isset($matrix[$kode]['produksi']['next']['rkb']) && $matrix[$kode]['produksi']['next']['rkb'] !== null) {
@@ -298,6 +305,16 @@ class MonthlyDashboardController extends Controller
         $total['produksi']['current']['real']->hke = $maxHkeIni;
         $total['produksi']['next']['rkb']->hke = $maxHkeDepan;
 
+        // =========================================================================
+        // PERBAIKAN: Hitung grand total Kg/Hk dan Ha/Hk secara akurat
+        // Total Tonase / Total HK Panen
+        // =========================================================================
+        foreach($kategoriProd as $k) {
+            $t = $total['produksi']['current'][$k];
+            $t->kg_hk = $t->hk_panen > 0 ? $t->tonase / $t->hk_panen : 0;
+            $t->ha_hk = $t->hk_panen > 0 ? $t->ha_cavel_real / $t->hk_panen : 0;
+        }
+
         return $total;
     }
 
@@ -313,7 +330,6 @@ class MonthlyDashboardController extends Controller
             'Umur' => ['< 25', '25 - 40', '40 - 50', '> 50'],
             'Status Keluarga' => ['KK', 'Lj'],
             'Masa Kerja' => ['<= 1bln', '2-3Bln', '> 3Bln'],
-            // HANYA INPUT Bi dan PERSEN YANG MANUAL
             'Mutasi' => ['Masuk (Bi)', 'Keluar (Bi)', '% Keluar Bi', '% Keluar Sbi'],
             'HKNE' => ['Kerja', 'Sakit', 'Cuti', 'Mangkir', 'Ijin'],
             'Jam Kerja' => ['Tersedia', 'Pagi', 'Siang', 'Sore'],
@@ -394,8 +410,6 @@ class MonthlyDashboardController extends Controller
             foreach ($request->pekerja as $kategori => $subs) {
                 foreach ($subs as $subKategori => $val) {
                     $dataPekerja = [];
-                    // Karena kita punya persentase (yang bisa disave ke field jumlah_tk walau desimal, atau persentase)
-                    // kita akan mapping. Khusus untuk text berawalan '%' masukkan ke kolom 'persentase'
                     if (str_starts_with($subKategori, '%')) {
                         if (isset($val['jumlah_tk']) && $val['jumlah_tk'] !== '') {
                             $dataPekerja['persentase'] = $val['jumlah_tk'];
