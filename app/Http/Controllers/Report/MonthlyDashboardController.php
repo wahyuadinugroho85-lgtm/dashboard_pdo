@@ -316,6 +316,10 @@ class MonthlyDashboardController extends Controller
             }
         }
 
+        // PERBAIKAN: Menghitung BJR Total BP-2 agar tidak 0.00
+        $total['produksi']['current']['bjr_rkb'] = $total['produksi']['current']['rkb']->janjang > 0 ? $total['produksi']['current']['rkb']->tonase / $total['produksi']['current']['rkb']->janjang : 0;
+        $total['produksi']['current']['bjr_real'] = $total['produksi']['current']['real']->janjang > 0 ? $total['produksi']['current']['real']->tonase / $total['produksi']['current']['real']->janjang : 0;
+
         return $total;
     }
 
