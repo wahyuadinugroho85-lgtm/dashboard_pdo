@@ -1,53 +1,43 @@
 <style>
-    /* CSS Khusus Mode Presentasi Premium */
+    /* CSS Khusus Mode Presentasi Premium (Elegant Light Glassmorphism) */
     #analytics-container:fullscreen {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
         padding: 3rem;
         overflow-y: auto;
     }
     
     #analytics-container:-webkit-full-screen {
-        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
         padding: 3rem;
         overflow-y: auto;
     }
 
+    /* Efek Card Kaca (Glass) saat Presentasi */
     #analytics-container:fullscreen .widget-item {
-        background: rgba(255, 255, 255, 0.03) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(12px);
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        background: rgba(255, 255, 255, 0.85) !important;
+        border-color: rgba(255, 255, 255, 1) !important;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 15px 35px -5px rgba(15, 23, 42, 0.05);
     }
     
     #analytics-container:fullscreen .widget-item:hover {
         transform: translateY(-5px);
-        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
-        border-color: rgba(255, 255, 255, 0.2) !important;
+        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.12);
+        border-color: rgba(99, 102, 241, 0.3) !important; /* Sentuhan indigo tipis saat hover */
+        z-index: 50; /* Memastikan tooltip berada paling depan */
     }
 
-    #analytics-container:fullscreen h3, 
-    #analytics-container:fullscreen p, 
-    #analytics-container:fullscreen td, 
-    #analytics-container:fullscreen th {
-        color: rgba(255, 255, 255, 0.9) !important;
-    }
-
-    #analytics-container:fullscreen .text-slate-400,
-    #analytics-container:fullscreen .text-slate-500 {
-        color: rgba(255, 255, 255, 0.6) !important;
-    }
-
+    /* Penyesuaian border tabel dalam mode presentasi */
     #analytics-container:fullscreen table th {
-        background: rgba(0, 0, 0, 0.2) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
+        background: rgba(248, 250, 252, 0.8) !important;
     }
 
     #analytics-container:fullscreen table td,
     #analytics-container:fullscreen table tr {
-        border-color: rgba(255, 255, 255, 0.05) !important;
         background: transparent !important;
     }
 
+    /* Tombol Floating Keluar Presentasi */
     #floating-exit-btn {
         display: none;
     }
@@ -58,28 +48,33 @@
         top: 2rem;
         right: 3rem;
         z-index: 9999;
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        border: 1px solid rgba(226, 232, 240, 1);
+        color: #334155;
         padding: 0.75rem 1.5rem;
         border-radius: 9999px;
         align-items: center;
         gap: 0.5rem;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
     
     #analytics-container:fullscreen #floating-exit-btn:hover {
-        background: rgba(239, 68, 68, 0.8);
-        border-color: rgba(239, 68, 68, 1);
-        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+        background: rgba(254, 242, 242, 1);
+        color: rgba(220, 38, 38, 1);
+        border-color: rgba(252, 165, 165, 1);
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.15);
     }
     
     #analytics-container:fullscreen .hide-on-fullscreen {
         display: none !important;
+    }
+
+    #analytics-container:fullscreen .fullscreen-header {
+        display: block !important;
     }
 </style>
 
@@ -115,17 +110,12 @@
 
         <!-- Judul Header Muncul HANYA di Mode Presentasi -->
         <div class="hidden fullscreen-header text-center mb-10 w-full" style="display: none;">
-            <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase mb-2">Executive Analytics Dashboard</h1>
-            <p class="text-xl text-indigo-300 font-medium">Laporan Kinerja Operasional Perkebunan s.d {{ $namaBulanIni }} {{ $tahun }}</p>
+            <h1 class="text-4xl font-extrabold text-slate-800 tracking-widest uppercase mb-2">Executive Analytics Dashboard</h1>
+            <p class="text-xl text-indigo-600 font-bold">Laporan Kinerja Operasional Perkebunan s.d {{ $namaBulanIni }} {{ $tahun }}</p>
         </div>
-        <style>
-            #analytics-container:fullscreen .fullscreen-header {
-                display: block !important;
-            }
-        </style>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="widget-item bg-white border-l-4 border-indigo-500 shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300">
+            <div class="widget-item bg-white border-l-4 border-indigo-500 shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300 hover:z-50">
                 <div class="bg-indigo-100 text-indigo-600 p-3 rounded-full hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </div>
@@ -135,7 +125,7 @@
                 </div>
             </div>
             
-            <div class="widget-item bg-white border-l-4 {{ $gPctCostOil > 100 ? 'border-rose-500' : 'border-emerald-500' }} shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300">
+            <div class="widget-item bg-white border-l-4 {{ $gPctCostOil > 100 ? 'border-rose-500' : 'border-emerald-500' }} shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300 hover:z-50">
                 <div class="{{ $gPctCostOil > 100 ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600' }} p-3 rounded-full hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
@@ -148,7 +138,7 @@
 
         <div id="dynamic-dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300">
+            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:z-50">
                 <div class="p-4 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center hide-on-fullscreen">
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
                         <span class="bg-indigo-500 w-2 h-4 rounded-sm inline-block"></span> 
@@ -273,7 +263,7 @@
                 </div>
             </div>
 
-            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBiayaRealSd / 1000000, 2) }} M</h3>
@@ -282,7 +272,7 @@
                 <div class="p-3 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-amber-300 mb-2 border-b border-slate-600 pb-1">Detail Biaya per PT (M)</div>
                         <table class="w-full text-right">
@@ -322,7 +312,7 @@
                 </div>
             </div>
 
-            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost/Kg TBS</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPerKgSd, 2) }}</h3>
@@ -331,7 +321,7 @@
                 <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-emerald-300 mb-2 border-b border-slate-600 pb-1">Detail Cost/Kg (S.D Bln) per PT</div>
                         <table class="w-full text-right">
@@ -364,7 +354,7 @@
                 </div>
             </div>
 
-            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Produk</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmProdukReal, 0) }}</h3>
@@ -373,7 +363,7 @@
                 <div class="p-3 bg-slate-100 text-slate-600 rounded-lg group-hover:bg-slate-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-slate-300 mb-2 border-b border-slate-600 pb-1">Detail Cost Palm Produk per PT</div>
                         <table class="w-full text-right">
@@ -396,7 +386,7 @@
                 </div>
             </div>
 
-            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Oil</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmOilReal, 0) }}</h3>
@@ -405,7 +395,7 @@
                 <div class="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-green-300 mb-2 border-b border-slate-600 pb-1">Detail Cost Palm Oil per PT</div>
                         <table class="w-full text-right">
@@ -428,7 +418,7 @@
                 </div>
             </div>
 
-            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Rata-rata BJR</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBjr, 2) }}</h3>
@@ -437,7 +427,7 @@
                 <div class="p-3 bg-sky-50 text-sky-600 rounded-lg group-hover:bg-sky-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-sky-300 mb-2 border-b border-slate-600 pb-1">Detail BJR per PT (Bln Ini vs Bln Lalu)</div>
                         <table class="w-full text-right">
@@ -463,7 +453,7 @@
                 </div>
             </div>
 
-            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalRawat, 2) }}</h3>
@@ -473,7 +463,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
                 
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto hide-on-fullscreen">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
                             <span class="font-bold text-teal-300">Detail Rawat & Cost per Pekerjaan</span>
@@ -519,7 +509,7 @@
                 </div>
             </div>
 
-            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Pupuk (Ton)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalPupuk / 1000, 2) }}</h3>
@@ -529,7 +519,7 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
                 
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto hide-on-fullscreen">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10">
                             <div class="font-bold text-yellow-300">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</div>
@@ -583,7 +573,7 @@
                 </div>
             </div>
 
-            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
                     @php
@@ -600,7 +590,7 @@
                 <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail Jam Kerja per PT</div>
                         <table class="w-full text-right">
@@ -635,7 +625,7 @@
                 </div>
             </div>
 
-            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total HK Panen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalHkPanen ?? 0, 0) }}</h3>
@@ -644,7 +634,7 @@
                 <div class="p-3 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-rose-300 mb-2 border-b border-slate-600 pb-1">Detail HK Panen per PT</div>
                         <table class="w-full text-right">
@@ -660,7 +650,7 @@
                 </div>
             </div>
 
-            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 @php
                     $gCpoBi = 0; $gTbsBi = 0;
                     foreach($estates as $estate) {
@@ -677,7 +667,7 @@
                 <div class="p-3 bg-orange-100 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-48">
                         <div class="font-bold text-orange-300 mb-2 border-b border-slate-600 pb-1">Detail CPO & OER per PT</div>
                         <table class="w-full text-right">
@@ -699,7 +689,7 @@
                 </div>
             </div>
 
-            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 @php
                     $gPkoBi = 0; $gKerBi = 0;
                     foreach($estates as $estate) {
@@ -716,7 +706,7 @@
                 <div class="p-3 bg-yellow-100 text-yellow-700 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-48">
                         <div class="font-bold text-yellow-300 mb-2 border-b border-slate-600 pb-1">Detail PKO & KER per PT</div>
                         <table class="w-full text-right">
@@ -739,7 +729,7 @@
                 </div>
             </div>
 
-            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all duration-300 cursor-help">
+            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Kinerja Pemanen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800 flex items-baseline gap-1">
@@ -764,7 +754,7 @@
                 <div class="p-3 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-56">
                         <div class="font-bold text-indigo-300 mb-2 border-b border-slate-600 pb-1">Detail Rata-rata Avr per Kelas</div>
                         <table class="w-full text-right">
