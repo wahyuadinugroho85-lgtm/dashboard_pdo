@@ -19,18 +19,14 @@
         overflow-y: auto;
     }
 
-    /* 2. Efek Card Kaca Transparan & Animasi Masuk berurutan */
+    /* 2. Efek Card & Animasi Masuk berurutan (TIDAK merubah warna asli card) */
     @keyframes fadeUp {
         from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
     #analytics-container:fullscreen .widget-item {
-        background: rgba(15, 23, 42, 0.6) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        backdrop-filter: blur(12px);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        color: #f8fafc !important;
         opacity: 0;
         animation: fadeUp 0.8s ease forwards;
     }
@@ -48,14 +44,7 @@
         z-index: 50;
     }
 
-    /* 4. Perubahan Teks agar terbaca di Background Gelap */
-    #analytics-container:fullscreen h3 { color: #ffffff !important; }
-    #analytics-container:fullscreen p.text-slate-500, 
-    #analytics-container:fullscreen p.text-slate-400 { color: #cbd5e1 !important; }
-    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.05) !important; color: #94a3b8 !important; }
-    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.05) !important; color: #e2e8f0 !important; }
-
-    /* 5. TOOLTIP PREMIUM (Terang/Putih agar sangat kontras dengan background gelap) */
+    /* 4. TOOLTIP PREMIUM (Terang/Putih agar sangat kontras dengan background gelap) */
     #analytics-container:fullscreen .tooltip-table .tooltip-box {
         background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(16px);
@@ -71,14 +60,14 @@
     /* Pewarnaan Header dan Border di dalam Tooltip */
     #analytics-container:fullscreen .tooltip-table .tooltip-box th { 
         border-bottom-color: rgba(0, 0, 0, 0.1) !important; 
-        color: #475569 !important; /* Warna abu-abu gelap untuk judul kolom */
+        color: #475569 !important; 
         background: transparent !important;
     }
     #analytics-container:fullscreen .tooltip-table .tooltip-box td { 
         border-bottom-color: rgba(0, 0, 0, 0.05) !important; 
     }
     
-    /* Mengubah warna teks highlight (hijau, kuning, dll) di dalam tooltip menjadi lebih gelap agar terbaca di background putih */
+    /* Warna Highlight spesifik di Tooltip (Diubah gelap agar terbaca jelas di background putih) */
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-300,
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-400 { color: #059669 !important; }
     #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-300,
@@ -99,7 +88,7 @@
     /* Mencegah teks terpotong ke bawah di tooltip */
     .tooltip-box table { white-space: nowrap; }
 
-    /* 6. Tombol Exit Melayang Canggih */
+    /* 5. Tombol Exit Melayang Canggih */
     @keyframes pulseNeon {
         0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
         70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
@@ -493,7 +482,6 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
-                
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
                     <div class="tooltip-box bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800/90 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
