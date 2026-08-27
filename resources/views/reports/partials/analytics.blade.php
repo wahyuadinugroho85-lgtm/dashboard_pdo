@@ -1,7 +1,102 @@
+<style>
+    /* CSS Khusus Mode Presentasi Premium */
+    #analytics-container:fullscreen {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        padding: 3rem;
+        overflow-y: auto;
+    }
+    
+    #analytics-container:-webkit-full-screen {
+        background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+        padding: 3rem;
+        overflow-y: auto;
+    }
+
+    #analytics-container:fullscreen .widget-item {
+        background: rgba(255, 255, 255, 0.03) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    
+    #analytics-container:fullscreen .widget-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    #analytics-container:fullscreen h3, 
+    #analytics-container:fullscreen p, 
+    #analytics-container:fullscreen td, 
+    #analytics-container:fullscreen th {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    #analytics-container:fullscreen .text-slate-400,
+    #analytics-container:fullscreen .text-slate-500 {
+        color: rgba(255, 255, 255, 0.6) !important;
+    }
+
+    #analytics-container:fullscreen table th {
+        background: rgba(0, 0, 0, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    #analytics-container:fullscreen table td,
+    #analytics-container:fullscreen table tr {
+        border-color: rgba(255, 255, 255, 0.05) !important;
+        background: transparent !important;
+    }
+
+    #floating-exit-btn {
+        display: none;
+    }
+    
+    #analytics-container:fullscreen #floating-exit-btn {
+        display: flex;
+        position: fixed;
+        top: 2rem;
+        right: 3rem;
+        z-index: 9999;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    #analytics-container:fullscreen #floating-exit-btn:hover {
+        background: rgba(239, 68, 68, 0.8);
+        border-color: rgba(239, 68, 68, 1);
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+    }
+    
+    #analytics-container:fullscreen .hide-on-fullscreen {
+        display: none !important;
+    }
+</style>
+
 <div id="tab-analytics" class="tab-content block w-full space-y-6">
-    <div id="analytics-container" class="transition-all duration-300 rounded-xl">
+    <div id="analytics-container" class="transition-all duration-300 rounded-xl relative">
         
-        <div class="bg-gradient-to-r from-indigo-700 via-blue-600 to-sky-500 rounded-2xl shadow-lg p-6 mb-6 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <!-- Tombol Floating Keluar Presentasi -->
+        <button id="floating-exit-btn" onclick="document.exitFullscreen()">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            Tutup Presentasi
+        </button>
+
+        @php
+            $gPctCostOil = $gCostPalmOilBgt > 0 ? ($gCostPalmOilReal / $gCostPalmOilBgt) * 100 : 0;
+        @endphp
+
+        <div class="bg-gradient-to-r from-indigo-700 via-blue-600 to-sky-500 rounded-2xl shadow-lg p-6 mb-6 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hide-on-fullscreen">
             <div>
                 <h2 class="text-3xl font-extrabold tracking-wide mb-1">Executive Analytics Summary</h2>
                 <p class="text-indigo-100 font-medium opacity-90 text-sm">Capaian Kinerja Operasional s.d {{ $namaBulanIni }} {{ $tahun }}</p>
@@ -18,9 +113,20 @@
             </div>
         </div>
 
+        <!-- Judul Header Muncul HANYA di Mode Presentasi -->
+        <div class="hidden fullscreen-header text-center mb-10 w-full" style="display: none;">
+            <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase mb-2">Executive Analytics Dashboard</h1>
+            <p class="text-xl text-indigo-300 font-medium">Laporan Kinerja Operasional Perkebunan s.d {{ $namaBulanIni }} {{ $tahun }}</p>
+        </div>
+        <style>
+            #analytics-container:fullscreen .fullscreen-header {
+                display: block !important;
+            }
+        </style>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div class="bg-white border-l-4 border-indigo-500 shadow-sm p-4 rounded-xl flex items-center gap-4">
-                <div class="bg-indigo-100 text-indigo-600 p-3 rounded-full">
+            <div class="widget-item bg-white border-l-4 border-indigo-500 shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300">
+                <div class="bg-indigo-100 text-indigo-600 p-3 rounded-full hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </div>
                 <div>
@@ -28,21 +134,22 @@
                     <p class="text-sm text-slate-700 mt-1">Divisi <strong class="text-lg text-indigo-700">{{ $bestProdPT }}</strong> memimpin dengan <strong class="text-lg text-indigo-700">{{ number_format($bestProdPct, 1) }}%</strong> dari Target Tahunan (Terkumpul {{ number_format($bestProdKg / 1000, 0) }} Ton).</p>
                 </div>
             </div>
-            <div class="bg-white border-l-4 border-emerald-500 shadow-sm p-4 rounded-xl flex items-center gap-4">
-                <div class="bg-emerald-100 text-emerald-600 p-3 rounded-full">
+            
+            <div class="widget-item bg-white border-l-4 {{ $gPctCostOil > 100 ? 'border-rose-500' : 'border-emerald-500' }} shadow-sm p-4 rounded-xl flex items-center gap-4 transition-all duration-300">
+                <div class="{{ $gPctCostOil > 100 ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600' }} p-3 rounded-full hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div>
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Efisiensi Terbaik (% Cost/Kg vs Bgt)</p>
-                    <p class="text-sm text-slate-700 mt-1">Divisi <strong class="text-lg text-emerald-700">{{ $bestCostPT }}</strong> mencatat pengeluaran terhemat (<strong class="text-lg text-emerald-700">{{ number_format($bestCostPct, 1) }}%</strong> thd Bgt) di angka Rp {{ number_format($bestCostVal, 2) }}/Kg TBS.</p>
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Efisiensi Cost/Kg Palm Oil</p>
+                    <p class="text-sm text-slate-700 mt-1">Realisasi <strong>BP-2</strong> mencapai <strong class="text-lg {{ $gPctCostOil > 100 ? 'text-rose-600' : 'text-emerald-700' }}">{{ number_format($gPctCostOil, 1) }}%</strong> thd Bgt (Angka Rp {{ number_format($gCostPalmOilReal, 0) }}/Kg Palm Oil).</p>
                 </div>
             </div>
         </div>
 
         <div id="dynamic-dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-4 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center">
+            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300">
+                <div class="p-4 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center hide-on-fullscreen">
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
                         <span class="bg-indigo-500 w-2 h-4 rounded-sm inline-block"></span> 
                         Data Pencapaian Produksi - {{ $labelBulan }}
@@ -166,17 +273,16 @@
                 </div>
             </div>
 
-            <!-- ========================= PERUBAHAN WIDGET TOTAL BIAYA (M) ========================= -->
-            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBiayaRealSd / 1000000, 2) }} M</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Biaya Operasional s.d Bulan Ini</p>
                 </div>
-                <div class="p-3 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-amber-300 mb-2 border-b border-slate-600 pb-1">Detail Biaya per PT (M)</div>
                         <table class="w-full text-right">
@@ -188,23 +294,18 @@
                             </tr>
                             @foreach($estates as $estate)
                                 @php 
-                                    // Ambil total budget 1 tahun
                                     $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)
                                         ->whereYear('periode', $tahun)
                                         ->where('tipe', 'BUDGET')
                                         ->get()
-                                        ->sum(function($c) {
-                                            return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
-                                        });
+                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
                                         
-                                    // Ambil total biaya real s/d bulan ini (Sbi)
                                     $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
                                                ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
                                                ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
                                                ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
                                                ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
                                                
-                                    // Konversi ke satuan M (Juta)
                                     $bgtM = $bgt1ThnCost / 1000000;
                                     $realM = $ptBiaya / 1000000;
                                     $pct = $bgtM > 0 ? ($realM / $bgtM) * 100 : 0;
@@ -220,18 +321,17 @@
                     </div>
                 </div>
             </div>
-            <!-- ========================= SELESAI WIDGET TOTAL BIAYA ========================= -->
 
-            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost/Kg TBS</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPerKgSd, 2) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Rp S.D Bln / Kg TBS S.D Bln</p>
                 </div>
-                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-lg group-hover:bg-emerald-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-emerald-300 mb-2 border-b border-slate-600 pb-1">Detail Cost/Kg (S.D Bln) per PT</div>
                         <table class="w-full text-right">
@@ -247,9 +347,7 @@
                                         ->whereYear('periode', $tahun)
                                         ->where('tipe', 'BUDGET')
                                         ->get()
-                                        ->sum(function($c) {
-                                            return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks;
-                                        });
+                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
                                     
                                     $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
                                     $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
@@ -266,16 +364,16 @@
                 </div>
             </div>
 
-            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Produk</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmProdukReal, 0) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Rp S.D Bln / Kg Produk S.D Bln</p>
                 </div>
-                <div class="p-3 bg-slate-100 text-slate-600 rounded-lg group-hover:bg-slate-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-slate-100 text-slate-600 rounded-lg group-hover:bg-slate-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-slate-300 mb-2 border-b border-slate-600 pb-1">Detail Cost Palm Produk per PT</div>
                         <table class="w-full text-right">
@@ -298,16 +396,16 @@
                 </div>
             </div>
 
-            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all cursor-help">
+            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Oil</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmOilReal, 0) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Rp S.D Bln / Kg Oil S.D Bln</p>
                 </div>
-                <div class="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors">
+                <div class="p-3 bg-green-50 text-green-600 rounded-lg group-hover:bg-green-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-green-300 mb-2 border-b border-slate-600 pb-1">Detail Cost Palm Oil per PT</div>
                         <table class="w-full text-right">
@@ -330,16 +428,16 @@
                 </div>
             </div>
 
-            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Rata-rata BJR</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBjr, 2) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Berat Janjang Rata-rata</p>
                 </div>
-                <div class="p-3 bg-sky-50 text-sky-600 rounded-lg group-hover:bg-sky-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-sky-50 text-sky-600 rounded-lg group-hover:bg-sky-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-sky-300 mb-2 border-b border-slate-600 pb-1">Detail BJR per PT (Bln Ini vs Bln Lalu)</div>
                         <table class="w-full text-right">
@@ -365,18 +463,17 @@
                 </div>
             </div>
 
-            <!-- ========================= WIDGET TOTAL RAWAT (HA) ========================= -->
-            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalRawat, 2) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Realisasi Perawatan</p>
                 </div>
-                <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
                 
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
                             <span class="font-bold text-teal-300">Detail Rawat & Cost per Pekerjaan</span>
@@ -422,18 +519,17 @@
                 </div>
             </div>
 
-            <!-- ========================= WIDGET TOTAL PUPUK ========================= -->
-            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Pupuk (Ton)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalPupuk / 1000, 2) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Aplikasi Bulan Ini</p>
                 </div>
-                <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
                 
-                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
+                <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 overflow-hidden" style="min-width: 480px;">
                         <div class="bg-slate-800 px-3 pt-3 pb-2 border-b border-slate-600 sticky top-0 z-10">
                             <div class="font-bold text-yellow-300">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</div>
@@ -455,21 +551,16 @@
                                         @php $isFirst = true; @endphp
                                         @foreach($jenisPupuk as $ppk)
                                             @php
-                                                // Bgt 1 Tahun
                                                 $bgt1ThnKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
                                                     ->whereYear('periode', $tahun)
                                                     ->where('tipe', 'BUDGET')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
                                                     
-                                                // Real Sbi (Akumulasi Jan s/d Bulan Ini)
                                                 $realSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
                                                     ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
                                                     ->where('tipe', 'REAL')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
                                                 
-                                                // Konversi ke Ton
                                                 $bgt1ThnTon = $bgt1ThnKg / 1000;
                                                 $realSbiTon = $realSbiKg / 1000;
-                                                
-                                                // Persentase
                                                 $pctSbi = $bgt1ThnTon > 0 ? ($realSbiTon / $bgt1ThnTon) * 100 : 0;
                                             @endphp
                                             
@@ -492,8 +583,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET DATA JAM KERJA ================= -->
-            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
                     @php
@@ -507,10 +597,10 @@
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTsd, 0) }} <span class="text-sm font-bold text-slate-500">TK Tersedia</span></h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Kehadiran Pagi: {{ number_format($pctPgi, 2) }}%</p>
                 </div>
-                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700" style="min-width: 320px;">
                         <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1">Detail Jam Kerja per PT</div>
                         <table class="w-full text-right">
@@ -545,17 +635,16 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET HK PANEN ================= -->
-            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total HK Panen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalHkPanen ?? 0, 0) }}</h3>
                     <p class="text-xs font-medium text-slate-400 mt-1">Hari Kerja Panen Realisasi</p>
                 </div>
-                <div class="p-3 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-rose-50 text-rose-600 rounded-lg group-hover:bg-rose-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700">
                         <div class="font-bold text-rose-300 mb-2 border-b border-slate-600 pb-1">Detail HK Panen per PT</div>
                         <table class="w-full text-right">
@@ -571,8 +660,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET CPO & OER ================= -->
-            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all cursor-help">
+            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all duration-300 cursor-help">
                 @php
                     $gCpoBi = 0; $gTbsBi = 0;
                     foreach($estates as $estate) {
@@ -586,10 +674,10 @@
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCpoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
                     <p class="text-xs font-bold text-orange-600 mt-1">OER: {{ number_format($gOerBi, 2) }}% (Bln Ini)</p>
                 </div>
-                <div class="p-3 bg-orange-100 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors">
+                <div class="p-3 bg-orange-100 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-48">
                         <div class="font-bold text-orange-300 mb-2 border-b border-slate-600 pb-1">Detail CPO & OER per PT</div>
                         <table class="w-full text-right">
@@ -611,8 +699,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET PKO & KER ================= -->
-            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all cursor-help">
+            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all duration-300 cursor-help">
                 @php
                     $gPkoBi = 0; $gKerBi = 0;
                     foreach($estates as $estate) {
@@ -626,10 +713,10 @@
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gPkoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
                     <p class="text-xs font-bold text-yellow-700 mt-1">KER: {{ number_format($gPctKerBi, 2) }}% (Bln Ini)</p>
                 </div>
-                <div class="p-3 bg-yellow-100 text-yellow-700 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors">
+                <div class="p-3 bg-yellow-100 text-yellow-700 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-48">
                         <div class="font-bold text-yellow-300 mb-2 border-b border-slate-600 pb-1">Detail PKO & KER per PT</div>
                         <table class="w-full text-right">
@@ -652,8 +739,7 @@
                 </div>
             </div>
 
-            <!-- ================= WIDGET KINERJA PEMANEN ================= -->
-            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all cursor-help">
+            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Kinerja Pemanen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800 flex items-baseline gap-1">
@@ -675,10 +761,10 @@
                     </h3>
                     <p class="text-xs font-medium text-indigo-600 mt-1">Rata-rata Kelas A-D Seluruh PT</p>
                 </div>
-                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
-                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none">
+                <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none hide-on-fullscreen">
                     <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-3 border border-slate-700 w-56">
                         <div class="font-bold text-indigo-300 mb-2 border-b border-slate-600 pb-1">Detail Rata-rata Avr per Kelas</div>
                         <table class="w-full text-right">
@@ -705,8 +791,7 @@
                 </div>
             </div>
             
-            <!-- ================= WIDGET PERFORMANCE TK (PENGGANTI TOTAL KINERJA TK) ================= -->
-            <div id="w-tk" data-wname="Performance TK" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6">
+            <div id="w-tk" data-wname="Performance TK" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6 transition-all duration-300">
                 <table class="modern-matrix text-sm w-full min-w-[900px]">
                     <thead>
                         <tr>
@@ -809,22 +894,22 @@
                 </table>
             </div>
 
-            <div id="w-chart-prod" data-wname="Chart: Produksi per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div id="w-chart-prod" data-wname="Chart: Produksi per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 p-5 transition-all duration-300">
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Kinerja Produksi (Ton) per PT</h3>
                 <div class="relative h-80 w-full"><canvas id="chartProduksi"></canvas></div>
             </div>
 
-            <div id="w-chart-cost" data-wname="Chart: Cost/Kg per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div id="w-chart-cost" data-wname="Chart: Cost/Kg per PT" class="widget-item col-span-1 md:col-span-2 lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-5 transition-all duration-300">
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Grafik Cost / Kg TBS per PT (S.D Bln Ini)</h3>
                 <div class="relative h-64 w-full"><canvas id="chartCostKg"></canvas></div>
             </div>
 
-            <div id="w-chart-biaya" data-wname="Chart: Distribusi Biaya" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div id="w-chart-biaya" data-wname="Chart: Distribusi Biaya" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5 transition-all duration-300">
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Distribusi Total Biaya</h3>
                 <div class="relative h-64 w-full flex justify-center"><canvas id="chartBiayaPie"></canvas></div>
             </div>
 
-            <div id="w-chart-mutu" data-wname="Chart: Mutu Ancak" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+            <div id="w-chart-mutu" data-wname="Chart: Mutu Ancak" class="widget-item col-span-1 lg:col-span-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5 transition-all duration-300">
                 <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Tren Rata-rata Mutu (%)</h3>
                 <div class="relative h-64 w-full"><canvas id="chartMutu"></canvas></div>
             </div>
