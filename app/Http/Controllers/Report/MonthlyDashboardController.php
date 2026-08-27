@@ -91,8 +91,12 @@ class MonthlyDashboardController extends Controller
                 $dataMatrix[$kode]['rotasi_pruning'][$kp] = Upkeep::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->where('jenis_pekerjaan', $kp)->first();
             }
 
-            // PERUBAHAN PENTING: Menarik RKB/Budget Pupuk untuk bulan depan ($nextPeriode)
-            $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $nextPeriode)->where('tipe', 'BUDGET')->get()->keyBy('jenis_pupuk');
+            // PERBAIKAN: Mengambil data bulan depan ($nextPeriode) dan tipe RKB atau BUDGET agar otomatis muncul
+            $dataMatrix[$kode]['pupuk']['budget'] = Fertilizer::where('estate_id', $estate->id)
+                ->where('periode', $nextPeriode)
+                ->whereIn('tipe', ['RKB', 'BUDGET']) // Membaca baik inputan RKB maupun BUDGET
+                ->get()
+                ->keyBy('jenis_pupuk');
             
             // Untuk Realisasi tetap bulan ini ($periode)
             $dataMatrix[$kode]['pupuk']['real'] = Fertilizer::where('estate_id', $estate->id)->where('periode', $periode)->where('tipe', 'REAL')->get()->keyBy('jenis_pupuk');
