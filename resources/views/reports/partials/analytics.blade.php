@@ -1,143 +1,92 @@
 <style>
     /* =========================================================
-       CSS ANIMASI & PREMIUM PRESENTATION MODE
+       HANYA BERLAKU SAAT MODE PRESENTASI (FULLSCREEN)
        ========================================================= */
        
-    /* 1. Animated Gradient Background khusus Mode Fullscreen */
-    @keyframes gradientBG {
+    /* 1. Background Animasi Mewah (Dark Gradient) */
+    @keyframes moveGradient {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
     
-    #analytics-container:fullscreen {
-        background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #f1f5f9, #cbd5e1);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-        padding: 3rem;
-        overflow-y: auto;
-    }
+    #analytics-container:fullscreen, 
     #analytics-container:-webkit-full-screen {
-        background: linear-gradient(-45deg, #f8fafc, #e2e8f0, #f1f5f9, #cbd5e1);
+        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #09090b, #172554);
         background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
+        animation: moveGradient 15s ease infinite;
         padding: 3rem;
         overflow-y: auto;
     }
 
-    /* 2. Animasi Masuk (Slide Up Fade) untuk Widget */
-    @keyframes slideUpFade {
-        from { opacity: 0; transform: translateY(40px); }
+    /* 2. Efek Card Kaca Transparan & Animasi Masuk berurutan */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Efek Card Kaca (Glass) saat Presentasi */
     #analytics-container:fullscreen .widget-item {
-        background: rgba(255, 255, 255, 0.65) !important;
-        border: 1px solid rgba(255, 255, 255, 0.8) !important;
-        backdrop-filter: blur(20px);
-        box-shadow: 0 10px 40px -10px rgba(30, 41, 59, 0.1);
-        animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        opacity: 0; 
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        color: #f8fafc !important;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards;
     }
     
-    /* Delay berurutan agar munculnya estetik seperti tangga */
     #analytics-container:fullscreen .widget-item:nth-child(1) { animation-delay: 0.1s; }
     #analytics-container:fullscreen .widget-item:nth-child(2) { animation-delay: 0.2s; }
     #analytics-container:fullscreen .widget-item:nth-child(3) { animation-delay: 0.3s; }
     #analytics-container:fullscreen .widget-item:nth-child(4) { animation-delay: 0.4s; }
-    #analytics-container:fullscreen .widget-item:nth-child(5) { animation-delay: 0.5s; }
-    #analytics-container:fullscreen .widget-item:nth-child(6) { animation-delay: 0.6s; }
-    #analytics-container:fullscreen .widget-item:nth-child(7) { animation-delay: 0.7s; }
-    #analytics-container:fullscreen .widget-item:nth-child(8) { animation-delay: 0.8s; }
-    #analytics-container:fullscreen .widget-item:nth-child(9) { animation-delay: 0.9s; }
-    
-    /* Hover Efek Skala & Glow saat Presentasi */
+
+    /* 3. Efek Sorot (Hover) Mewah dengan Glowing */
     #analytics-container:fullscreen .widget-item:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
-        border-color: rgba(99, 102, 241, 0.4) !important;
-        z-index: 50; 
+        transform: translateY(-5px) scale(1.01);
+        border-color: rgba(56, 189, 248, 0.6) !important; /* Warna cyan/biru neon */
+        box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
+        z-index: 50;
     }
 
-    #analytics-container:fullscreen table th {
-        background: rgba(248, 250, 252, 0.8) !important;
-    }
-    #analytics-container:fullscreen table td,
-    #analytics-container:fullscreen table tr {
-        background: transparent !important;
-    }
+    /* 4. Perubahan Teks agar terbaca di Background Gelap */
+    #analytics-container:fullscreen h3 { color: #ffffff !important; }
+    #analytics-container:fullscreen p.text-slate-500, 
+    #analytics-container:fullscreen p.text-slate-400 { color: #cbd5e1 !important; }
+    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.05) !important; color: #94a3b8 !important; }
+    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.05) !important; color: #e2e8f0 !important; }
 
-    /* 3. Tombol Floating Keluar Presentasi bergaya Pulse */
-    @keyframes pulseGlow {
+    /* 5. TOOLTIP PREMIUM (Sangat Kontras, Mewah, & Glowing) */
+    #analytics-container:fullscreen .tooltip-table .tooltip-box {
+        background: rgba(9, 9, 11, 0.95) !important;
+        backdrop-filter: blur(16px);
+        border: 1px solid #06b6d4 !important; /* Border Neon Cyan */
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.5) !important; /* Cahaya keluar */
+    }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box th { border-bottom-color: rgba(255, 255, 255, 0.1) !important; }
+
+    /* 6. Tombol Exit Melayang Canggih */
+    @keyframes pulseNeon {
         0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-        70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
         100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
     }
     
-    #floating-exit-btn {
-        display: none;
-    }
+    #floating-exit-btn { display: none; }
     #analytics-container:fullscreen #floating-exit-btn {
-        display: flex;
-        position: fixed;
-        top: 2rem;
-        right: 3rem;
-        z-index: 99999;
-        background: rgba(255, 255, 255, 0.95);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(226, 232, 240, 1);
-        color: #334155;
-        padding: 0.75rem 1.5rem;
-        border-radius: 9999px;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        animation: pulseGlow 2s infinite;
+        display: flex; position: fixed; top: 2rem; right: 3rem; z-index: 9999;
+        background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px);
+        border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5;
+        padding: 0.75rem 1.5rem; border-radius: 50px;
+        align-items: center; gap: 0.5rem; font-weight: bold; cursor: pointer;
+        transition: all 0.3s ease; animation: pulseNeon 2s infinite;
     }
     #analytics-container:fullscreen #floating-exit-btn:hover {
-        background: rgba(254, 242, 242, 1);
-        color: rgba(220, 38, 38, 1);
-        border-color: rgba(252, 165, 165, 1);
-        animation: none;
+        background: #ef4444; color: white; border-color: #ef4444; animation: none;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
     }
     
-    #analytics-container:fullscreen .hide-on-fullscreen {
-        display: none !important;
-    }
-    #analytics-container:fullscreen .fullscreen-header {
-        display: block !important;
-    }
-
-    /* 4. NEW TOOLTIP PREMIUM (Menggantikan tema gelap) */
-    .tooltip-premium {
-        background: linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.95) 100%);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(226,232,240,0.9);
-        box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.15);
-        border-radius: 0.75rem;
-        color: #1e293b;
-        min-width: max-content; /* Mencegah teks turun kebawah/squished */
-        padding: 1.25rem;
-    }
-    .tooltip-premium th {
-        color: #64748b;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #e2e8f0;
-    }
-    .tooltip-premium td {
-        padding: 0.5rem 0.5rem;
-        border-bottom: 1px dashed #e2e8f0;
-        white-space: nowrap; /* Teks tidak akan melipat */
-    }
-    .tooltip-premium tr:last-child td {
-        border-bottom: none;
-    }
+    #analytics-container:fullscreen .hide-on-fullscreen { display: none !important; }
+    #analytics-container:fullscreen .fullscreen-header { display: block !important; }
 </style>
 
 <div id="tab-analytics" class="tab-content block w-full space-y-6">
@@ -172,8 +121,8 @@
 
         <!-- Judul Header Muncul HANYA di Mode Presentasi -->
         <div class="hidden fullscreen-header text-center mb-10 w-full" style="display: none;">
-            <h1 class="text-4xl font-extrabold text-slate-800 tracking-widest uppercase mb-2">Executive Analytics Dashboard</h1>
-            <p class="text-xl text-indigo-600 font-bold">Laporan Kinerja Operasional Perkebunan s.d {{ $namaBulanIni }} {{ $tahun }}</p>
+            <h1 class="text-4xl font-extrabold text-white tracking-widest uppercase mb-2">Executive Analytics Dashboard</h1>
+            <p class="text-xl text-cyan-400 font-bold">Laporan Kinerja Operasional Perkebunan s.d {{ $namaBulanIni }} {{ $tahun }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -200,7 +149,7 @@
 
         <div id="dynamic-dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
-            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300 hover:z-50">
+            <div id="w-summary-prod" data-wname="Summary Produksi (Tabel Interaktif)" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300">
                 <div class="p-4 border-b border-slate-100 bg-slate-50/80 flex justify-between items-center hide-on-fullscreen">
                     <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
                         <span class="bg-indigo-500 w-2 h-4 rounded-sm inline-block"></span> 
@@ -325,7 +274,8 @@
                 </div>
             </div>
 
-            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <!-- CARD WIDGETS DENGAN KELAS TOOLTIP BAWAAN TAILWIND AGAR MODE NORMAL TIDAK BERUBAH -->
+            <div id="w-biaya" data-wname="Total Biaya (M)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-amber-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Biaya (M)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBiayaRealSd / 1000000, 2) }} M</h3>
@@ -334,16 +284,15 @@
                 <div class="p-3 bg-amber-50 text-amber-600 rounded-lg group-hover:bg-amber-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <!-- PERUBAHAN: Tooltip Premium Light Glassmorphism -->
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-amber-600 mb-2 pb-1 text-base">Detail Biaya per PT (M)</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-amber-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Biaya per PT (M)</div>
                         <table class="w-full text-right">
-                            <tr>
-                                <th class="text-left">PT</th>
-                                <th class="pl-4">Bgt (1 Thn)</th>
-                                <th class="pl-4">Real (Sbi)</th>
-                                <th class="pl-4">%</th>
+                            <tr class="text-slate-400 border-b border-slate-600">
+                                <th class="text-left pb-1">PT</th>
+                                <th class="pb-1 pl-4">Bgt (1 Thn)</th>
+                                <th class="pb-1 pl-4">Real (Sbi)</th>
+                                <th class="pb-1 pl-4">%</th>
                             </tr>
                             @foreach($estates as $estate)
                                 @php 
@@ -363,11 +312,11 @@
                                     $realM = $ptBiaya / 1000000;
                                     $pct = $bgtM > 0 ? ($realM / $bgtM) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($bgtM, 2) }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($realM, 2) }}</td>
-                                    <td class="pl-4 font-bold {{ $pct <= 100 ? 'text-emerald-600' : 'text-rose-600' }}">{{ number_format($pct, 1) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4">{{ number_format($bgtM, 2) }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($realM, 2) }}</td>
+                                    <td class="pl-4 {{ $pct <= 100 ? 'text-emerald-400' : 'text-rose-400' }}">{{ number_format($pct, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -375,7 +324,7 @@
                 </div>
             </div>
 
-            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-cost" data-wname="Cost / Kg TBS (Rp)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-emerald-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost/Kg TBS</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPerKgSd, 2) }}</h3>
@@ -385,10 +334,10 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-emerald-600 mb-2 pb-1 text-base">Detail Cost/Kg (S.D Bln) per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-emerald-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Cost/Kg (S.D Bln) per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Bgt Rp/Kg</th><th class="pl-4">Real Rp/Kg</th><th class="pl-4">% Bgt</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Bgt Rp/Kg</th><th class="pb-1 pl-4">Real Rp/Kg</th><th class="pb-1 pl-4">% Bgt</th></tr>
                             @foreach($estates as $estate)
                                 @php 
                                     $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
@@ -405,11 +354,11 @@
                                     $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
                                     $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($ptBgtCostKg, 2) }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($ptCostKgSd, 2) }}</td>
-                                    <td class="pl-4 font-bold {{ $pC <= 100 ? 'text-emerald-600' : 'text-rose-600' }}">{{ number_format($pC, 1) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4">{{ number_format($ptBgtCostKg, 2) }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($ptCostKgSd, 2) }}</td>
+                                    <td class="pl-4 {{ $pC <= 100 ? 'text-emerald-400' : 'text-rose-400' }}">{{ number_format($pC, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -417,7 +366,7 @@
                 </div>
             </div>
 
-            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-cost-produk" data-wname="Cost Palm Produk (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-slate-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Produk</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmProdukReal, 0) }}</h3>
@@ -427,21 +376,21 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-slate-700 mb-2 pb-1 text-base">Detail Cost Palm Produk per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-slate-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Cost Palm Produk per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Bgt Rp/Kg</th><th class="pl-4">Real Rp/Kg</th><th class="pl-4">% Bgt</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Bgt Rp/Kg</th><th class="pb-1 pl-4">Real Rp/Kg</th><th class="pb-1 pl-4">% Bgt</th></tr>
                             @foreach($estates as $estate)
                                 @php
                                     $bgt = $biayaStats[$estate->kode]['costPalmProdukBgt'];
                                     $real = $biayaStats[$estate->kode]['costPalmProdukReal'];
                                     $pct = $bgt > 0 ? ($real / $bgt) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($bgt, 0) }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($real, 0) }}</td>
-                                    <td class="pl-4 font-bold {{ $pct <= 100 ? 'text-emerald-600' : 'text-rose-600' }}">{{ number_format($pct, 1) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4">{{ number_format($bgt, 0) }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($real, 0) }}</td>
+                                    <td class="pl-4 {{ $pct <= 100 ? 'text-emerald-400' : 'text-rose-400' }}">{{ number_format($pct, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -449,7 +398,7 @@
                 </div>
             </div>
 
-            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-cost-oil" data-wname="Cost Palm Oil (Rp/Kg)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-green-600 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Cost Palm Oil</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCostPalmOilReal, 0) }}</h3>
@@ -459,21 +408,21 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-green-600 mb-2 pb-1 text-base">Detail Cost Palm Oil per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-green-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Cost Palm Oil per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Bgt Rp/Kg</th><th class="pl-4">Real Rp/Kg</th><th class="pl-4">% Bgt</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Bgt Rp/Kg</th><th class="pb-1 pl-4">Real Rp/Kg</th><th class="pb-1 pl-4">% Bgt</th></tr>
                             @foreach($estates as $estate)
                                 @php
                                     $bgt = $biayaStats[$estate->kode]['costPalmOilBgt'];
                                     $real = $biayaStats[$estate->kode]['costPalmOilReal'];
                                     $pct = $bgt > 0 ? ($real / $bgt) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($bgt, 0) }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($real, 0) }}</td>
-                                    <td class="pl-4 font-bold {{ $pct <= 100 ? 'text-emerald-600' : 'text-rose-600' }}">{{ number_format($pct, 1) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4">{{ number_format($bgt, 0) }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($real, 0) }}</td>
+                                    <td class="pl-4 {{ $pct <= 100 ? 'text-emerald-400' : 'text-rose-400' }}">{{ number_format($pct, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -481,7 +430,7 @@
                 </div>
             </div>
 
-            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-bjr" data-wname="Rata-rata BJR" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-sky-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Rata-rata BJR</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gBjr, 2) }}</h3>
@@ -491,22 +440,22 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-sky-600 mb-2 pb-1 text-base">Detail BJR per PT (Bln Ini vs Bln Lalu)</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-sky-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail BJR per PT (Bln Ini vs Bln Lalu)</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Bln Ini</th><th class="pl-4">Bln Lalu</th><th class="pl-4">Trend</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Bln Ini</th><th class="pb-1 pl-4">Bln Lalu</th><th class="pb-1 pl-4">Trend</th></tr>
                             @foreach($estates as $estate)
                                 @php 
                                     $bIni = $dataMatrix[$estate->kode]['produksi']['current']['bjr_real'] ?? 0;
                                     $bLalu = $dataMatrix[$estate->kode]['produksi']['current']['bjr_last_month'] ?? 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($bIni, 2) }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($bLalu, 2) }}</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($bIni, 2) }}</td>
+                                    <td class="pl-4">{{ number_format($bLalu, 2) }}</td>
                                     <td class="pl-4 text-center text-lg">
-                                        @if($bIni > $bLalu) <span class="text-emerald-500">📈</span>
-                                        @elseif($bIni < $bLalu) <span class="text-rose-500">📉</span>
+                                        @if($bIni > $bLalu) <span class="text-emerald-400">📈</span>
+                                        @elseif($bIni < $bLalu) <span class="text-rose-400">📉</span>
                                         @else <span class="text-slate-400">-</span> @endif
                                     </td>
                                 </tr>
@@ -517,7 +466,7 @@
             </div>
 
             <!-- ========================= WIDGET TOTAL RAWAT (HA) ========================= -->
-            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-rawat" data-wname="Total Rawat (Ha)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-teal-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Rawat (Ha)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalRawat, 2) }}</h3>
@@ -526,21 +475,20 @@
                 <div class="p-3 bg-teal-50 text-teal-600 rounded-lg group-hover:bg-teal-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                 </div>
-                
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
-                    <div class="tooltip-premium text-xs" style="padding:0; min-width: 450px;">
-                        <div class="px-4 pt-4 pb-2 border-b border-slate-200">
-                            <span class="font-extrabold text-teal-600 text-base">Detail Rawat & Cost per Pekerjaan</span>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 tooltip-box overflow-hidden whitespace-nowrap" style="min-width: 480px;">
+                        <div class="bg-slate-800/90 px-4 pt-4 pb-2 border-b border-slate-600 sticky top-0 z-10 flex justify-between">
+                            <span class="font-bold text-teal-300 text-sm tracking-wide">Detail Rawat & Cost per Pekerjaan</span>
                         </div>
                         <div class="max-h-[300px] overflow-y-auto px-4 pb-4 mt-2">
                             <table class="w-full text-right">
                                 <thead>
-                                    <tr>
-                                        <th class="text-left font-semibold">PT</th>
-                                        <th class="text-left pl-3 font-semibold">Jenis Pekerjaan</th>
-                                        <th class="pl-3 text-center font-semibold">Blok</th>
-                                        <th class="pl-3 font-semibold">Luas (Ha)</th>
-                                        <th class="pl-3 font-semibold">Cost/Ha (Rp)</th>
+                                    <tr class="text-slate-400 bg-slate-800/95 backdrop-blur sticky top-0 z-10 border-b border-slate-600">
+                                        <th class="text-left py-2 font-semibold">PT</th>
+                                        <th class="text-left py-2 pl-4 font-semibold">Jenis Pekerjaan</th>
+                                        <th class="py-2 pl-4 text-center font-semibold">Blok</th>
+                                        <th class="py-2 pl-4 font-semibold">Luas (Ha)</th>
+                                        <th class="py-2 pl-4 font-semibold">Cost/Ha (Rp)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -554,12 +502,12 @@
                                             @endphp
                                             
                                             @if($l > 0 || $b > 0 || $c > 0)
-                                            <tr>
-                                                <td class="text-left font-bold text-slate-800 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
-                                                <td class="text-left pl-3 text-slate-600 max-w-[140px]" title="{{ $job }}">{{ $job }}</td>
-                                                <td class="pl-3 text-center text-slate-700">{{ number_format($b, 0) }}</td>
-                                                <td class="pl-3 font-extrabold text-slate-900">{{ number_format($l, 2) }}</td>
-                                                <td class="pl-3 font-bold text-teal-600">{{ number_format($c, 0) }}</td>
+                                            <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
+                                                <td class="py-2 text-left font-bold text-slate-300 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
+                                                <td class="py-2 text-left pl-4 text-slate-400" title="{{ $job }}">{{ $job }}</td>
+                                                <td class="py-2 pl-4 text-center">{{ number_format($b, 0) }}</td>
+                                                <td class="py-2 pl-4 font-bold text-white">{{ number_format($l, 2) }}</td>
+                                                <td class="py-2 pl-4 text-amber-400">{{ number_format($c, 0) }}</td>
                                             </tr>
                                             @php $isFirst = false; @endphp
                                             @endif
@@ -573,7 +521,7 @@
             </div>
 
             <!-- ========================= WIDGET TOTAL PUPUK ========================= -->
-            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-pupuk" data-wname="Total Pupuk (Ton)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total Pupuk (Ton)</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalPupuk / 1000, 2) }}</h3>
@@ -582,22 +530,20 @@
                 <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                 </div>
-                
                 <div class="absolute left-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-auto">
-                    <div class="tooltip-premium text-xs" style="padding:0; min-width: 480px;">
-                        <div class="px-4 pt-4 pb-2 border-b border-slate-200">
-                            <span class="font-extrabold text-yellow-600 text-base">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</span>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl border border-slate-700 tooltip-box overflow-hidden whitespace-nowrap" style="min-width: 480px;">
+                        <div class="bg-slate-800/90 px-4 pt-4 pb-2 border-b border-slate-600 sticky top-0 z-10">
+                            <div class="font-bold text-yellow-300 text-sm tracking-wide">Detail Aplikasi Pupuk Sbi (Ton) per Pekerjaan</div>
                         </div>
-                        
                         <div class="max-h-[300px] overflow-y-auto px-4 pb-4 mt-2">
-                            <table class="w-full text-right">
+                            <table class="w-full text-right relative">
                                 <thead>
-                                    <tr>
-                                        <th class="text-left font-semibold">PT</th>
-                                        <th class="text-left pl-3 font-semibold">Jenis Pupuk</th>
-                                        <th class="pl-3 font-semibold text-center">Bgt (1 Thn)</th>
-                                        <th class="pl-3 font-semibold text-center">Real (Sbi)</th>
-                                        <th class="pl-3 font-semibold">% Pencapaian</th>
+                                    <tr class="text-slate-400 bg-slate-800/95 backdrop-blur sticky top-0 z-10 border-b border-slate-600">
+                                        <th class="text-left py-2 font-semibold">PT</th>
+                                        <th class="text-left py-2 pl-4 font-semibold">Jenis Pupuk</th>
+                                        <th class="py-2 pl-4 font-semibold text-center">Bgt (1 Thn)</th>
+                                        <th class="py-2 pl-4 font-semibold text-center">Real (Sbi)</th>
+                                        <th class="py-2 pl-4 font-semibold">% Pencapaian</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -619,12 +565,12 @@
                                             @endphp
                                             
                                             @if($bgt1ThnTon > 0 || $realSbiTon > 0)
-                                            <tr>
-                                                <td class="text-left font-bold text-slate-800 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
-                                                <td class="text-left pl-3 text-slate-600 max-w-[140px] truncate" title="{{ $ppk }}">{{ $ppk }}</td>
-                                                <td class="pl-3 text-center text-slate-700">{{ number_format($bgt1ThnTon, 2) }}</td>
-                                                <td class="pl-3 text-center font-extrabold text-slate-900">{{ number_format($realSbiTon, 2) }}</td>
-                                                <td class="pl-3 font-bold {{ $pctSbi >= 100 ? 'text-emerald-600' : 'text-amber-600' }}">{{ number_format($pctSbi, 1) }}%</td>
+                                            <tr class="border-b border-slate-700/50 last:border-0 hover:bg-slate-700/50 transition-colors">
+                                                <td class="py-2 text-left font-bold text-slate-300 align-top">{{ $isFirst ? $estate->kode : '' }}</td>
+                                                <td class="py-2 text-left pl-4 text-slate-400">{{ $ppk }}</td>
+                                                <td class="py-2 pl-4 text-center">{{ number_format($bgt1ThnTon, 2) }}</td>
+                                                <td class="py-2 pl-4 text-center font-bold text-white">{{ number_format($realSbiTon, 2) }}</td>
+                                                <td class="py-2 pl-4 {{ $pctSbi >= 100 ? 'text-emerald-400' : 'text-amber-400' }}">{{ number_format($pctSbi, 1) }}%</td>
                                             </tr>
                                             @php $isFirst = false; @endphp
                                             @endif
@@ -637,7 +583,7 @@
                 </div>
             </div>
 
-            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-jamkerja" data-wname="Data Jam Kerja" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-blue-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Data Jam Kerja</p>
                     @php
@@ -655,15 +601,15 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-blue-600 mb-2 pb-1 text-base">Detail Jam Kerja per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-blue-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Jam Kerja per PT</div>
                         <table class="w-full text-right">
-                            <tr>
-                                <th class="text-left">PT</th>
-                                <th class="pl-4">Tersedia</th>
-                                <th class="pl-4 text-emerald-600">% Pagi</th>
-                                <th class="pl-4 text-yellow-600">% Siang</th>
-                                <th class="pl-4 text-orange-600">% Sore</th>
+                            <tr class="text-slate-400 border-b border-slate-600">
+                                <th class="text-left pb-1">PT</th>
+                                <th class="pb-1 pl-4">Tersedia</th>
+                                <th class="pb-1 pl-4 text-emerald-400">% Pagi</th>
+                                <th class="pb-1 pl-4 text-yellow-400">% Siang</th>
+                                <th class="pb-1 pl-4 text-orange-400">% Sore</th>
                             </tr>
                             @foreach($estates as $estate)
                                 @php 
@@ -676,12 +622,12 @@
                                     $pSiang = $pgi > 0 ? ($sng / $pgi) * 100 : 0;
                                     $pSore = $pgi > 0 ? ($sor / $pgi) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($tsd, 0) }}</td>
-                                    <td class="pl-4 font-bold text-emerald-600">{{ number_format($pPagi, 1) }}%</td>
-                                    <td class="pl-4 font-bold text-yellow-600">{{ number_format($pSiang, 1) }}%</td>
-                                    <td class="pl-4 font-bold text-orange-600">{{ number_format($pSore, 1) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($tsd, 0) }}</td>
+                                    <td class="pl-4 font-medium text-emerald-400">{{ number_format($pPagi, 1) }}%</td>
+                                    <td class="pl-4 font-medium text-yellow-400">{{ number_format($pSiang, 1) }}%</td>
+                                    <td class="pl-4 font-medium text-orange-400">{{ number_format($pSore, 1) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -689,7 +635,7 @@
                 </div>
             </div>
 
-            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-kunjungan" data-wname="HK Panen" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-rose-500 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total HK Panen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gTotalHkPanen ?? 0, 0) }}</h3>
@@ -699,14 +645,14 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-rose-600 mb-2 pb-1 text-base">Detail HK Panen per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-rose-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail HK Panen per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Total HK</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Total HK</th></tr>
                             @foreach($estates as $estate)
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->hk_panen ?? 0, 0) }} HK</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($dataMatrix[$estate->kode]['produksi']['current']['real']->hk_panen ?? 0, 0) }} HK</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -714,7 +660,7 @@
                 </div>
             </div>
 
-            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-gradient-to-br from-orange-50 to-white rounded-xl shadow-sm border border-orange-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-cpo" data-wname="Total CPO & OER" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-orange-500 hover:shadow-md transition-all duration-300 cursor-help">
                 @php
                     $gCpoBi = 0; $gTbsBi = 0;
                     foreach($estates as $estate) {
@@ -728,24 +674,24 @@
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gCpoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
                     <p class="text-xs font-bold text-orange-600 mt-1">OER: {{ number_format($gOerBi, 2) }}% (Bln Ini)</p>
                 </div>
-                <div class="p-3 bg-orange-100 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors hide-on-fullscreen">
+                <div class="p-3 bg-orange-50 text-orange-600 rounded-lg group-hover:bg-orange-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-orange-600 mb-2 pb-1 text-base">Detail CPO & OER per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-orange-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail CPO & OER per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Ton</th><th class="pl-4">OER %</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Ton</th><th class="pb-1 pl-4">OER %</th></tr>
                             @foreach($estates as $estate)
                                 @php
                                     $cpo = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_cpo ?? 0;
                                     $tbs = ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000;
                                     $oer = $tbs > 0 ? ($cpo / $tbs) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($cpo, 0) }}</td>
-                                    <td class="pl-4 font-bold text-orange-600">{{ number_format($oer, 2) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($cpo, 0) }}</td>
+                                    <td class="pl-4 text-orange-400">{{ number_format($oer, 2) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -753,7 +699,7 @@
                 </div>
             </div>
 
-            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-gradient-to-br from-yellow-50 to-white rounded-xl shadow-sm border border-yellow-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-pko" data-wname="Total PKO & KER" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-yellow-600 hover:shadow-md transition-all duration-300 cursor-help">
                 @php
                     $gPkoBi = 0; $gKerBi = 0;
                     foreach($estates as $estate) {
@@ -765,16 +711,16 @@
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Total PKO & KER</p>
                     <h3 class="text-2xl font-extrabold text-slate-800">{{ number_format($gPkoBi, 0) }} <span class="text-sm font-bold text-slate-500">Ton</span></h3>
-                    <p class="text-xs font-bold text-yellow-700 mt-1">KER: {{ number_format($gPctKerBi, 2) }}% (Bln Ini)</p>
+                    <p class="text-xs font-bold text-yellow-600 mt-1">KER: {{ number_format($gPctKerBi, 2) }}% (Bln Ini)</p>
                 </div>
-                <div class="p-3 bg-yellow-100 text-yellow-700 rounded-lg group-hover:bg-yellow-600 group-hover:text-white transition-colors hide-on-fullscreen">
+                <div class="p-3 bg-yellow-50 text-yellow-600 rounded-lg group-hover:bg-yellow-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-yellow-600 mb-2 pb-1 text-base">Detail PKO & KER per PT</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-yellow-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail PKO & KER per PT</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">PT</th><th class="pl-4">Ton</th><th class="pl-4">KER %</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">PT</th><th class="pb-1 pl-4">Ton</th><th class="pb-1 pl-4">KER %</th></tr>
                             @foreach($estates as $estate)
                                 @php
                                     $pko = $dataMatrix[$estate->kode]['produksi']['current']['real']->ton_pko ?? 0;
@@ -782,10 +728,10 @@
                                     $tbs = ($dataMatrix[$estate->kode]['produksi']['current']['real']->tonase ?? 0) / 1000;
                                     $pctKer = $tbs > 0 ? ($ker / $tbs) * 100 : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-slate-700">{{ $estate->kode }}</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($pko, 0) }}</td>
-                                    <td class="pl-4 font-bold text-yellow-600">{{ number_format($pctKer, 2) }}%</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-medium">{{ $estate->kode }}</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($pko, 0) }}</td>
+                                    <td class="pl-4 text-yellow-400">{{ number_format($pctKer, 2) }}%</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -793,7 +739,7 @@
                 </div>
             </div>
 
-            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-gradient-to-br from-indigo-50 to-white rounded-xl shadow-sm border border-indigo-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all duration-300 cursor-help hover:z-50">
+            <div id="w-pemanen" data-wname="Kinerja Pemanen (Avr)" class="widget-item col-span-1 group relative bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex items-center justify-between border-l-4 border-l-indigo-600 hover:shadow-md transition-all duration-300 cursor-help">
                 <div>
                     <p class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1 flex items-center gap-1">Kinerja Pemanen</p>
                     <h3 class="text-2xl font-extrabold text-slate-800 flex items-baseline gap-1">
@@ -815,14 +761,14 @@
                     </h3>
                     <p class="text-xs font-medium text-indigo-600 mt-1">Rata-rata Kelas A-D Seluruh PT</p>
                 </div>
-                <div class="p-3 bg-indigo-100 text-indigo-600 rounded-lg group-hover:bg-indigo-600 group-hover:text-white transition-colors hide-on-fullscreen">
+                <div class="p-3 bg-indigo-50 text-indigo-600 rounded-lg group-hover:bg-indigo-500 group-hover:text-white transition-colors hide-on-fullscreen">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
                 <div class="absolute right-0 top-[105%] tooltip-table z-[100] opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 pointer-events-none group-hover:pointer-events-auto">
-                    <div class="tooltip-premium text-xs">
-                        <div class="font-extrabold text-indigo-600 mb-2 pb-1 text-base">Detail Rata-rata Avr per Kelas</div>
+                    <div class="bg-slate-800 text-slate-100 text-xs rounded-lg shadow-xl p-4 border border-slate-700 tooltip-box whitespace-nowrap min-w-max">
+                        <div class="font-bold text-indigo-300 mb-2 border-b border-slate-600 pb-1 text-sm tracking-wide">Detail Rata-rata Avr per Kelas</div>
                         <table class="w-full text-right">
-                            <tr><th class="text-left">Kelas</th><th class="pl-4">Total TK</th><th class="pl-4">Avr/Bln</th></tr>
+                            <tr class="text-slate-400 border-b border-slate-600"><th class="text-left pb-1">Kelas</th><th class="pb-1 pl-4">Total TK</th><th class="pb-1 pl-4">Avr/Bln</th></tr>
                             @foreach(['A','B','C','D'] as $kls)
                                 @php
                                     $tkKls = 0; $avrKlsTotal = 0;
@@ -834,10 +780,10 @@
                                     }
                                     $avgKls = $tkKls > 0 ? $avrKlsTotal / $tkKls : 0;
                                 @endphp
-                                <tr>
-                                    <td class="text-left font-bold text-indigo-600">Kelas {{ $kls }}</td>
-                                    <td class="pl-4 text-slate-600">{{ number_format($tkKls, 0) }} Org</td>
-                                    <td class="pl-4 font-extrabold text-slate-900">{{ number_format($avgKls, 2) }}</td>
+                                <tr class="border-b border-slate-700 last:border-0">
+                                    <td class="py-1.5 text-left font-bold text-indigo-400">Kelas {{ $kls }}</td>
+                                    <td class="pl-4 text-slate-300">{{ number_format($tkKls, 0) }} Org</td>
+                                    <td class="pl-4 font-bold text-white">{{ number_format($avgKls, 2) }}</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -845,7 +791,7 @@
                 </div>
             </div>
             
-            <div id="w-tk" data-wname="Performance TK" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6 transition-all duration-300 hover:z-50">
+            <div id="w-tk" data-wname="Performance TK" class="widget-item col-span-1 md:col-span-2 lg:col-span-4 bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto mb-6 transition-all duration-300">
                 <table class="modern-matrix text-sm w-full min-w-[900px]">
                     <thead>
                         <tr>
