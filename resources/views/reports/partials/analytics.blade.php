@@ -40,7 +40,7 @@
     #analytics-container:fullscreen .widget-item:nth-child(3) { animation-delay: 0.3s; }
     #analytics-container:fullscreen .widget-item:nth-child(4) { animation-delay: 0.4s; }
 
-    /* 3. Efek Sorot (Hover) Mewah dengan Glowing pada Widget */
+    /* 3. Efek Sorot (Hover) Mewah dengan Glowing */
     #analytics-container:fullscreen .widget-item:hover {
         transform: translateY(-5px) scale(1.01);
         border-color: rgba(56, 189, 248, 0.6) !important; /* Warna cyan/biru neon */
@@ -48,52 +48,56 @@
         z-index: 50;
     }
 
-    /* 4. PERBAIKAN WARNA TABEL: Agar tidak bentrok saat di-hover */
+    /* 4. Perubahan Teks agar terbaca di Background Gelap */
     #analytics-container:fullscreen h3 { color: #ffffff !important; }
     #analytics-container:fullscreen p.text-slate-500, 
     #analytics-container:fullscreen p.text-slate-400 { color: #cbd5e1 !important; }
-    
-    /* Mereset semua warna teks tabel menjadi terang */
-    #analytics-container:fullscreen table td,
-    #analytics-container:fullscreen table th,
-    #analytics-container:fullscreen table span { 
-        color: #e2e8f0 !important; 
-        border-color: rgba(255, 255, 255, 0.1) !important;
-    }
+    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.05) !important; color: #94a3b8 !important; }
+    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.05) !important; color: #e2e8f0 !important; }
 
-    /* Menghapus semua warna latar bawaan (hijau, kuning, putih) di mode normal */
-    #analytics-container:fullscreen table tr,
-    #analytics-container:fullscreen table td,
-    #analytics-container:fullscreen table th {
-        background-color: transparent !important;
-    }
-    
-    /* Mengembalikan warna gelap khusus untuk kolom kiri yang menempel (Sticky) agar tidak tembus pandang */
-    #analytics-container:fullscreen table .sticky {
-        background-color: #0f172a !important; 
-    }
-
-    /* OVERRIDE EFEK HOVER: Mengubah hover putih bawaan Tailwind menjadi highlight Neon Biru Gelap */
-    #analytics-container:fullscreen table tr:hover,
-    #analytics-container:fullscreen table tr:hover > td,
-    #analytics-container:fullscreen table tr:hover > th {
-        background-color: rgba(56, 189, 248, 0.15) !important; /* Efek highlight biru transparan */
-        color: #ffffff !important; /* Memastikan teks menyala putih saat disorot */
-    }
-    
-    /* Khusus untuk kolom sticky saat di-hover, beri warna gelap sedikit highlight */
-    #analytics-container:fullscreen table tr:hover > .sticky {
-        background-color: rgba(30, 58, 138, 0.9) !important;
-    }
-
-    /* 5. TOOLTIP PREMIUM (Sangat Kontras, Mewah, & Glowing) */
+    /* 5. TOOLTIP PREMIUM (Terang/Putih agar sangat kontras dengan background gelap) */
     #analytics-container:fullscreen .tooltip-table .tooltip-box {
-        background: rgba(9, 9, 11, 0.95) !important;
+        background: rgba(255, 255, 255, 0.95) !important;
         backdrop-filter: blur(16px);
-        border: 1px solid #06b6d4 !important; /* Border Neon Cyan */
-        box-shadow: 0 0 30px rgba(6, 182, 212, 0.5) !important; /* Cahaya keluar */
+        border: 1px solid rgba(255, 255, 255, 1) !important; 
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important; 
     }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box th { border-bottom-color: rgba(255, 255, 255, 0.1) !important; }
+    
+    /* Memaksa semua teks di dalam tooltip menjadi gelap dan tebal */
+    #analytics-container:fullscreen .tooltip-table .tooltip-box * {
+        color: #1e293b !important; 
+    }
+    
+    /* Pewarnaan Header dan Border di dalam Tooltip */
+    #analytics-container:fullscreen .tooltip-table .tooltip-box th { 
+        border-bottom-color: rgba(0, 0, 0, 0.1) !important; 
+        color: #475569 !important; /* Warna abu-abu gelap untuk judul kolom */
+        background: transparent !important;
+    }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box td { 
+        border-bottom-color: rgba(0, 0, 0, 0.05) !important; 
+    }
+    
+    /* Mengubah warna teks highlight (hijau, kuning, dll) di dalam tooltip menjadi lebih gelap agar terbaca di background putih */
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-400 { color: #059669 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-400 { color: #d97706 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-400 { color: #e11d48 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-400 { color: #0284c7 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-400 { color: #ca8a04 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-blue-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-blue-400 { color: #2563eb !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-400 { color: #4f46e5 !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-400 { color: #ea580c !important; }
+
+    /* Mencegah teks terpotong ke bawah di tooltip */
+    .tooltip-box table { white-space: nowrap; }
 
     /* 6. Tombol Exit Melayang Canggih */
     @keyframes pulseNeon {
@@ -326,18 +330,8 @@
                             </tr>
                             @foreach($estates as $estate)
                                 @php 
-                                    $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)
-                                        ->whereYear('periode', $tahun)
-                                        ->where('tipe', 'BUDGET')
-                                        ->get()
-                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
-                                        
-                                    $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + 
-                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + 
-                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + 
-                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + 
-                                               ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
-                                               
+                                    $bgt1ThnCost = \App\Models\OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->get()->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
+                                    $ptBiaya = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0); 
                                     $bgtM = $bgt1ThnCost / 1000000;
                                     $realM = $ptBiaya / 1000000;
                                     $pct = $bgtM > 0 ? ($realM / $bgtM) * 100 : 0;
@@ -373,14 +367,8 @@
                                     $tSd = $dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0;
                                     $bSd = ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_panen ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_rawat ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_kantor ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_teknik ?? 0) + ($dataMatrix[$estate->kode]['biaya_sd_bln']['real']->cost_pks ?? 0);
                                     $ptCostKgSd = $tSd > 0 ? ($bSd / $tSd) : 0;
-                                    
                                     $tBgt1Thn = $dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0;
-                                    $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)
-                                        ->whereYear('periode', $tahun)
-                                        ->where('tipe', 'BUDGET')
-                                        ->get()
-                                        ->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
-                                    
+                                    $bBgt1Thn = \App\Models\OperationalCost::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->get()->sum(function($c) { return $c->cost_panen + $c->cost_rawat + $c->cost_kantor + $c->cost_teknik + $c->cost_pks; });
                                     $ptBgtCostKg = $tBgt1Thn > 0 ? ($bBgt1Thn / $tBgt1Thn) : 0;
                                     $pC = $ptBgtCostKg > 0 ? ($ptCostKgSd / $ptBgtCostKg) * 100 : 0;
                                 @endphp
@@ -582,14 +570,8 @@
                                         @php $isFirst = true; @endphp
                                         @foreach($jenisPupuk as $ppk)
                                             @php
-                                                $bgt1ThnKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
-                                                    ->whereYear('periode', $tahun)
-                                                    ->where('tipe', 'BUDGET')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
-                                                    
-                                                $realSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)
-                                                    ->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)
-                                                    ->where('tipe', 'REAL')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
-                                                
+                                                $bgt1ThnKg = \App\Models\Fertilizer::where('estate_id', $estate->id)->whereYear('periode', $tahun)->where('tipe', 'BUDGET')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
+                                                $realSbiKg = \App\Models\Fertilizer::where('estate_id', $estate->id)->whereYear('periode', $tahun)->whereMonth('periode', '<=', $bulan)->where('tipe', 'REAL')->where('jenis_pupuk', $ppk)->sum('jumlah_kg');
                                                 $bgt1ThnTon = $bgt1ThnKg / 1000;
                                                 $realSbiTon = $realSbiKg / 1000;
                                                 $pctSbi = $bgt1ThnTon > 0 ? ($realSbiTon / $bgt1ThnTon) * 100 : 0;
