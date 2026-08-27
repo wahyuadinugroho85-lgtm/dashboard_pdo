@@ -187,19 +187,20 @@
                     if(!isset($hkeBulanIni) || $hkeBulanIni <= 0) $hkeBulanIni = 26; 
                 @endphp
                 <tr>
+                    <!-- PERBAIKAN: Rumus cavel = hs_ha / 6 -->
                     <td rowspan="3" class="valign-top font-semibold text-slate-700 bg-slate-50/80 border-r border-slate-100 text-center">
                         Ha Cavel / Hari<br>
                         <div class="mt-2 text-center text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded py-1 w-14 mx-auto shadow-sm">
-                            {{ number_format($hkeBulanIni, 0) }}
+                            6
                         </div>
                     </td>
                     <td class="font-semibold text-slate-700 border-r border-slate-100 text-center">Cavel</td>
                     <td class="text-center text-slate-500">Ha</td>
                     @foreach($estates as $estate)
-                        @php $cavel = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0) / $hkeBulanIni; @endphp
+                        @php $cavel = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0) / 6; @endphp
                         <td class="text-right">{{ number_format($cavel, 2) }}</td>
                     @endforeach
-                    @php $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / $hkeBulanIni; @endphp
+                    @php $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / 6; @endphp
                     <td class="text-right font-bold bg-indigo-50/30">{{ number_format($gcavel, 2) }}</td>
                 </tr>
                 <tr>
@@ -219,7 +220,7 @@
                     <td class="text-center text-slate-500">Ha</td>
                     @foreach($estates as $estate)
                         @php
-                            $cavel = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0) / $hkeBulanIni;
+                            $cavel = ($dataMatrix[$estate->kode]['produksi']['current']['real']->hs_ha ?? 0) / 6;
                             $realHa = $dataMatrix[$estate->kode]['produksi']['current']['real']->ha_cavel_real ?? 0;
                             $devHa = $realHa - $cavel;
                         @endphp
@@ -229,7 +230,7 @@
                     @endforeach
                     <td class="text-right font-bold text-rose-600 bg-rose-100/50">
                         @php
-                            $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / $hkeBulanIni;
+                            $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / 6;
                             $gRealHa = $dataMatrix['BP-2']['produksi']['current']['real']->ha_cavel_real ?? 0;
                             $gDevHa = $gRealHa - $gcavel;
                         @endphp
@@ -331,7 +332,7 @@
                 </tr>
 
                 <tr>
-                    <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Bgt {{ $tahun }}</td>
+                    <td colspan="2" class="font-semibold text-slate-700 text-right border-r border-slate-100">Bgt {{ $tahun }}</td>
                     <td class="text-center font-medium text-slate-500 border-r border-slate-100">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-medium">{{ number_format(($dataMatrix[$estate->kode]['histori']['bgt_1_thn']->tonase ?? 0) / 1000, 0) }}</td> 
@@ -339,7 +340,7 @@
                     <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format(($dataMatrix['BP-2']['histori']['bgt_1_thn']->tonase ?? 0) / 1000, 0) }}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">Bgt sd {{ $namaBulanIni }} {{ $tahun }}</td>
+                    <td colspan="2" class="font-semibold text-slate-700 text-right border-r border-slate-100">Bgt sd {{ $namaBulanIni }} {{ $tahun }}</td>
                     <td class="text-center font-medium text-slate-500 border-r border-slate-100">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-medium">{{ number_format(($dataMatrix[$estate->kode]['histori']['bgt_sd_bln']->tonase ?? 0) / 1000, 0) }}</td> 
@@ -347,7 +348,7 @@
                     <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format(($dataMatrix['BP-2']['histori']['bgt_sd_bln']->tonase ?? 0) / 1000, 0) }}</td>
                 </tr>
                 <tr class="row-border-strong">
-                    <td colspan="2" class="font-semibold text-slate-700 border-r border-slate-100 pl-4">E-Sensus sd {{ $namaBulanIni }} {{ $tahun }}</td>
+                    <td colspan="2" class="font-semibold text-slate-700 text-right border-r border-slate-100">E-Sensus sd {{ $namaBulanIni }} {{ $tahun }}</td>
                     <td class="text-center font-medium text-slate-500 border-r border-slate-100">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-medium">{{ number_format(($dataMatrix[$estate->kode]['histori']['sns_sd_bln']->tonase ?? 0) / 1000, 0) }}</td> 
@@ -356,7 +357,7 @@
                 </tr>
                 
                 <tr class="bg-orange-100/70">
-                    <td colspan="2" class="font-bold text-orange-800 border-r border-orange-200 pl-4">Real Sd {{ $namaBulanIni }} - {{ $tahun - 3 }}</td>
+                    <td colspan="2" class="font-bold text-orange-800 text-right border-r border-orange-200">Real Sd {{ $namaBulanIni }} - {{ $tahun - 3 }}</td>
                     <td class="text-center font-bold text-orange-700 border-r border-orange-200">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-bold text-orange-900">{{ number_format(($dataMatrix[$estate->kode]['histori']['real_sd_'.($tahun-3)]->tonase ?? 0) / 1000, 0) }}</td> 
@@ -364,7 +365,7 @@
                     <td class="text-right font-bold bg-orange-200/50 text-orange-900">{{ number_format(($dataMatrix['BP-2']['histori']['real_sd_'.($tahun-3)]->tonase ?? 0) / 1000, 0) }}</td>
                 </tr>
                 <tr class="bg-emerald-100/70">
-                    <td colspan="2" class="font-bold text-emerald-800 border-r border-emerald-200 pl-4">Real Sd {{ $namaBulanIni }} - {{ $tahun - 2 }}</td>
+                    <td colspan="2" class="font-bold text-emerald-800 text-right border-r border-emerald-200">Real Sd {{ $namaBulanIni }} - {{ $tahun - 2 }}</td>
                     <td class="text-center font-bold text-emerald-700 border-r border-emerald-200">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-bold text-emerald-900">{{ number_format(($dataMatrix[$estate->kode]['histori']['real_sd_'.($tahun-2)]->tonase ?? 0) / 1000, 0) }}</td> 
@@ -372,7 +373,7 @@
                     <td class="text-right font-bold bg-emerald-200/50 text-emerald-900">{{ number_format(($dataMatrix['BP-2']['histori']['real_sd_'.($tahun-2)]->tonase ?? 0) / 1000, 0) }}</td>
                 </tr>
                 <tr class="bg-amber-100/70">
-                    <td colspan="2" class="font-bold text-amber-800 border-r border-amber-200 pl-4">Real Sd {{ $namaBulanIni }} - {{ $tahun - 1 }}</td>
+                    <td colspan="2" class="font-bold text-amber-800 text-right border-r border-amber-200">Real Sd {{ $namaBulanIni }} - {{ $tahun - 1 }}</td>
                     <td class="text-center font-bold text-amber-700 border-r border-amber-200">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-bold text-amber-900">{{ number_format(($dataMatrix[$estate->kode]['histori']['real_sd_'.($tahun-1)]->tonase ?? 0) / 1000, 0) }}</td> 
@@ -380,7 +381,7 @@
                     <td class="text-right font-bold bg-amber-200/50 text-amber-900">{{ number_format(($dataMatrix['BP-2']['histori']['real_sd_'.($tahun-1)]->tonase ?? 0) / 1000, 0) }}</td>
                 </tr>
                 <tr class="bg-slate-100/70 row-border-strong">
-                    <td colspan="2" class="font-bold text-slate-800 border-r border-slate-200 pl-4">Real Sd {{ $namaBulanIni }} - {{ $tahun }}</td>
+                    <td colspan="2" class="font-bold text-slate-800 text-right border-r border-slate-200">Real Sd {{ $namaBulanIni }} - {{ $tahun }}</td>
                     <td class="text-center font-bold text-slate-700 border-r border-slate-200">Ton</td>
                     @foreach($estates as $estate) 
                         <td class="text-right font-bold text-slate-900">{{ number_format(($dataMatrix[$estate->kode]['histori']['real_sd_'.$tahun]->tonase ?? 0) / 1000, 0) }}</td> 
