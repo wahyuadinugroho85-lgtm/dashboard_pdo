@@ -116,7 +116,7 @@
         <table class="modern-matrix text-sm w-full min-w-[900px]">
             <thead>
                 <tr>
-                    <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">RKB Pupuk Per<br>{{ $namaBulanIni }} {{ $tahun }}</th>
+                    <th colspan="2" class="text-left font-bold text-slate-800 uppercase tracking-wider bg-slate-50">RKB Pupuk Per<br>{{ strtoupper($monthNames[(int)$nextMonth] ?? '') }} {{ $nextYear ?? '' }}</th>
                     <th class="text-center font-medium text-slate-500 bg-slate-50">Sat</th>
                     @foreach($estates as $estate) <th class="text-center font-bold text-slate-700 bg-slate-100 uppercase">{{ $estate->kode }}</th> @endforeach
                     <th class="text-center font-bold text-slate-800 bg-slate-200 uppercase">BP-2</th>
