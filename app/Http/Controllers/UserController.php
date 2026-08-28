@@ -9,30 +9,16 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    // Konstruktor pengunci akses (Hanya Admin) yang aman untuk deployment
+    // Konstruktor pengunci akses (Hanya Admin)
     public function __construct()
     {
         $this->middleware('auth');
         
         $this->middleware(function ($request, $next) {
-            $user = auth()->user();
-            $isAdmin = false;
-
-            // 1. Cek jika tabel user punya kolom 'role' dan isinya 'admin'
-            if (isset($user->role) && strtolower($user->role) === 'admin') {
-                $isAdmin = true;
-            }
-            
-            // 2. Cek alternatif: Jika nama usernya adalah 'admin' atau 'Admin'
-            if (strtolower($user->name) === 'admin') {
-                $isAdmin = true;
-            }
-
-            // Jika bukan admin, tolak aksesnya
-            if (!$isAdmin) {
+            // Cek murni dari kolom 'role' di database
+            if (auth()->check() && auth()->user()->role !== 'admin') {
                 abort(403, 'Akses Ditolak! Hanya Admin yang dapat mengelola user.');
             }
-
             return $next($request);
         });
     }
@@ -47,20 +33,21 @@ class UserController extends Controller
     // Menyimpan user baru
     public function store(Request $request)
     {
-        // Validasi: memastikan 'name' wajib diisi, max 255 karakter, dan belum dipakai user lain
+        // Validasi form ditambah role
         $request->validate([
             'name' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,user', // Validasi pilihan role
         ]);
 
-        // Karena tabel DB Laravel secara default mewajibkan ada 'email',
-        // Kita buatkan email fiktif di belakang layar secara otomatis agar tidak error.
+        // Email fiktif agar tidak error bawaan Laravel
         $dummyEmail = strtolower(str_replace(' ', '', $request->name)) . rand(1000, 9999) . '@sistem.local';
 
         User::create([
             'name' => $request->name,
             'email' => $dummyEmail,
             'password' => Hash::make($request->password),
+            'role' => $request->role, // Simpan role ke database
         ]);
 
         return redirect()->back()->with('success', 'Pengguna baru berhasil ditambahkan!');
@@ -73,10 +60,12 @@ class UserController extends Controller
 
         $request->validate([
             'name' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8', // Password opsional saat edit
+            'password' => 'nullable|string|min:8', 
+            'role' => 'required|in:admin,user', // Validasi update role
         ]);
 
         $user->name = $request->name;
+        $user->role = $request->role; // Update role
         
         // Hanya update password jika kolom password diisi
         if ($request->filled('password')) {
@@ -93,7 +82,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         
-        // Cegah pengguna menghapus akunnya sendiri (keamanan ekstra)
+        // Cegah admin menghapus akunnya sendiri secara tidak sengaja
         if (auth()->id() == $user->id) {
             return redirect()->back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri saat sedang login.');
         }
