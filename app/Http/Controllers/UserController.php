@@ -9,6 +9,20 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
+    // Konstruktor pengunci akses (Hanya Admin) yang aman untuk deployment
+    public function __construct()
+    {
+        $this->middleware('auth');
+        
+        $this->middleware(function ($request, $next) {
+            // Mengecek apakah user yang login memiliki role 'admin'
+            if (auth()->check() && auth()->user()->role !== 'admin') {
+                abort(403, 'Akses Ditolak! Hanya Admin yang dapat mengelola user.');
+            }
+            return $next($request);
+        });
+    }
+
     // Menampilkan daftar user
     public function index()
     {
