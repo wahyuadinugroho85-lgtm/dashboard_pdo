@@ -40,7 +40,7 @@
     #analytics-container:fullscreen .widget-item:nth-child(3) { animation-delay: 0.3s; }
     #analytics-container:fullscreen .widget-item:nth-child(4) { animation-delay: 0.4s; }
 
-    /* 3. Efek Sorot (Hover) Mewah dengan Glowing pada Card */
+    /* 3. Efek Sorot (Hover) Mewah dengan Glowing */
     #analytics-container:fullscreen .widget-item:hover {
         transform: translateY(-5px) scale(1.01);
         border-color: rgba(56, 189, 248, 0.6) !important; /* Warna cyan/biru neon */
@@ -48,72 +48,41 @@
         z-index: 50;
     }
 
-    /* 4. Perubahan Teks & Latar agar sangat terbaca di Background Gelap */
+    /* 4. Perubahan Teks agar terbaca di Background Gelap */
     #analytics-container:fullscreen h3 { color: #ffffff !important; }
-    #analytics-container:fullscreen .text-slate-800, 
-    #analytics-container:fullscreen .text-slate-900,
-    #analytics-container:fullscreen .text-slate-700,
-    #analytics-container:fullscreen .text-slate-600 { color: #f8fafc !important; }
-    
-    #analytics-container:fullscreen .text-slate-500, 
-    #analytics-container:fullscreen .text-slate-400 { color: #cbd5e1 !important; }
-    
+    #analytics-container:fullscreen p.text-slate-500, 
+    #analytics-container:fullscreen p.text-slate-400 { color: #cbd5e1 !important; }
+    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.05) !important; color: #94a3b8 !important; }
+    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.05) !important; color: #e2e8f0 !important; }
+
+    /* ====================================================================
+       PERBAIKAN UTAMA: Memperbaiki efek hover tabel yang merusak teks
+       (Mencegah teks menghilang menjadi putih di atas background putih)
+       ==================================================================== */
     #analytics-container:fullscreen .bg-white,
     #analytics-container:fullscreen .bg-slate-50,
     #analytics-container:fullscreen .bg-slate-100,
     #analytics-container:fullscreen .bg-slate-200 { background: transparent !important; }
-    
-    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.1) !important; color: #e2e8f0 !important; }
-    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.15) !important; color: #f8fafc !important; }
 
-    /* =========================================================================
-       PERBAIKAN HOVER TABEL: Mencegah baris jadi putih saat disorot
-       ========================================================================= */
-    #analytics-container:fullscreen table tr:hover > td,
-    #analytics-container:fullscreen table tr:hover > th,
-    #analytics-container:fullscreen table tr.hover\:bg-slate-50:hover > td,
-    #analytics-container:fullscreen table tr.hover\:bg-slate-50\/50:hover > td,
-    #analytics-container:fullscreen table tr.hover\:bg-emerald-50\/50:hover > td,
-    #analytics-container:fullscreen table tr.hover\:bg-amber-50\/60:hover > td,
-    #analytics-container:fullscreen table tr.hover\:bg-rose-50\/50:hover > td {
-        background-color: rgba(255, 255, 255, 0.15) !important; /* Efek highlight transparan agar teks tetap terbaca */
-        color: #ffffff !important; 
+    #analytics-container:fullscreen table tbody tr:hover,
+    #analytics-container:fullscreen table tbody tr:hover > td,
+    #analytics-container:fullscreen table tbody tr:hover > th {
+        background-color: rgba(255, 255, 255, 0.15) !important; /* Sorotan transparan, bukan solid putih */
+        color: #ffffff !important; /* Memastikan teks tetap putih jelas */
     }
 
-    /* 5. TOOLTIP PREMIUM (Diubah jadi Terang/Putih agar sangat kontras) */
+    /* 5. TOOLTIP PREMIUM (Sangat Kontras, Mewah, & Glowing) */
     #analytics-container:fullscreen .tooltip-table .tooltip-box {
-        background: rgba(255, 255, 255, 0.98) !important;
+        background: rgba(9, 9, 11, 0.95) !important;
         backdrop-filter: blur(16px);
-        border: 1px solid #cbd5e1 !important; 
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important; 
+        border: 1px solid #06b6d4 !important; /* Border Neon Cyan */
+        box-shadow: 0 0 30px rgba(6, 182, 212, 0.5) !important; /* Cahaya keluar */
     }
-    
-    /* Memaksa semua teks di dalam tooltip menjadi gelap agar terbaca */
     #analytics-container:fullscreen .tooltip-table .tooltip-box * {
-        color: #1e293b !important; 
+        color: #f1f5f9 !important; /* Memaksa semua teks di dalam tooltip menjadi terang */
     }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box th { 
-        border-bottom-color: rgba(0, 0, 0, 0.1) !important; 
-        color: #475569 !important;
-        background: transparent !important;
-    }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box td { 
-        border-bottom-color: rgba(0, 0, 0, 0.05) !important; 
-    }
-    
-    /* Mencegah highlight warna teks di tooltip hilang karena dipaksa gelap */
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-400 { color: #059669 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-400 { color: #d97706 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-400 { color: #e11d48 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-400 { color: #0284c7 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-400 { color: #ca8a04 !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-300,
-    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-400 { color: #ea580c !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box th { border-bottom-color: rgba(255, 255, 255, 0.1) !important; }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box td { border-bottom-color: rgba(255, 255, 255, 0.1) !important; }
     
     /* Mencegah teks di tooltip melipat ke bawah */
     .tooltip-box table { white-space: nowrap; }
