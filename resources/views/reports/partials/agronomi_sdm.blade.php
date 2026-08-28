@@ -11,14 +11,34 @@
             </thead>
             <tbody class="text-slate-600">
                 <!-- BARIS PERAWATAN -->
-                <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Perawatan Kebun (Ha)</td></tr>
+                <tr><td colspan="{{ count($estates) + 3 }}" class="font-bold text-slate-700 bg-slate-100 uppercase tracking-wider border-y-2 border-slate-200">Perawatan Kebun</td></tr>
                 @foreach($jenisPerawatan as $rawat)
-                <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors">
-                    <td class="font-bold text-slate-800 pl-4">{{ $rawat }} (Real)</td>
-                    <td class="text-center font-medium text-slate-500 w-16">Ha</td>
+                <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors border-t border-slate-300 border-dashed">
+                    <td rowspan="3" class="font-bold text-slate-800 pl-4 w-48 align-top pt-3 border-r border-slate-200 bg-white">{{ $rawat }} (Real)</td>
+                    <td class="text-left font-medium text-slate-500 w-24 border-r border-slate-200">Luas (Ha)</td>
                     @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0, 2) }}</td> @endforeach
-                    @php $gRawat = 0; foreach($estates as $estate){ $gRawat += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; } @endphp
-                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gRawat, 2) }}</td>
+                    @php $gLuas = 0; foreach($estates as $estate){ $gLuas += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0; } @endphp
+                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gLuas, 2) }}</td>
+                </tr>
+                <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors border-b border-slate-200 border-dotted">
+                    <td class="text-left font-medium text-slate-500 w-24 border-r border-slate-200">Jml Blok</td>
+                    @foreach($estates as $estate) <td class="text-right text-slate-700">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->jml_blok ?? 0, 0) }}</td> @endforeach
+                    @php $gBlok = 0; foreach($estates as $estate){ $gBlok += $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->jml_blok ?? 0; } @endphp
+                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-800">{{ number_format($gBlok, 0) }}</td>
+                </tr>
+                <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors row-border-strong border-b-2 border-slate-300">
+                    <td class="text-left font-medium text-slate-500 w-24 border-r border-slate-200">Rp / Ha</td>
+                    @foreach($estates as $estate) <td class="text-right text-slate-700">{{ number_format($dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->cost_ha ?? 0, 0) }}</td> @endforeach
+                    @php 
+                        $gCostTotal = 0;
+                        foreach($estates as $estate){ 
+                            $l = $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->luas_ha ?? 0;
+                            $c = $dataMatrix[$estate->kode]['upkeep']['real'][$rawat]->cost_ha ?? 0;
+                            $gCostTotal += ($l * $c);
+                        } 
+                        $gCostHa = $gLuas > 0 ? $gCostTotal / $gLuas : 0;
+                    @endphp
+                    <td class="text-right font-bold bg-indigo-50/30 text-indigo-800">{{ number_format($gCostHa, 0) }}</td>
                 </tr>
                 @endforeach
 
@@ -27,7 +47,7 @@
                 @foreach($jenisPupuk as $pupuk)
                 <tr class="bg-slate-50/30 hover:bg-slate-50 transition-colors">
                     <td class="font-bold text-slate-800 pl-4">{{ $pupuk }} (Real)</td>
-                    <td class="text-center font-medium text-slate-500 w-16">Kg</td>
+                    <td class="text-center font-medium text-slate-500 w-24 border-r border-slate-200">Kg</td>
                     @foreach($estates as $estate) <td class="text-right font-bold text-slate-900">{{ number_format($dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0, 0) }}</td> @endforeach
                     @php $gPupuk = 0; foreach($estates as $estate){ $gPupuk += $dataMatrix[$estate->kode]['pupuk']['real'][$pupuk]->jumlah_kg ?? 0; } @endphp
                     <td class="text-right font-bold bg-indigo-50/30 text-indigo-900">{{ number_format($gPupuk, 0) }}</td>
