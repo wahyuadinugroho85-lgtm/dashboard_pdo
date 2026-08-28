@@ -182,12 +182,9 @@
                 </tr>
                 
                 @php 
-                    // Variabel $hkeBulanIni sekarang menggunakan nilai global dari Controller.
-                    // Fallback di bawah ini hanya agar tidak error bagi 0 jika variabel kosong.
                     if(!isset($hkeBulanIni) || $hkeBulanIni <= 0) $hkeBulanIni = 26; 
                 @endphp
                 <tr>
-                    <!-- PERBAIKAN: Rumus cavel = hs_ha / 6 -->
                     <td rowspan="3" class="valign-top font-semibold text-slate-700 bg-slate-50/80 border-r border-slate-100 text-center">
                         Ha Cavel / Hari<br>
                         <div class="mt-2 text-center text-sm font-bold text-slate-800 bg-white border border-slate-300 rounded py-1 w-14 mx-auto shadow-sm">
@@ -215,6 +212,10 @@
                         {{ number_format($gRealHa, 2) }}
                     </td>
                 </tr>
+                
+                <!-- ===================================================================
+                     PERBAIKAN: BARIS DEV HANYA MENJUMLAHKAN NILAI MINUS UNTUK BP-2
+                     =================================================================== -->
                 <tr class="row-border-strong">
                     <td class="font-semibold text-rose-600 border-r border-slate-100 text-center">Dev</td>
                     <td class="text-center text-slate-500">Ha</td>
@@ -228,19 +229,26 @@
                             {{ $devHa < 0 ? '('.number_format(abs($devHa), 2).')' : number_format($devHa, 2) }}
                         </td>
                     @endforeach
+                    
                     <td class="text-right font-bold text-rose-600 bg-rose-100/50">
                         @php
-                            $gcavel = ($dataMatrix['BP-2']['produksi']['current']['real']->hs_ha ?? 0) / 6;
-                            $gRealHa = $dataMatrix['BP-2']['produksi']['current']['real']->ha_cavel_real ?? 0;
-                            $gDevHa = $gRealHa - $gcavel;
+                            $gDevHaMinusOnly = 0;
+                            foreach($estates as $est) {
+                                $cavelEst = ($dataMatrix[$est->kode]['produksi']['current']['real']->hs_ha ?? 0) / 6;
+                                $realHaEst = $dataMatrix[$est->kode]['produksi']['current']['real']->ha_cavel_real ?? 0;
+                                $devHaEst = $realHaEst - $cavelEst;
+                                
+                                // HANYA JUMLAHKAN JIKA NILAINYA MINUS
+                                if($devHaEst < 0) {
+                                    $gDevHaMinusOnly += $devHaEst;
+                                }
+                            }
                         @endphp
-                        {{ $gDevHa < 0 ? '('.number_format(abs($gDevHa), 2).')' : number_format($gDevHa, 2) }}
+                        {{ $gDevHaMinusOnly < 0 ? '('.number_format(abs($gDevHaMinusOnly), 2).')' : number_format($gDevHaMinusOnly, 2) }}
                     </td>
                 </tr>
 
                 @php 
-                    // Variabel $hkeBulanDepan sekarang menggunakan nilai global dari Controller.
-                    // Fallback di bawah ini hanya agar tidak error bagi 0 jika variabel kosong.
                     if(!isset($hkeBulanDepan) || $hkeBulanDepan <= 0) $hkeBulanDepan = 24;
                 @endphp
                 <tr class="border-t-[3px] border-slate-300">
