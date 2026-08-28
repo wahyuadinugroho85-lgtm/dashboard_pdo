@@ -15,10 +15,24 @@ class UserController extends Controller
         $this->middleware('auth');
         
         $this->middleware(function ($request, $next) {
-            // Mengecek apakah user yang login memiliki role 'admin'
-            if (auth()->check() && auth()->user()->role !== 'admin') {
+            $user = auth()->user();
+            $isAdmin = false;
+
+            // 1. Cek jika tabel user punya kolom 'role' dan isinya 'admin'
+            if (isset($user->role) && strtolower($user->role) === 'admin') {
+                $isAdmin = true;
+            }
+            
+            // 2. Cek alternatif: Jika nama usernya adalah 'admin' atau 'Admin'
+            if (strtolower($user->name) === 'admin') {
+                $isAdmin = true;
+            }
+
+            // Jika bukan admin, tolak aksesnya
+            if (!$isAdmin) {
                 abort(403, 'Akses Ditolak! Hanya Admin yang dapat mengelola user.');
             }
+
             return $next($request);
         });
     }
