@@ -278,14 +278,30 @@
             if(window.myCharts) { window.myCharts.forEach(chart => chart.resize()); }
         });
 
+        // PERUBAHAN: Menambahkan semua id widget baru yang Anda buat
         const defaultLayout = [
-            { id: 'w-summary-prod', visible: true }, { id: 'w-biaya', visible: true }, 
-            { id: 'w-cost', visible: true }, { id: 'w-cost-produk', visible: true },
-            { id: 'w-cost-oil', visible: true }, { id: 'w-bjr', visible: true },
-            { id: 'w-rawat', visible: true }, { id: 'w-pupuk', visible: true }, 
-            { id: 'w-tk', visible: true }, { id: 'w-kunjungan', visible: true },
-            { id: 'w-chart-prod', visible: true }, { id: 'w-chart-cost', visible: true }, 
-            { id: 'w-chart-biaya', visible: true }, { id: 'w-chart-mutu', visible: true }
+            { id: 'w-summary-prod', visible: true },
+            { id: 'w-mutu-ancak', visible: true },
+            { id: 'w-pruning-kritis', visible: true },
+            { id: 'w-kehadiran', visible: true },
+            { id: 'w-mutasi', visible: true },
+            { id: 'w-biaya', visible: true }, 
+            { id: 'w-cost', visible: true }, 
+            { id: 'w-cost-produk', visible: true },
+            { id: 'w-cost-oil', visible: true }, 
+            { id: 'w-bjr', visible: true },
+            { id: 'w-rawat', visible: true }, 
+            { id: 'w-pupuk', visible: true }, 
+            { id: 'w-jamkerja', visible: true },
+            { id: 'w-kunjungan', visible: true },
+            { id: 'w-cpo', visible: true },
+            { id: 'w-pko', visible: true },
+            { id: 'w-pemanen', visible: true },
+            { id: 'w-tk', visible: true }, 
+            { id: 'w-chart-prod', visible: true }, 
+            { id: 'w-chart-cost', visible: true }, 
+            { id: 'w-chart-biaya', visible: true }, 
+            { id: 'w-chart-mutu', visible: true }
         ];
 
         let currentLayout = defaultLayout;
@@ -307,7 +323,7 @@
                     container.appendChild(el);
                     el.style.display = item.visible ? '' : 'none';
 
-                    const wName = el.getAttribute('data-wname');
+                    const wName = el.getAttribute('data-wname') || item.id;
                     const li = document.createElement('li');
                     li.className = 'flex items-center justify-between p-3 bg-white border border-slate-200 rounded shadow-sm';
                     li.setAttribute('data-id', item.id);
