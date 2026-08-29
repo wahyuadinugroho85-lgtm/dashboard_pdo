@@ -1,110 +1,162 @@
 <style>
-    /* =========================================================
-       TEMA PRESENTASI: TERANG (LIGHT), BERSIH, & ELEGAN
-       ========================================================= */
-       
-    @keyframes moveLightGradient {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
-    
-    #analytics-container:fullscreen, 
-    #analytics-container:-webkit-full-screen {
-        /* Latar belakang cerah, mewah, dan profesional */
-        background: linear-gradient(-45deg, #f8fafc, #f0f9ff, #ffffff, #e2e8f0);
-        background-size: 400% 400%;
-        animation: moveLightGradient 15s ease infinite;
-        padding: 3rem;
-        overflow-y: auto;
-    }
+    /* =========================================================
+       HANYA BERLAKU SAAT MODE PRESENTASI (FULLSCREEN)
+       ========================================================= */
+       
+    /* 1. Background Animasi Mewah (Dark Gradient) */
+    @keyframes moveGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    #analytics-container:fullscreen, 
+    #analytics-container:-webkit-full-screen {
+        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #09090b, #172554);
+        background-size: 400% 400%;
+        animation: moveGradient 15s ease infinite;
+        padding: 3rem;
+        overflow-y: auto;
+    }
 
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(30px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
+    /* 2. Efek Card Kaca Transparan & Animasi Masuk berurutan */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-    #analytics-container:fullscreen .widget-item {
-        background: rgba(255, 255, 255, 0.85) !important;
-        border: 1px solid rgba(226, 232, 240, 0.8) !important; 
-        backdrop-filter: blur(20px);
-        box-shadow: 0 15px 35px rgba(15, 23, 42, 0.05) !important; 
-        opacity: 0;
-        animation: fadeUp 0.8s ease forwards;
-        /* Hapus color override agar warna teks bawaan tabel Anda tetap natural */
-    }
-    
-    #analytics-container:fullscreen .widget-item:nth-child(1) { animation-delay: 0.1s; }
-    #analytics-container:fullscreen .widget-item:nth-child(2) { animation-delay: 0.2s; }
-    #analytics-container:fullscreen .widget-item:nth-child(3) { animation-delay: 0.3s; }
-    #analytics-container:fullscreen .widget-item:nth-child(4) { animation-delay: 0.4s; }
-    #analytics-container:fullscreen .widget-item:nth-child(5) { animation-delay: 0.5s; }
+    #analytics-container:fullscreen .widget-item {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        color: #f8fafc !important;
+        opacity: 0;
+        animation: fadeUp 0.8s ease forwards;
+    }
+    
+    #analytics-container:fullscreen .widget-item:nth-child(1) { animation-delay: 0.1s; }
+    #analytics-container:fullscreen .widget-item:nth-child(2) { animation-delay: 0.2s; }
+    #analytics-container:fullscreen .widget-item:nth-child(3) { animation-delay: 0.3s; }
+    #analytics-container:fullscreen .widget-item:nth-child(4) { animation-delay: 0.4s; }
+    #analytics-container:fullscreen .widget-item:nth-child(5) { animation-delay: 0.5s; }
 
-    #analytics-container:fullscreen .widget-item:hover {
-        transform: translateY(-5px) scale(1.01);
-        border-color: rgba(56, 189, 248, 0.6) !important; 
-        box-shadow: 0 20px 40px rgba(14, 165, 233, 0.08) !important;
-        z-index: 50;
-    }
+    /* 3. Efek Sorot (Hover) Mewah dengan Glowing */
+    #analytics-container:fullscreen .widget-item:hover {
+        transform: translateY(-5px) scale(1.01);
+        border-color: rgba(56, 189, 248, 0.6) !important; /* Warna cyan/biru neon */
+        box-shadow: 0 15px 35px rgba(56, 189, 248, 0.2);
+        z-index: 50;
+    }
 
-    /* Penyesuaian Teks Header Fullscreen ke Warna Gelap */
-    #analytics-container:fullscreen .fullscreen-header h1 { color: #0f172a !important; }
-    #analytics-container:fullscreen .fullscreen-header p { color: #0284c7 !important; }
-    #analytics-container:fullscreen #pres-clock { color: #0f172a !important; }
-    
-    /* Transparansi Latar Tabel agar menyatu dengan layar cerah */
-    #analytics-container:fullscreen .bg-white { background: rgba(255, 255, 255, 0.5) !important; }
-    #analytics-container:fullscreen .bg-slate-50 { background: rgba(248, 250, 252, 0.5) !important; }
-    
-    /* MENGATASI MASALAH HOVER PUTIH:
-       Sekarang warna sorotan hover adalah biru muda transparan yang elegan */
-    #analytics-container:fullscreen table tbody tr:hover,
-    #analytics-container:fullscreen table tbody tr[class*="hover:bg-"]:hover,
-    #analytics-container:fullscreen table tbody tr:hover > td,
-    #analytics-container:fullscreen table tbody tr[class*="hover:bg-"]:hover > td,
-    #analytics-container:fullscreen table tbody tr:hover > th {
-        background-color: rgba(56, 189, 248, 0.15) !important; 
-        color: #0f172a !important; 
-    }
+    /* 4. Perubahan Teks agar terbaca di Background Gelap */
+    #analytics-container:fullscreen h3 { color: #ffffff !important; }
+    #analytics-container:fullscreen .text-slate-800, 
+    #analytics-container:fullscreen .text-slate-900,
+    #analytics-container:fullscreen .text-slate-700,
+    #analytics-container:fullscreen .text-slate-600 { color: #f8fafc !important; }
+    
+    #analytics-container:fullscreen .text-slate-500, 
+    #analytics-container:fullscreen .text-slate-400 { color: #cbd5e1 !important; }
+    
+    #analytics-container:fullscreen .bg-white,
+    #analytics-container:fullscreen .bg-slate-50,
+    #analytics-container:fullscreen .bg-slate-100,
+    #analytics-container:fullscreen .bg-slate-200 { background: transparent !important; }
+    
+    #analytics-container:fullscreen table th { background: rgba(255, 255, 255, 0.1) !important; color: #e2e8f0 !important; }
+    #analytics-container:fullscreen table td { border-color: rgba(255, 255, 255, 0.15) !important; color: #f8fafc !important; }
 
-    /* Tooltip Terang Premium */
-    #analytics-container:fullscreen .tooltip-table .tooltip-box {
-        background: rgba(255, 255, 255, 0.98) !important;
-        backdrop-filter: blur(16px);
-        border: 1px solid #cbd5e1 !important; 
-        box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1) !important; 
-    }
-    
-    #analytics-container:fullscreen .tooltip-table .tooltip-box * { color: #1e293b !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box th { border-bottom-color: rgba(0, 0, 0, 0.05) !important; color: #475569 !important; background: transparent !important; }
-    #analytics-container:fullscreen .tooltip-table .tooltip-box td { border-bottom-color: rgba(0, 0, 0, 0.05) !important; }
-    
-    .tooltip-box table { white-space: nowrap; }
+    /* PERBAIKAN HOVER TABEL: Mencegah baris jadi putih saat disorot */
+    #analytics-container:fullscreen table tbody tr:hover,
+    #analytics-container:fullscreen table tbody tr:hover > td,
+    #analytics-container:fullscreen table tbody tr:hover > th {
+        background-color: rgba(255, 255, 255, 0.15) !important; 
+        color: #ffffff !important; 
+    }
 
-    /* Tombol Exit Melayang Halus */
-    @keyframes pulseSoft {
-        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); }
-        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-    }
-    
-    #floating-exit-btn { display: none; }
-    #analytics-container:fullscreen #floating-exit-btn {
-        display: flex; position: fixed; top: 2rem; right: 3rem; z-index: 9999;
-        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
-        border: 1px solid rgba(226, 232, 240, 1); color: #ef4444;
-        padding: 0.75rem 1.5rem; border-radius: 50px;
-        align-items: center; gap: 0.5rem; font-weight: bold; cursor: pointer;
-        transition: all 0.3s ease; animation: pulseSoft 2s infinite;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
-    }
-    #analytics-container:fullscreen #floating-exit-btn:hover {
-        background: #ef4444; color: white; border-color: #ef4444; animation: none;
-        box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
-    }
-    
-    #analytics-container:fullscreen .hide-on-fullscreen { display: none !important; }
-    #analytics-container:fullscreen .fullscreen-header { display: flex !important; justify-content: space-between; align-items: flex-end; }
+    /* 5. TOOLTIP PREMIUM (Sangat Kontras, Terang, & Jelas) */
+    #analytics-container:fullscreen .tooltip-table .tooltip-box {
+        background: rgba(255, 255, 255, 0.98) !important;
+        backdrop-filter: blur(16px);
+        border: 1px solid #cbd5e1 !important; 
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important; 
+    }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box * {
+        color: #1e293b !important; 
+    }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box th { 
+        border-bottom-color: #cbd5e1 !important; 
+        color: #475569 !important; 
+        background: transparent !important;
+    }
+    #analytics-container:fullscreen .tooltip-table .tooltip-box td { 
+        border-bottom-color: #f1f5f9 !important; 
+    }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-emerald-600 { color: #059669 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-amber-600 { color: #d97706 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-rose-600 { color: #e11d48 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-sky-600 { color: #0284c7 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-yellow-600 { color: #ca8a04 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-indigo-600 { color: #4f46e5 !important; }
+    
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-orange-600 { color: #ea580c !important; }
+
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-purple-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-purple-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-purple-600 { color: #9333ea !important; }
+
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-cyan-300,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-cyan-400,
+    #analytics-container:fullscreen .tooltip-table .tooltip-box .text-cyan-600 { color: #0891b2 !important; }
+
+    /* Mencegah teks terpotong melipat ke bawah di tooltip */
+    .tooltip-box table { white-space: nowrap; }
+
+    /* 6. Tombol Exit Melayang Canggih */
+    @keyframes pulseNeon {
+        0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+        70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+    
+    #floating-exit-btn { display: none; }
+    #analytics-container:fullscreen #floating-exit-btn {
+        display: flex; position: fixed; top: 2rem; right: 3rem; z-index: 9999;
+        background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px);
+        border: 1px solid rgba(226, 232, 240, 1); color: #ef4444;
+        padding: 0.75rem 1.5rem; border-radius: 50px;
+        align-items: center; gap: 0.5rem; font-weight: bold; cursor: pointer;
+        transition: all 0.3s ease; animation: pulseNeon 2s infinite;
+    }
+    #analytics-container:fullscreen #floating-exit-btn:hover {
+        background: #ef4444; color: white; border-color: #ef4444; animation: none;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+    
+    #analytics-container:fullscreen .hide-on-fullscreen { display: none !important; }
+    #analytics-container:fullscreen .fullscreen-header { display: block !important; }
 </style>
 
 <div id="tab-analytics" class="tab-content block w-full space-y-6">
